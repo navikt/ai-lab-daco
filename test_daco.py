@@ -34,4 +34,6 @@ daco_obj = daco(df1[header[-20:]], df2[header[-20:]])
 dist = daco_obj.findDistributions()
 
 D, p = daco_obj.chisquare('A6 - Savings account')
-print(D, p)
+
+# dict with D and p values now available as attribute:
+daco_obj.p_D_chisquare
