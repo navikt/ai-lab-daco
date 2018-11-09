@@ -89,8 +89,8 @@ class daco():
     distributions = self.distributions
     p_D_chisquare = self.p_D_chisquare
 
-    dist1 = distributions['df1'][var1][0]
-    dist2 = distributions['df2'][var1][0]
+    dist1 = distributions[self.name1][var1][0]
+    dist2 = distributions[self.name2][var1][0]
 
     D, p = scipy.stats.chisquare( dist1, dist2 )
 
@@ -146,7 +146,8 @@ class daco():
         all_in_one_plot: (bool) hvis True blir histogram av alle arrays plottet i samme figur
         file_dir: (str) hvor plottfilen skal lagres
     """
-
+    return NotImplemented
+    
     df1       = self.df1
     file_dir  = self.file_dir
     distributions = self.distributions
