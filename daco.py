@@ -1,3 +1,20 @@
+"""
+NOTES:
+
+Kolmogorov-Smirnov
+t-test
+chi2
+B-dist
+
+Fint sted å hente inspirasjon til dokumentering:
+https://realpython.com/documenting-python-code/
+http://www.sphinx-doc.org/en/stable/index.html
+
+.. moduleauthor Jon Vegard Sparre
+                Robindra Prabhu
+"""
+
+
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -147,7 +164,7 @@ class daco():
         file_dir: (str) hvor plottfilen skal lagres
     """
     return NotImplemented
-    
+
     df1       = self.df1
     file_dir  = self.file_dir
     distributions = self.distributions
