@@ -35,9 +35,8 @@ class daco():
   TODO
     - sequential vs tabular data (long term)
     - differences (short term)
-    - distances (short term)
     - correlations (short term) (global metric)
-      - diff between correlations
+    - diff between correlations
     - local and global metrics
     - differential privacy (long term)
     - privacy checks
@@ -182,6 +181,7 @@ class daco():
       kb_div (float): the Kullback-Leibler divergence
     """
     import scipy.special as spec
+    import scipy.stats as stats
 
     distributions = self.distributions
     kullbackleibler_div = self.kullbackleibler_div
@@ -192,7 +192,8 @@ class daco():
     # return np.sum( np.where( p != 0., p * np.log( p / np.where( q != 0., q, 1 ) ), 0 ) )
     # return sp.entropy(p, q)
 
-    kb_div = spec.kl_div(dist1, dist2)
+    # kb_div = spec.kl_div(dist1, dist2)
+    kb_div = stats.entropy( dist1, dist2 )
 
     kullbackleibler_div[var1] = { 'kullback': kb_div }
 
@@ -263,6 +264,41 @@ class daco():
     ax0.set_xlabel(xlabel)
     ax0.set_ylabel(ylabel)
     plt.savefig(file_dir + filename + ".png")
+    plt.show()
+    plt.close()
+
+  def plotCorrelationDiff(self, xlabel="", ylabel="", title="", filename="correlations"):
+    """Plotting diff of correlations between columns in two dataframes
+    
+    args:
+        X:         (dataframe) data du vil finne korrelasjonene mellom
+        xlabel:    (str) label på x-aksen
+        ylabel:    (str) label på y-aksen
+        title:     (str) plottittel
+        file_dir:  (str) hvor plottfilen skal lagres
+    """
+
+    df1       = self.df1
+    df2       = self.df2
+    file_dir  = self.file_dir
+    
+    corr1 = df1.corr()
+    corr2 = df2.corr()
+    diff = corr1 - corr2
+
+    mask = np.zeros_like( diff, dtype=np.bool )
+    mask[ np.triu_indices_from( mask ) ] = True
+    cmap = sns.diverging_palette( 240, 10, as_cmap=True )
+    
+    plt.figure( figsize=( 10, 10 ) )
+    ax0 = sns.heatmap( diff, mask=mask, cmap=cmap, vmin=-1
+                    , vmax=1, square=True, linewidths=.5, cbar=1
+                    , cbar_kws={ "fraction": .05, "shrink": .5, "orientation": "vertical" } )
+    ax0.set_title(title)
+    ax0.set_xlabel(xlabel)
+    ax0.set_ylabel(ylabel)
+    plt.savefig(file_dir + filename + ".png")
+    plt.show()
     plt.close()
 
   def plotDistributionsOfVariableNumericalVariables(self
@@ -280,10 +316,10 @@ class daco():
     width_ = abs( max( df1[variable].max(), df2[variable].max() ) - min( df1[variable].min(), df2[variable].min() ) ) / len(distributions['df1'][variable][1])
     
     # TODO Robindra fikser feilberegning
-    # df1_err = np.sqrt( distributions['df1'][variable][0] )
-    # df2_err = np.sqrt( distributions['df2'][variable][0] )
-    # ratio = distributions['df2'][variable][0] / distributions['df1'][variable][0]
-    # ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
+    df1_err = np.sqrt( distributions['df1'][variable][0] )
+    df2_err = np.sqrt( distributions['df2'][variable][0] )
+    ratio = distributions['df2'][variable][0] / distributions['df1'][variable][0]
+    ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
 
     gs = matplotlib.gridspec.GridSpec(2, 1, height_ratios=[2,1])
     fig = plt.figure(0)
@@ -293,8 +329,8 @@ class daco():
     ax1.set_title(variable)
     
     ax2 = fig.add_subplot(gs[1], sharex=ax1)
-    ax2.axhline(y=1, color='k', linestyle='-')
-    # ax2.errorbar(distributions['df2'][variable][1][:-1] + width_/2, ratio, yerr=ratio_err, fmt='o')
+    ax2.axhline(y=1, color='k', linestyle='-', linewidth=0.7)
+    ax2.errorbar(distributions['df2'][variable][1][:-1] + width_/2, ratio, fmt='o')#, yerr=ratio_err)
     ax2.set_ylim(0,2)
     plt.setp(ax1.get_xticklabels(), visible=False)
     plt.subplots_adjust(hspace=0)
@@ -323,10 +359,10 @@ class daco():
     ax1.set_title(variable)
     
     ax2 = fig.add_subplot(gs[1], sharex=ax1)
-    ax2.axhline(y=1, color='k', linestyle='-')
+    ax2.axhline(y=1, color='k', linestyle='-', linewidth=0.7)
     ax2.plot(distributions['df2'][variable][1], ratio, 'o')
     ax2.set_ylim(0,2)
-    plt.xticks(rotation=90)
+    plt.xticks(rotation=45, ha='right')
     plt.setp(ax1.get_xticklabels(), visible=False)
     plt.subplots_adjust(hspace=0)
     plt.xlabel(str(variable))
@@ -359,6 +395,8 @@ class daco():
     return 0
 
   def plotCanvas(self):
+    """ Plotting canvas of histograms for all variables in the two datasets.
+    """
     df1 = self.df1
 
     num_numerical = len(df1.select_dtypes(include=[np.number]).columns)
