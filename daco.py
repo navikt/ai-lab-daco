@@ -303,14 +303,23 @@ class daco():
 
   def plotDistributionsOfVariableNumericalVariables(self
                                                   , variable
-                                                  , filename_prefix):
+                                                  , ax1=None
+                                                  , ax2=None):
     """ Helper function for plotDistributionsOfVariable plotting
     the numerical variables in dataframe.
+
+    *** When plotting a canvas with all histograms ax2 should not be used
+    due to layout problems. ***
+
+    Args:
+      variable (str): name of variable plotting histogram for
+      ax1 (obj): axis-object for main-histogram for the variable
+      ax2 (obj): axis-object for error-histogram placed below
+        main histogram
     """
 
     df1       = self.df1
     df2       = self.df2
-    file_dir  = self.file_dir
     distributions = self.distributions
 
     width_ = abs( max( df1[variable].max(), df2[variable].max() ) - min( df1[variable].min(), df2[variable].min() ) ) / len(distributions['df1'][variable][1])
@@ -321,54 +330,57 @@ class daco():
     ratio = distributions['df2'][variable][0] / distributions['df1'][variable][0]
     ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
 
-    gs = matplotlib.gridspec.GridSpec(2, 1, height_ratios=[2,1])
-    fig = plt.figure(0)
-    ax1 = fig.add_subplot(gs[0])
     ax1.bar(distributions['df1'][variable][1][:-1], distributions['df1'][variable][0], align='edge', width=width_)#, yerr=df1_err)
     ax1.bar(distributions['df2'][variable][1][:-1], distributions['df2'][variable][0], align='edge', width=width_, alpha=0.5)
     ax1.set_title(variable)
     
-    ax2 = fig.add_subplot(gs[1], sharex=ax1)
-    ax2.axhline(y=1, color='k', linestyle='-', linewidth=0.7)
-    ax2.errorbar(distributions['df2'][variable][1][:-1] + width_/2, ratio, fmt='o')#, yerr=ratio_err)
-    ax2.set_ylim(0,2)
-    plt.setp(ax1.get_xticklabels(), visible=False)
-    plt.subplots_adjust(hspace=0)
-    plt.xlabel(str(variable))
-    plt.savefig(file_dir + filename_prefix + '_' + str(variable) + '.pdf')
-    plt.show()
-    plt.close()
+    # Adding errors if not plotting canvas
+    if ax2:
+      ax2.axhline(y=1, color='k', linestyle='-', linewidth=0.7)
+      ax2.errorbar(distributions['df2'][variable][1][:-1] + width_/2, ratio, fmt='o')#, yerr=ratio_err)
+      ax2.set_ylim(0,2)
+      # Hiding xticks on histogram
+      plt.setp(ax1.get_xticklabels(), visible=False)
 
   def plotDistributionsOfVariableCategoricalVariables(self
                                   , variable
-                                  , filename_prefix):
+                                  , ax1=None
+                                  , ax2=None):
 
     """ Helper function for plotDistributionsOfVariable plotting
     the categorical variables in dataframe.
+
+    *** When plotting a canvas with all histograms ax2 should not be used
+    due to layout problems. ***
+
+    Args:
+      variable (str): name of variable plotting histogram for
+      ax1 (obj): axis-object for main-histogram for the variable
+      ax2 (obj): axis-object for error-histogram placed below
+        main histogram
     """  
-    file_dir  = self.file_dir
     distributions = self.distributions
 
+    df1_err = np.sqrt( distributions['df1'][variable][0] )
+    df2_err = np.sqrt( distributions['df2'][variable][0] )
     ratio = distributions['df2'][variable][0] / distributions['df1'][variable][0]
+    # ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
 
-    gs = matplotlib.gridspec.GridSpec(2, 1, height_ratios=[2,1])
-    fig = plt.figure(0)
-    ax1 = fig.add_subplot(gs[0])
+    plt.xticks(rotation=45, ha='right')
     ax1.bar(distributions['df1'][variable][1], distributions['df1'][variable][0], align='center', width=1)#, yerr=df1_err)
     ax1.bar(distributions['df2'][variable][1], distributions['df2'][variable][0], align='center', width=1, alpha=0.5)
     ax1.set_title(variable)
     
-    ax2 = fig.add_subplot(gs[1], sharex=ax1)
-    ax2.axhline(y=1, color='k', linestyle='-', linewidth=0.7)
-    ax2.plot(distributions['df2'][variable][1], ratio, 'o')
-    ax2.set_ylim(0,2)
-    plt.xticks(rotation=45, ha='right')
-    plt.setp(ax1.get_xticklabels(), visible=False)
-    plt.subplots_adjust(hspace=0)
-    plt.xlabel(str(variable))
-    plt.savefig(file_dir + filename_prefix + '_' + str(variable) + '.pdf')
-    plt.show()
-    plt.close()
+    # Adding errors of main histogram if not plotting canvas
+    if ax2:
+      ax2.axhline(y=1, color='k', linestyle='-', linewidth=0.7)
+      ax2.plot(distributions['df2'][variable][1], ratio, 'o')
+      ax2.set_ylim(0,2)
+      # Hiding xticks on histogram
+      plt.setp(ax1.get_xticklabels(), visible=False)
+    
+    if not ax2:
+      plt.xlabel(str(variable))
 
   def plotDistributionsOfVariable(self
                                   , variable
@@ -387,121 +399,54 @@ class daco():
     """
     df1 = self.df1
     
+    # Defining layout of figure
+    gs = matplotlib.gridspec.GridSpec(2, 1, height_ratios=[2,1])
+    fig = plt.figure(0)
+    ax1 = fig.add_subplot(gs[0])
+    ax2 = fig.add_subplot(gs[1], sharex=ax1)
+
+    # Checking dtype of variable and plotting data
     if variable in df1.select_dtypes(include=[np.number]).columns:
-      self.plotDistributionsOfVariableNumericalVariables(variable, filename_prefix)
+      self.plotDistributionsOfVariableNumericalVariables(variable, ax1=ax1, ax2=ax2)
     elif variable in df1.select_dtypes(include='category').columns:
-      self.plotDistributionsOfVariableCategoricalVariables(variable, filename_prefix)
+      self.plotDistributionsOfVariableCategoricalVariables(variable, ax1=ax1, ax2=ax2)
+    
+    plt.xlabel(str(variable))
+    plt.tight_layout()
+    plt.subplots_adjust(hspace=0)
+    plt.savefig(self.file_dir + filename_prefix + '_' + str(variable) + '.pdf')
+    plt.show()
+    plt.close()
 
     return 0
 
-  def plotCanvas(self):
+  def plotCanvas(self, filename_suffix=''):
     """ Plotting canvas of histograms for all variables in the two datasets.
     """
     df1 = self.df1
 
+    # Defining layout of canvas
     num_numerical = len(df1.select_dtypes(include=[np.number]).columns)
     num_categorial = len(df1.select_dtypes(include='category').columns)
-
     N = num_numerical + num_categorial
     num_cols = 4
     num_rows = int(np.ceil(N / num_cols))
-  
     gs = matplotlib.gridspec.GridSpec(num_rows, num_cols)
 
+    # Creating figure instance and looping through all variables in
+    # dataframe.
     fig = plt.figure(0, figsize=(20,6*num_rows))
     i = 0
+
     for variable in df1:
       ax = fig.add_subplot(gs[i])
-      sub_fig = self.helperCanvasPlot(variable, ax)
       i += 1
-
+      if variable in df1.select_dtypes(include=[np.number]).columns:
+        self.plotDistributionsOfVariableNumericalVariables(variable, ax1=ax)
+      elif variable in df1.select_dtypes(include='category').columns:
+        self.plotDistributionsOfVariableCategoricalVariables(variable, ax1=ax)
+    
     plt.tight_layout()
+    plt.savefig(self.file_dir + 'canvas_' + filename_suffix + '.pdf')
     plt.show()
     plt.close()
-
-  def helperCanvasCategoricalVariables(self
-                                      , variable
-                                      , ax1):
-
-    """ Helper function for plotDistributionsOfVariable plotting
-    the categorical variables in dataframe.
-    """  
-    distributions = self.distributions
-
-    df1_err = np.sqrt( distributions['df1'][variable][0] )
-    df2_err = np.sqrt( distributions['df2'][variable][0] )
-    ratio = distributions['df2'][variable][0] / distributions['df1'][variable][0]
-    ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
-
-    ratio_ = len(distributions['df2'][variable][0])*0.05
-    plt.xticks(rotation=45, ha='right')
-    ax1.bar(distributions['df1'][variable][1], distributions['df1'][variable][0], align='center', width=ratio_, yerr=df1_err)
-    ax1.bar(distributions['df2'][variable][1], distributions['df2'][variable][0], align='center', width=ratio_, alpha=0.5)
-    ax1.set_title(variable)
-    # ax1.set_xticks(distributions['df1'][variable][1])
-    # ax1.set_xticklabels(np.linspace(0,19,num=len(distributions['df1'][variable][1])).astype(str), size=20)
-    ax1.set_aspect('auto')
-    
-    # ax2 = fig.add_subplot(gs[1], sharex=ax1)
-    # ax2.axhline(y=1, color='k', linestyle='-')
-    # ax2.plot(distributions['df2'][variable][1], ratio, 'o')
-    # ax2.set_ylim(0,2)
-    # plt.setp(ax1.get_xticklabels(), visible=False)
-    plt.subplots_adjust(hspace=0)
-    plt.xlabel(str(variable))
-    return ax1
-
-  def helperCanvasNumericalVariables(self
-                                    , variable
-                                    , ax1):
-    """ Helper function for plotDistributionsOfVariable plotting
-    the numerical variables in dataframe.
-    """
-
-    df1       = self.df1
-    df2       = self.df2
-    distributions = self.distributions
-
-    width_ = abs( max( df1[variable].max(), df2[variable].max() ) - min( df1[variable].min(), df2[variable].min() ) ) / len(distributions['df1'][variable][1])
-    
-    # TODO Robindra fikser feilberegning
-    # df1_err = np.sqrt( distributions['df1'][variable][0] )
-    # df2_err = np.sqrt(distributions['df2'][variable][0])
-    # ratio = distributions['df2'][variable][0] / distributions['df1'][variable][0]
-    # ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
-
-    ax1.bar(distributions['df1'][variable][1][:-1], distributions['df1'][variable][0], align='edge', width=width_)#, yerr=df1_err)
-    ax1.bar(distributions['df2'][variable][1][:-1], distributions['df2'][variable][0], align='edge', width=width_, alpha=0.5)
-    ax1.set_title(variable)
-    ax1.set_aspect('auto')
-    
-    # ax2 = fig.add_subplot(gs[1], sharex=ax1)
-    # ax2.axhline(y=1, color='k', linestyle='-')
-    # # ax2.errorbar(distributions['df2'][variable][1][:-1] + width_/2, ratio, yerr=ratio_err, fmt='o')
-    # ax2.set_ylim(0,2)
-    # plt.setp(ax1.get_xticklabels(), visible=False)
-    # plt.subplots_adjust(hspace=0)
-    plt.xlabel(str(variable))
-
-    return ax1
-
-  def helperCanvasPlot(self
-                      , variable
-                      , ax):
-    """Plotting distributions for numerical and categorical
-    variables in dataframes. Plots are saved in self.file_dir. The
-    plots include error bars and visualization of deviation from the
-    real dataset.
-
-    args:
-      variable (str): name of variable to plot
-
-    """
-    df1 = self.df1
-    
-    if variable in df1.select_dtypes(include=[np.number]).columns:
-      fig = self.helperCanvasNumericalVariables(variable, ax)
-    elif variable in df1.select_dtypes(include='category').columns:
-      fig = self.helperCanvasCategoricalVariables(variable, ax)
-    
-    return fig
