@@ -72,7 +72,7 @@ class daco():
     if not os.path.exists(file_dir):
       os.mkdir(file_dir)
 
-  def findDistributions(self, bins_='auto', range_=None, density=True):
+  def findDistributions(self, bins_='sturges', range_=None, density=True):
     """Find distributions of all variables/columns in dataframes loaded
     into daco.
 
@@ -110,8 +110,10 @@ class daco():
     for column in column_categories:
       value_count1 = df1[column].value_counts(sort=False)
       value_count2 = df2[column].value_counts(sort=False)
-      hist1[ str(column) ] = [ value_count1.values, value_count1.index.categories ]
-      hist2[ str(column) ] = [ value_count2.values, value_count2.index.categories ]
+      norm_1 = value_count1.sum()
+      norm_2 = value_count2.sum()
+      hist1[ str(column) ] = [ value_count1.values / norm_1, value_count1.index.categories ]
+      hist2[ str(column) ] = [ value_count2.values / norm_2, value_count2.index.categories ]
     
     distributions = {}
     distributions[ name1 ] = hist1
@@ -279,7 +281,7 @@ class daco():
     
     # TODO Robindra fikser feilberegning
     # df1_err = np.sqrt( distributions['df1'][variable][0] )
-    # df2_err = np.sqrt(distributions['df2'][variable][0])
+    # df2_err = np.sqrt( distributions['df2'][variable][0] )
     # ratio = distributions['df2'][variable][0] / distributions['df1'][variable][0]
     # ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
 
@@ -368,44 +370,52 @@ class daco():
   
     gs = matplotlib.gridspec.GridSpec(num_rows, num_cols)
 
-    fig = plt.figure(0)
+    fig = plt.figure(0, figsize=(20,6*num_rows))
+    i = 0
     for variable in df1:
-      fig = self.helperCanvasPlot(variable, fig, gs)
-    
+      ax = fig.add_subplot(gs[i])
+      sub_fig = self.helperCanvasPlot(variable, ax)
+      i += 1
+
+    plt.tight_layout()
     plt.show()
     plt.close()
 
   def helperCanvasCategoricalVariables(self
-                                  , variable
-                                  , fig
-                                  , gs):
+                                      , variable
+                                      , ax1):
 
     """ Helper function for plotDistributionsOfVariable plotting
     the categorical variables in dataframe.
     """  
     distributions = self.distributions
 
+    df1_err = np.sqrt( distributions['df1'][variable][0] )
+    df2_err = np.sqrt( distributions['df2'][variable][0] )
     ratio = distributions['df2'][variable][0] / distributions['df1'][variable][0]
+    ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
 
-    ax1 = fig.add_subplot(gs[0])
-    ax1.bar(distributions['df1'][variable][1], distributions['df1'][variable][0], align='center', width=1)#, yerr=df1_err)
-    ax1.bar(distributions['df2'][variable][1], distributions['df2'][variable][0], align='center', width=1, alpha=0.5)
+    ratio_ = len(distributions['df2'][variable][0])*0.05
+    plt.xticks(rotation=45, ha='right')
+    ax1.bar(distributions['df1'][variable][1], distributions['df1'][variable][0], align='center', width=ratio_, yerr=df1_err)
+    ax1.bar(distributions['df2'][variable][1], distributions['df2'][variable][0], align='center', width=ratio_, alpha=0.5)
     ax1.set_title(variable)
+    # ax1.set_xticks(distributions['df1'][variable][1])
+    # ax1.set_xticklabels(np.linspace(0,19,num=len(distributions['df1'][variable][1])).astype(str), size=20)
+    ax1.set_aspect('auto')
     
-    ax2 = fig.add_subplot(gs[1], sharex=ax1)
-    ax2.axhline(y=1, color='k', linestyle='-')
-    ax2.plot(distributions['df2'][variable][1], ratio, 'o')
-    ax2.set_ylim(0,2)
-    plt.xticks(rotation=90)
-    plt.setp(ax1.get_xticklabels(), visible=False)
+    # ax2 = fig.add_subplot(gs[1], sharex=ax1)
+    # ax2.axhline(y=1, color='k', linestyle='-')
+    # ax2.plot(distributions['df2'][variable][1], ratio, 'o')
+    # ax2.set_ylim(0,2)
+    # plt.setp(ax1.get_xticklabels(), visible=False)
     plt.subplots_adjust(hspace=0)
     plt.xlabel(str(variable))
-    return fig
+    return ax1
 
   def helperCanvasNumericalVariables(self
                                     , variable
-                                    , fig
-                                    , gs):
+                                    , ax1):
     """ Helper function for plotDistributionsOfVariable plotting
     the numerical variables in dataframe.
     """
@@ -422,25 +432,24 @@ class daco():
     # ratio = distributions['df2'][variable][0] / distributions['df1'][variable][0]
     # ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
 
-    ax1 = fig.add_subplot(gs[0])
     ax1.bar(distributions['df1'][variable][1][:-1], distributions['df1'][variable][0], align='edge', width=width_)#, yerr=df1_err)
     ax1.bar(distributions['df2'][variable][1][:-1], distributions['df2'][variable][0], align='edge', width=width_, alpha=0.5)
     ax1.set_title(variable)
+    ax1.set_aspect('auto')
     
-    ax2 = fig.add_subplot(gs[1], sharex=ax1)
-    ax2.axhline(y=1, color='k', linestyle='-')
-    # ax2.errorbar(distributions['df2'][variable][1][:-1] + width_/2, ratio, yerr=ratio_err, fmt='o')
-    ax2.set_ylim(0,2)
-    plt.setp(ax1.get_xticklabels(), visible=False)
-    plt.subplots_adjust(hspace=0)
+    # ax2 = fig.add_subplot(gs[1], sharex=ax1)
+    # ax2.axhline(y=1, color='k', linestyle='-')
+    # # ax2.errorbar(distributions['df2'][variable][1][:-1] + width_/2, ratio, yerr=ratio_err, fmt='o')
+    # ax2.set_ylim(0,2)
+    # plt.setp(ax1.get_xticklabels(), visible=False)
+    # plt.subplots_adjust(hspace=0)
     plt.xlabel(str(variable))
 
-    return fig
+    return ax1
 
   def helperCanvasPlot(self
                       , variable
-                      , fig
-                      , gs):
+                      , ax):
     """Plotting distributions for numerical and categorical
     variables in dataframes. Plots are saved in self.file_dir. The
     plots include error bars and visualization of deviation from the
@@ -453,8 +462,8 @@ class daco():
     df1 = self.df1
     
     if variable in df1.select_dtypes(include=[np.number]).columns:
-      fig = self.helperCanvasNumericalVariables(variable, fig, gs)
+      fig = self.helperCanvasNumericalVariables(variable, ax)
     elif variable in df1.select_dtypes(include='category').columns:
-      fig = self.helperCanvasCategoricalVariables(variable, fig, gs)
+      fig = self.helperCanvasCategoricalVariables(variable, ax)
     
     return fig
