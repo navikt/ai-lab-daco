@@ -1,16 +1,33 @@
 """
-NOTES:
+.. module:: daco
+   :platform: Unix, macOS
+   :synopsis: Tool for comparing two datasets.
 
-Kolmogorov-Smirnov
-t-test
-B-dist
+.. moduleauthor:: Jon Vegard Sparre
+                  Robindra Prabhu
 
-Fint sted å hente inspirasjon til dokumentering:
-https://realpython.com/documenting-python-code/
-http://www.sphinx-doc.org/en/stable/index.html
+.. note::
+    - Kolmogorov-Smirnov
+    - t-test
+    - B-dist
 
-.. moduleauthor Jon Vegard Sparre
-                Robindra Prabhu
+    Fint sted å hente inspirasjon til dokumentering:
+    https://realpython.com/documenting-python-code/
+
+    http://www.sphinx-doc.org/en/stable/index.html
+
+.. todo::
+    - sequential vs tabular data (long term)
+    - differences (short term)
+    - local and global metrics
+    - differential privacy (long term)
+    - privacy checks
+    - mean, variance, ... ( this is available in pandas)
+    - plotting/smart plotting, i.e. show only anomalies
+    - checks for dataframe (e.g. it must have a header, the column names must be equal)
+    - pull plots based on the output from pd.dataframe.describe
+    - allow setting range, density, binning, etc. for each variable manually?
+    - set a random seed globally in class
 """
 
 import pandas as pd
@@ -26,28 +43,6 @@ class daco():
   The purpose of this class is to easily compare datasets in different
   settings, e.g. check if a synthetic version of a dataset is good enoug
   for your use.
-
-  ...
-
-  Attributes
-  ----------
-
-  TODO
-    - sequential vs tabular data (long term)
-    - differences (short term)
-    - correlations (short term) (global metric)
-    - diff between correlations
-    - local and global metrics
-    - differential privacy (long term)
-    - privacy checks
-    - mean, variance, ... ( this is available in pandas)
-    - logistic regression (accuracy, confusion matrix, feature importance) --> logisticRegressionBaseline()
-    - plotting
-      - smart plotting, i.e. show only anomalies
-    - checks for dataframe (e.g. it must have a header, the column names must be equal)
-    - pull plots based on the output from pd.dataframe.describe
-    - allow setting range, density, binning, etc. for each variable manually?
-    - set a random seed globally in class
   """
   def __init__( self, df1, df2, name1='df1', name2='df2', file_dir="plots/"):
     """
@@ -86,14 +81,13 @@ class daco():
     into daco.
 
     Args:
-      bins (int/str): number of bins in histogram/distribution or how to
-        find the number of bins.
-      range_ (tuple): max and min limit for range of distribution.
+      bins (int/str): number of bins in histogram/distribution or how to find the number of bins.
       density (bool): if True a normalised distribution is returned.
 
     Returns:
-      distributions (dict): dictionary with dictionaries containing
+      distributions (dict): dictionary with dictionaries containing \
         all distributions in numpy arrays.
+
     """
     df1 = self.df1
     df2 = self.df2
@@ -132,11 +126,12 @@ class daco():
     return distributions
 
   def chisquare(self, var1):
-    """ Method for calculating the chisquare test using scipy.stats.chisquare.
+    """Method for calculating the chisquare test using scipy.stats.chisquare.
 
     Args:
       var1 (str): name of variable to do the chisquare test. Must be contained
         in the dataframes.
+
     """
     distributions = self.distributions
     p_D_chisquare = self.p_D_chisquare
@@ -152,7 +147,7 @@ class daco():
     return D, p
 
   def hellinger(self, var1):
-    """ Calculate the Hellinger divergence for the distributions of
+    """Calculate the Hellinger divergence for the distributions of
     var1 in the two dataframes.
     See https://en.wikipedia.org/wiki/Hellinger_distance
 
@@ -162,6 +157,7 @@ class daco():
     
     Returns:
       hellinger_div (float): the value of the Hellinger divergence.
+
     """
     distributions = self.distributions
     hellinger_div = self.hellinger_div
@@ -176,10 +172,11 @@ class daco():
     return hellinger_div_value
 
   def kullbackleibler(self, var1):
-    """ Calculate Kullback-Leibler divergence for the distributions of
+    """Calculate Kullback-Leibler divergence for the distributions of
     var1 in the two dataframes with scipy.stats.entropy.
-    See https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence
-        https://en.wikipedia.org/wiki/Kullback–Leibler_divergence
+    See:
+    - https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence
+    - https://en.wikipedia.org/wiki/Kullback–Leibler_divergence
 
     Args:
       var1 (str): name of variable to do calculate the Kullback-Leibler
@@ -187,6 +184,7 @@ class daco():
     
     Returns:
       kb_div (float): the Kullback-Leibler divergence
+
     """
     import scipy.special as spec
     import scipy.stats as stats
@@ -208,7 +206,7 @@ class daco():
     return kb_div
 
   def bhattacharyya(self, var1):
-    """ Calculate the Bhattacharyya distance for the distributions of
+    """Calculate the Bhattacharyya distance for the distributions of
     var1 in the two dataframes.
     See https://en.wikipedia.org/wiki/Bhattacharyya_distance
 
@@ -218,6 +216,7 @@ class daco():
     
     Returns:
       b_dis (float): the Bhattacharyya distance.
+
     """
 
     distributions = self.distributions
@@ -243,6 +242,7 @@ class daco():
     Args:
       var (str): name of variable in both dataframes you want to do
         the test for.
+
     """
 
     return NotImplementedError
@@ -256,6 +256,7 @@ class daco():
         ylabel:    (str) label på y-aksen
         title:     (str) plottittel
         file_dir:  (str) hvor plottfilen skal lagres
+
     """
 
     df1       = self.df1
@@ -286,6 +287,7 @@ class daco():
         ylabel:    (str) label på y-aksen
         title:     (str) plottittel
         file_dir:  (str) hvor plottfilen skal lagres
+
     """
 
     df1       = self.df1
@@ -315,17 +317,18 @@ class daco():
                                                   , variable
                                                   , ax1=None
                                                   , ax2=None):
-    """ Helper function for plotDistributionsOfVariable plotting
+    """Helper function for plotDistributionsOfVariable plotting
     the numerical variables in dataframe.
 
-    *** When plotting a canvas with all histograms ax2 should not be used
-    due to layout problems. ***
+    .. note::
+        When plotting a canvas with all histograms ax2 should not be used
+        due to layout problems.
 
     Args:
       variable (str): name of variable plotting histogram for
       ax1 (obj): axis-object for main-histogram for the variable
-      ax2 (obj): axis-object for error-histogram placed below
-        main histogram
+      ax2 (obj): axis-object for error-histogram placed below main histogram
+
     """
 
     df1       = self.df1
@@ -359,18 +362,18 @@ class daco():
                                   , variable
                                   , ax1=None
                                   , ax2=None):
-
-    """ Helper function for plotDistributionsOfVariable plotting
+    """Helper function for `plotDistributionsOfVariable` plotting
     the categorical variables in dataframe.
 
-    *** When plotting a canvas with all histograms ax2 should not be used
-    due to layout problems. ***
+    .. note::
+        When plotting a canvas with all histograms ax2 should not be used
+        due to layout problems.
 
     Args:
       variable (str): name of variable plotting histogram for
       ax1 (obj): axis-object for main-histogram for the variable
-      ax2 (obj): axis-object for error-histogram placed below
-        main histogram
+      ax2 (obj): axis-object for error-histogram placed below main histogram
+    
     """  
     distributions = self.distributions
     colors = self.colors
@@ -410,8 +413,6 @@ class daco():
       variable (str): name of variable to plot
       filename_prefix (str): prefix to name of plotfiles
 
-    returns:
-      0
     """
     df1 = self.df1
     
@@ -437,7 +438,7 @@ class daco():
     return 0
 
   def plotCanvas(self, filename_suffix=''):
-    """ Plotting canvas of histograms for all variables in the two datasets.
+    """Plotting canvas of histograms for all variables in the two datasets.
     """
     df1 = self.df1
 
@@ -454,6 +455,7 @@ class daco():
     fig = plt.figure(0, figsize=(20,6*num_rows))
     i   = 0
 
+    # Looping through all variables in dataframes
     for variable in df1:
       ax = fig.add_subplot(gs[i])
       i += 1
@@ -467,8 +469,8 @@ class daco():
     plt.show()
     plt.close()
 
-  def logisticRegressionBaseline(self, target=[], features=[]):
-    """ Method for training a logistic regression-model on the datasets
+  def logisticRegressionBenchmark(self, target=[], features=[]):
+    """Method for training a logistic regression-model on the datasets
     and investigate the differences in the model and predictions.
 
     Main features:
@@ -477,6 +479,7 @@ class daco():
     - Comparing the accuracy of the two models (several measures possible)
     - Confusion matrix + classification_report from sklearn
     - Feature importance
+
     """
     from sklearn.model_selection import train_test_split
     from sklearn.linear_model import LogisticRegression
@@ -497,15 +500,11 @@ class daco():
       plt.show()
       plt.close()
 
-    def oneHotEncode(df):
-      """ TODO This function should be a method in the class and a
-      check which ensures both one hot encoded dataframes contains
-      the same columns.
-      """
-      cols = df[features].select_dtypes(include='category').columns
-      df = pd.get_dummies(df, columns=cols)
-      return df
-    
+    # One hot encoding categorical values
+    # TODO if not all values are present in both df1 and df2 we will get
+    # different columns in each dataframe, must be fixed
+    oneHotEncode = lambda df: pd.get_dummies(df, columns=df[features].select_dtypes(include='category').columns)
+
     df1 = self.df1
     df2 = self.df2
 
@@ -542,8 +541,6 @@ class daco():
     self.LR_model2  = clf2
     self.score_clf1 = s1
     self.score_clf2 = s2
-
-    # print("clf1.score : {:.2f} \nclf2.score : {:.2f}".format(s1, s2))
 
     plotConfusionMatrixFromLogisticRegression(clf1, X_val1, y_val1)
     plotConfusionMatrixFromLogisticRegression(clf2, X_val2, y_val2)
