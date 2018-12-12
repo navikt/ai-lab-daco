@@ -1,0 +1,443 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to DACO’s documentation! &mdash; DACO 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> DACO
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to DACO’s documentation!</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">DACO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Welcome to DACO’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-daco-s-documentation">
+<h1>Welcome to DACO’s documentation!<a class="headerlink" href="#welcome-to-daco-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<span class="target" id="module-daco"></span><span class="target" id="module-daco"></span><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="simple">
+<li>Kolmogorov-Smirnov</li>
+<li>t-test</li>
+<li>B-dist</li>
+</ul>
+<p>Fint sted å hente inspirasjon til dokumentering:
+<a class="reference external" href="https://realpython.com/documenting-python-code/">https://realpython.com/documenting-python-code/</a></p>
+<p class="last"><a class="reference external" href="http://www.sphinx-doc.org/en/stable/index.html">http://www.sphinx-doc.org/en/stable/index.html</a></p>
+</div>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>sequential vs tabular data (long term)</li>
+<li>differences (short term)</li>
+<li>local and global metrics</li>
+<li>differential privacy (long term)</li>
+<li>privacy checks</li>
+<li>mean, variance, … ( this is available in pandas)</li>
+<li>plotting/smart plotting, i.e. show only anomalies</li>
+<li>checks for dataframe (e.g. it must have a header, the column names must be equal)</li>
+<li>pull plots based on the output from pd.dataframe.describe</li>
+<li>allow setting range, density, binning, etc. for each variable manually?</li>
+<li>set a random seed globally in class</li>
+</ul>
+</div>
+<dl class="class">
+<dt id="daco.daco">
+<em class="property">class </em><code class="descclassname">daco.</code><code class="descname">daco</code><span class="sig-paren">(</span><em>df1</em>, <em>df2</em>, <em>name1='df1'</em>, <em>name2='df2'</em>, <em>file_dir='plots/'</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for comparing two Pandas dataframes.</p>
+<p>The purpose of this class is to easily compare datasets in different
+settings, e.g. check if a synthetic version of a dataset is good enoug
+for your use.</p>
+<dl class="method">
+<dt id="daco.daco.bhattacharyya">
+<code class="descname">bhattacharyya</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco.bhattacharyya" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the Bhattacharyya distance for the distributions of
+var1 in the two dataframes.
+See <a class="reference external" href="https://en.wikipedia.org/wiki/Bhattacharyya_distance">https://en.wikipedia.org/wiki/Bhattacharyya_distance</a></p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>var1 (str): name of variable to do calculate the Bhattacharyya distance</dt>
+<dd>for. Must be contained in the dataframes.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>b_dis (float): the Bhattacharyya distance.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.chisquare">
+<code class="descname">chisquare</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco.chisquare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for calculating the chisquare test using scipy.stats.chisquare.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>var1 (str): name of variable to do the chisquare test. Must be contained</dt>
+<dd>in the dataframes.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.findDistributions">
+<code class="descname">findDistributions</code><span class="sig-paren">(</span><em>bins_='sturges'</em>, <em>density=True</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco.findDistributions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find distributions of all variables/columns in dataframes loaded
+into daco.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>bins (int/str): number of bins in histogram/distribution or how to find the number of bins.
+density (bool): if True a normalised distribution is returned.</dd>
+<dt>Returns:</dt>
+<dd>distributions (dict): dictionary with dictionaries containing         all distributions in numpy arrays.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.hellinger">
+<code class="descname">hellinger</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco.hellinger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the Hellinger divergence for the distributions of
+var1 in the two dataframes.
+See <a class="reference external" href="https://en.wikipedia.org/wiki/Hellinger_distance">https://en.wikipedia.org/wiki/Hellinger_distance</a></p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>var1 (str): name of variable to do calculate the Hellinger divergence</dt>
+<dd>for. Must be contained in the dataframes.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>hellinger_div (float): the value of the Hellinger divergence.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.ks2_test">
+<code class="descname">ks2_test</code><span class="sig-paren">(</span><em>var</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco.ks2_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method using the scipy.stats.ks_2samp for computing the Kolmogorov-
+Smirnov statistic on two samples. The result is added to a dictionary
+keeping the results of all calculations.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>var (str): name of variable in both dataframes you want to do</dt>
+<dd>the test for.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.kullbackleibler">
+<code class="descname">kullbackleibler</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco.kullbackleibler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate Kullback-Leibler divergence for the distributions of
+var1 in the two dataframes with scipy.stats.entropy.
+See:
+- <a class="reference external" href="https://medium.com/&#64;cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence">https://medium.com/&#64;cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence</a>
+- <a class="reference external" href="https://en.wikipedia.org/wiki/Kullback">https://en.wikipedia.org/wiki/Kullback</a>–Leibler_divergence</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>var1 (str): name of variable to do calculate the Kullback-Leibler</dt>
+<dd>divergence for. Must be contained in the dataframes.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>kb_div (float): the Kullback-Leibler divergence</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.logisticRegressionBenchmark">
+<code class="descname">logisticRegressionBenchmark</code><span class="sig-paren">(</span><em>target=[]</em>, <em>features=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco.logisticRegressionBenchmark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for training a logistic regression-model on the datasets
+and investigate the differences in the model and predictions.</p>
+<p>Main features:
+- Training LR-models on synth. and real data (and save them in this class)
+- Predicting N samples
+- Comparing the accuracy of the two models (several measures possible)
+- Confusion matrix + classification_report from sklearn
+- Feature importance</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.plotCanvas">
+<code class="descname">plotCanvas</code><span class="sig-paren">(</span><em>filename_suffix=''</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco.plotCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plotting canvas of histograms for all variables in the two datasets.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.plotCorrelation">
+<code class="descname">plotCorrelation</code><span class="sig-paren">(</span><em>xlabel=''</em>, <em>ylabel=''</em>, <em>title=''</em>, <em>filename='correlations'</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco.plotCorrelation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plotting correlations between columns in a dataframe</p>
+<dl class="docutils">
+<dt>args:</dt>
+<dd>X:         (dataframe) data du vil finne korrelasjonene mellom
+xlabel:    (str) label på x-aksen
+ylabel:    (str) label på y-aksen
+title:     (str) plottittel
+file_dir:  (str) hvor plottfilen skal lagres</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.plotCorrelationDiff">
+<code class="descname">plotCorrelationDiff</code><span class="sig-paren">(</span><em>xlabel=''</em>, <em>ylabel=''</em>, <em>title=''</em>, <em>filename='correlations'</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco.plotCorrelationDiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plotting diff of correlations between columns in two dataframes</p>
+<dl class="docutils">
+<dt>args:</dt>
+<dd>X:         (dataframe) data du vil finne korrelasjonene mellom
+xlabel:    (str) label på x-aksen
+ylabel:    (str) label på y-aksen
+title:     (str) plottittel
+file_dir:  (str) hvor plottfilen skal lagres</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.plotDistributionsOfVariable">
+<code class="descname">plotDistributionsOfVariable</code><span class="sig-paren">(</span><em>variable</em>, <em>filename_prefix=''</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco.plotDistributionsOfVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plotting distributions for numerical and categorical
+variables in dataframes. Plots are saved in self.file_dir. The
+plots include error bars and visualization of deviation from the
+real dataset.</p>
+<dl class="docutils">
+<dt>args:</dt>
+<dd>variable (str): name of variable to plot
+filename_prefix (str): prefix to name of plotfiles</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.plotDistributionsOfVariableCategoricalVariables">
+<code class="descname">plotDistributionsOfVariableCategoricalVariables</code><span class="sig-paren">(</span><em>variable</em>, <em>ax1=None</em>, <em>ax2=None</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco.plotDistributionsOfVariableCategoricalVariables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function for <cite>plotDistributionsOfVariable</cite> plotting
+the categorical variables in dataframe.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When plotting a canvas with all histograms ax2 should not be used
+due to layout problems.</p>
+</div>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>variable (str): name of variable plotting histogram for
+ax1 (obj): axis-object for main-histogram for the variable
+ax2 (obj): axis-object for error-histogram placed below main histogram</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.plotDistributionsOfVariableNumericalVariables">
+<code class="descname">plotDistributionsOfVariableNumericalVariables</code><span class="sig-paren">(</span><em>variable</em>, <em>ax1=None</em>, <em>ax2=None</em><span class="sig-paren">)</span><a class="headerlink" href="#daco.daco.plotDistributionsOfVariableNumericalVariables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function for plotDistributionsOfVariable plotting
+the numerical variables in dataframe.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When plotting a canvas with all histograms ax2 should not be used
+due to layout problems.</p>
+</div>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>variable (str): name of variable plotting histogram for
+ax1 (obj): axis-object for main-histogram for the variable
+ax2 (obj): axis-object for error-histogram placed below main histogram</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Jon Vegard Sparre, Robindra Prabhu
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
