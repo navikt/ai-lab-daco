@@ -16,10 +16,11 @@ for var in cat_var:
 print(df.info())
 
 df1 = df[:15000]
-df2 = df[15000:].drop(columns='age')
+df2 = df[15000:]
 
 daco_obj = daco(df1,df2)
-# dist = daco_obj.findDistributions()
+dist = daco_obj.findDistributions()
+daco_obj.plotCanvas()
 
 # print(daco_obj.ks2_test('age'))
 # print(daco_obj.ks2_test_val)
