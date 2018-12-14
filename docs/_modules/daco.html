@@ -170,6 +170,7 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">import</span> <span class="nn">scipy</span><span class="o">,</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">stats</span>
 
 <div class="viewcode-block" id="daco"><a class="viewcode-back" href="../index.html#daco.daco">[docs]</a><span class="k">class</span> <span class="nc">daco</span><span class="p">():</span>
   <span class="sd">&quot;&quot;&quot; Class for comparing two Pandas dataframes.</span>
@@ -203,6 +204,7 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">bhattacharyya_dis</span>   <span class="o">=</span> <span class="p">{}</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">hellinger_div</span>       <span class="o">=</span> <span class="p">{}</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">kullbackleibler_div</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ks2_test_val</span>        <span class="o">=</span> <span class="p">{}</span>
 
     <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">12</span>
     <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;xtick.labelsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">12</span>
@@ -282,7 +284,7 @@
     <span class="n">D</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">chisquare</span><span class="p">(</span> <span class="n">dist1</span><span class="p">,</span> <span class="n">dist2</span> <span class="p">)</span>
 
     <span class="c1"># Saving results in dictionary</span>
-    <span class="n">p_D_chisquare</span><span class="p">[</span><span class="n">var1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="n">D</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="n">p</span> <span class="p">}</span>
+    <span class="n">p_D_chisquare</span><span class="p">[</span><span class="n">var1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="n">D</span><span class="p">,</span> <span class="s1">&#39;pvalue&#39;</span><span class="p">:</span> <span class="n">p</span> <span class="p">}</span>
 
     <span class="k">return</span> <span class="n">D</span><span class="p">,</span> <span class="n">p</span></div>
 
@@ -313,7 +315,7 @@
 <div class="viewcode-block" id="daco.kullbackleibler"><a class="viewcode-back" href="../index.html#daco.daco.kullbackleibler">[docs]</a>  <span class="k">def</span> <span class="nf">kullbackleibler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate Kullback-Leibler divergence for the distributions of</span>
 <span class="sd">    var1 in the two dataframes with scipy.stats.entropy.</span>
-<span class="sd">    See:</span>
+
 <span class="sd">    - `https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence &lt;https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence&gt;`_</span>
 <span class="sd">    - `https://en.wikipedia.org/wiki/Kullback–Leibler_divergence &lt;https://en.wikipedia.org/wiki/Kullback–Leibler_divergence&gt;`_</span>
 
@@ -325,7 +327,6 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">scipy.special</span> <span class="k">as</span> <span class="nn">spec</span>
-    <span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
 
     <span class="n">distributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions</span>
     <span class="n">kullbackleibler_div</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kullbackleibler_div</span>
@@ -374,14 +375,36 @@
 <div class="viewcode-block" id="daco.ks2_test"><a class="viewcode-back" href="../index.html#daco.daco.ks2_test">[docs]</a>  <span class="k">def</span> <span class="nf">ks2_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Method using the scipy.stats.ks_2samp for computing the Kolmogorov-</span>
 <span class="sd">    Smirnov statistic on two samples. The result is added to a dictionary</span>
-<span class="sd">    keeping the results of all calculations.</span>
+<span class="sd">    :class:`ks2_test_val` keeping the results of all calculations.</span>
 
-<span class="sd">    :param var1: name of variable in the datasets to do the test on.</span>
-<span class="sd">    :type var1: str</span>
+<span class="sd">    ...</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    var1 : str</span>
+<span class="sd">      name of variable in the datasets to do the test on.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    statistic : float</span>
+<span class="sd">      KS statistic</span>
+<span class="sd">    pvalue : float</span>
+<span class="sd">      two-tailed p-value</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">return</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="n">df1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df1</span>
+    <span class="n">df2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df2</span>
+
+    <span class="n">data1</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">data2</span> <span class="o">=</span> <span class="n">df2</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="n">statistic</span><span class="p">,</span> <span class="n">pvalue</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">ks_2samp</span><span class="p">(</span><span class="n">data1</span><span class="p">,</span> <span class="n">data2</span><span class="p">)</span> 
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">ks2_test</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;statistic&#39;</span><span class="p">:</span> <span class="n">statistic</span><span class="p">,</span> <span class="s1">&#39;pvalue&#39;</span><span class="p">:</span> <span class="n">pvalue</span> <span class="p">}</span>
+
+    <span class="k">return</span> <span class="mi">0</span></div>
 
 <div class="viewcode-block" id="daco.plotCorrelation"><a class="viewcode-back" href="../index.html#daco.daco.plotCorrelation">[docs]</a>  <span class="k">def</span> <span class="nf">plotCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;correlations&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plotting correlations between columns in a dataframe and saving as PNG-file.</span>
