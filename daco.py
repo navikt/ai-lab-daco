@@ -14,13 +14,10 @@
     - privacy checks
     - mean, variance, ... ( this is available in pandas)
     - plotting/smart plotting, i.e. show only anomalies
-    - checks for dataframe (e.g. it must have a header, the column names must be equal)
     - pull plots based on the output from pd.dataframe.describe
     - allow setting range, density, binning, etc. for each variable manually?
     - set a random seed globally in class
-    - Kolmogorov-Smirnov
-    - t-test
-    - B-dist
+    - t-test -> ttest_ind or ttest_rel?
 """
 
 import pandas as pd
@@ -29,6 +26,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib
 import scipy, os
+from scipy import stats
 
 class daco():
   """ Class for comparing two Pandas dataframes.
@@ -56,13 +54,19 @@ class daco():
     self.file_dir = file_dir
     self.name1 = name1
     self.name2 = name2
-    self.colors = ['tab:green', 'tab:blue']
+
+    # Doing some checks of the dataframes
+    self.checkDataframes()
+
     # Creating dicts for saving values for different metrics
     self.p_D_chisquare       = {}
     self.bhattacharyya_dis   = {}
     self.hellinger_div       = {}
     self.kullbackleibler_div = {}
+    self.ks2_test_val        = {}
 
+    # Setting plotting colors and some parameters
+    self.colors = ['tab:green', 'tab:blue']
     matplotlib.rcParams['font.size'] = 12
     matplotlib.rcParams['xtick.labelsize'] = 12
     matplotlib.rcParams['ytick.labelsize'] = 12
@@ -71,6 +75,28 @@ class daco():
     # Creating dir for saving plots etc.
     if not os.path.exists(file_dir):
       os.mkdir(file_dir)
+
+  def checkDataframes(self):
+    """Checking whether the dataframes provided fullfills the requirements:
+    
+    - The input should be pandas dataframes
+    - Only float or categorical variables
+    - Same column names in both frames
+    """
+    df1 = self.df1
+    df2 = self.df2
+
+    for df in [df1, df2]:
+      if not isinstance( df, type( pd.DataFrame() ) ):
+        raise TypeError("One of the daco-inputs is not a Pandas dataframe")
+
+      col_names = df.select_dtypes(include=[np.number, 'category']).columns
+      if not set(df.columns) == set(col_names):
+        raise TypeError("Your dataframes has other datatypes than numerical and categorical")
+      
+    if not set(df1.columns) == set(df2.columns):
+      raise ValueError("Your dataframes does not contain the same columns")
+    
 
   def findDistributions(self, bins_='sturges', density=True):
     """Find distributions of all variables/columns in dataframes loaded
@@ -141,7 +167,7 @@ class daco():
     D, p = scipy.stats.chisquare( dist1, dist2 )
 
     # Saving results in dictionary
-    p_D_chisquare[var1] = { 'D': D, 'p': p }
+    p_D_chisquare[var1] = { 'D': D, 'pvalue': p }
 
     return D, p
 
@@ -172,7 +198,7 @@ class daco():
   def kullbackleibler(self, var1):
     """Calculate Kullback-Leibler divergence for the distributions of
     var1 in the two dataframes with scipy.stats.entropy.
-    See:
+
     - `https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence <https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence>`_
     - `https://en.wikipedia.org/wiki/Kullback–Leibler_divergence <https://en.wikipedia.org/wiki/Kullback–Leibler_divergence>`_
 
@@ -184,7 +210,6 @@ class daco():
 
     """
     import scipy.special as spec
-    import scipy.stats as stats
 
     distributions = self.distributions
     kullbackleibler_div = self.kullbackleibler_div
@@ -233,14 +258,34 @@ class daco():
   def ks2_test(self, var):
     """Method using the scipy.stats.ks_2samp for computing the Kolmogorov-
     Smirnov statistic on two samples. The result is added to a dictionary
-    keeping the results of all calculations.
+    :class:`ks2_test_val` keeping the results of all calculations.
 
-    :param var1: name of variable in the datasets to do the test on.
-    :type var1: str
+    Parameters
+    ----------
+    var1 : str
+      name of variable in the datasets to do the test on.
+
+    Returns
+    -------
+    statistic : float
+      KS statistic
+    pvalue : float
+      two-tailed p-value
 
     """
+    df1 = self.df1
+    df2 = self.df2
 
-    return NotImplementedError
+    assert var in set(df1.select_dtypes(include='number').columns), "'{}' is invalid, it must be a continuous variable.".format(var)
+
+    data1 = df1[var].values
+    data2 = df2[var].values
+
+    statistic, pvalue = stats.ks_2samp(data1, data2) 
+
+    self.ks2_test_val[var] = {'statistic': statistic, 'pvalue': pvalue }
+
+    return statistic, pvalue
 
   def plotCorrelation(self, xlabel="", ylabel="", title="", filename="correlations"):
     """Plotting correlations between columns in a dataframe and saving as PNG-file.
