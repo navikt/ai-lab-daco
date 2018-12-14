@@ -6,16 +6,6 @@
 .. moduleauthor:: Jon Vegard Sparre
                   Robindra Prabhu
 
-.. note::
-    - Kolmogorov-Smirnov
-    - t-test
-    - B-dist
-
-    Fint sted å hente inspirasjon til dokumentering:
-    https://realpython.com/documenting-python-code/
-
-    http://www.sphinx-doc.org/en/stable/index.html
-
 .. todo::
     - sequential vs tabular data (long term)
     - differences (short term)
@@ -28,6 +18,9 @@
     - pull plots based on the output from pd.dataframe.describe
     - allow setting range, density, binning, etc. for each variable manually?
     - set a random seed globally in class
+    - Kolmogorov-Smirnov
+    - t-test
+    - B-dist
 """
 
 import pandas as pd
@@ -46,12 +39,17 @@ class daco():
   """
   def __init__( self, df1, df2, name1='df1', name2='df2', file_dir="plots/"):
     """
-    Args:
-      df1, df2 (dataframe): dataframes to be compared. Must have header and
-        dtype for all columns.
-      file_dir (str): path to directory where plots are saved
-      name1, name2 (str): names of dataframes, used as keys in dictionaries
-        containing info about dataframes
+    :param df1: dataframe to be compared. Must have header and dtype for all columns.
+    :param df2: dataframe to be compared. Must have header and dtype for all columns.
+    :type df1: dataframe
+    :type df2: dataframe
+
+    :param file_dir: path to directory where plots are saved
+    :type file_dir: str
+    :param name1: names of dataframes, used as keys in dictionaries containing info about dataframes
+    :param name2: names of dataframes, used as keys in dictionaries containing info about dataframes
+    :type name1: str
+    :type name2: str 
     """
     self.df1      = df1
     self.df2      = df2
@@ -70,23 +68,22 @@ class daco():
     matplotlib.rcParams['ytick.labelsize'] = 12
     matplotlib.rcParams['legend.fontsize'] = 12
     
-
-
     # Creating dir for saving plots etc.
     if not os.path.exists(file_dir):
       os.mkdir(file_dir)
 
   def findDistributions(self, bins_='sturges', density=True):
     """Find distributions of all variables/columns in dataframes loaded
-    into daco.
+    into daco and save them in dictionaries.
 
-    Args:
-      bins (int/str): number of bins in histogram/distribution or how to find the number of bins.
-      density (bool): if True a normalised distribution is returned.
-
-    Returns:
-      distributions (dict): dictionary with dictionaries containing \
-        all distributions in numpy arrays.
+    :param bins: number of bins in histogram/distribution or how to find the number of bins.
+    :type bins: int 
+        
+    :param density: if True a normalised distribution is returned.
+    :type density: bool
+    
+    :returns: distributions
+    :rtype: dict
 
     """
     df1 = self.df1
@@ -128,9 +125,11 @@ class daco():
   def chisquare(self, var1):
     """Method for calculating the chisquare test using scipy.stats.chisquare.
 
-    Args:
-      var1 (str): name of variable to do the chisquare test. Must be contained
-        in the dataframes.
+    :param var1: name of variable in the dataset to do the chisquare test.
+    :type var1: str
+
+    :returns: D, p
+    :rtype: float
 
     """
     distributions = self.distributions
@@ -149,14 +148,13 @@ class daco():
   def hellinger(self, var1):
     """Calculate the Hellinger divergence for the distributions of
     var1 in the two dataframes.
-    See https://en.wikipedia.org/wiki/Hellinger_distance
+    See `https://en.wikipedia.org/wiki/Hellinger_distance <https://en.wikipedia.org/wiki/Hellinger_distance>`_
 
-    Args:
-      var1 (str): name of variable to do calculate the Hellinger divergence
-        for. Must be contained in the dataframes.
+    :param var1: name of variable in the datasets to do calculate the Hellinger divergence for.
+    :type var1: str
     
-    Returns:
-      hellinger_div (float): the value of the Hellinger divergence.
+    :returns: hellinger_div
+    :rtype: float
 
     """
     distributions = self.distributions
@@ -175,15 +173,14 @@ class daco():
     """Calculate Kullback-Leibler divergence for the distributions of
     var1 in the two dataframes with scipy.stats.entropy.
     See:
-    - https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence
-    - https://en.wikipedia.org/wiki/Kullback–Leibler_divergence
+    - `https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence <https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence>`_
+    - `https://en.wikipedia.org/wiki/Kullback–Leibler_divergence <https://en.wikipedia.org/wiki/Kullback–Leibler_divergence>`_
 
-    Args:
-      var1 (str): name of variable to do calculate the Kullback-Leibler
-        divergence for. Must be contained in the dataframes.
+    :param var1: name of variable to do calculate the Kullback-Leibler divergence for. Must be contained in the dataframes.
+    :type var1: str
     
-    Returns:
-      kb_div (float): the Kullback-Leibler divergence
+    :returns: kb_div
+    :rtype: float
 
     """
     import scipy.special as spec
@@ -208,14 +205,13 @@ class daco():
   def bhattacharyya(self, var1):
     """Calculate the Bhattacharyya distance for the distributions of
     var1 in the two dataframes.
-    See https://en.wikipedia.org/wiki/Bhattacharyya_distance
+    See `https://en.wikipedia.org/wiki/Bhattacharyya_distance <https://en.wikipedia.org/wiki/Bhattacharyya_distance>`_
 
-    Args:
-      var1 (str): name of variable to do calculate the Bhattacharyya distance
-        for. Must be contained in the dataframes.
+    :param var1: name of variable in the datasets to do calculate the Bhattacharyya distance for.
+    :type var1: str
     
-    Returns:
-      b_dis (float): the Bhattacharyya distance.
+    :returns: b_dis
+    :rtype: float
 
     """
 
@@ -239,24 +235,24 @@ class daco():
     Smirnov statistic on two samples. The result is added to a dictionary
     keeping the results of all calculations.
 
-    Args:
-      var (str): name of variable in both dataframes you want to do
-        the test for.
+    :param var1: name of variable in the datasets to do the test on.
+    :type var1: str
 
     """
 
     return NotImplementedError
 
   def plotCorrelation(self, xlabel="", ylabel="", title="", filename="correlations"):
-    """Plotting correlations between columns in a dataframe
+    """Plotting correlations between columns in a dataframe and saving as PNG-file.
     
-    args:
-        X:         (dataframe) data du vil finne korrelasjonene mellom
-        xlabel:    (str) label på x-aksen
-        ylabel:    (str) label på y-aksen
-        title:     (str) plottittel
-        file_dir:  (str) hvor plottfilen skal lagres
-
+    :param xlabel: label på x-aksen
+    :type xlabel: str
+    :param ylabel: label på y-aksen
+    :type ylabel: str
+    :param title: plottittel
+    :type title: str
+    :param filename: name of plot file
+    :type filename: str
     """
 
     df1       = self.df1
@@ -279,14 +275,17 @@ class daco():
     plt.close()
 
   def plotCorrelationDiff(self, xlabel="", ylabel="", title="", filename="correlations"):
-    """Plotting diff of correlations between columns in two dataframes
+    """Plotting diff of correlations between columns in two dataframes and saving
+    result as PNG-file.
     
-    args:
-        X:         (dataframe) data du vil finne korrelasjonene mellom
-        xlabel:    (str) label på x-aksen
-        ylabel:    (str) label på y-aksen
-        title:     (str) plottittel
-        file_dir:  (str) hvor plottfilen skal lagres
+    :param xlabel: label på x-aksen
+    :type xlabel: str
+    :param ylabel: label på y-aksen
+    :type ylabel: str
+    :param title: plottittel
+    :type title: str
+    :param filename: name of plot file
+    :type filename: str
 
     """
 
@@ -317,17 +316,19 @@ class daco():
                                                   , variable
                                                   , ax1=None
                                                   , ax2=None):
-    """Helper function for plotDistributionsOfVariable plotting
+    """Helper function for :class:`plotDistributionsOfVariable` plotting
     the numerical variables in dataframe.
 
     .. note::
         When plotting a canvas with all histograms ax2 should not be used
         due to layout problems.
 
-    Args:
-      variable (str): name of variable plotting histogram for
-      ax1 (obj): axis-object for main-histogram for the variable
-      ax2 (obj): axis-object for error-histogram placed below main histogram
+    :param variable: name of variable plotting histogram for
+    :type variable: str
+    :param ax1: axis-object for main-histogram for the variable
+    :type ax1: obj
+    :param ax2: axis-object for error-histogram placed below main histogram
+    :type ax2: obj
 
     """
 
@@ -362,17 +363,19 @@ class daco():
                                   , variable
                                   , ax1=None
                                   , ax2=None):
-    """Helper function for `plotDistributionsOfVariable` plotting
+    """Helper function for :class:`plotDistributionsOfVariable` plotting
     the categorical variables in dataframe.
 
     .. note::
         When plotting a canvas with all histograms ax2 should not be used
         due to layout problems.
 
-    Args:
-      variable (str): name of variable plotting histogram for
-      ax1 (obj): axis-object for main-histogram for the variable
-      ax2 (obj): axis-object for error-histogram placed below main histogram
+    :param variable: name of variable plotting histogram for
+    :type variable: str
+    :param ax1: axis-object for main-histogram for the variable
+    :type ax1: obj
+    :param ax2: axis-object for error-histogram placed below main histogram
+    :type ax2: obj
     
     """  
     distributions = self.distributions
@@ -409,10 +412,11 @@ class daco():
     plots include error bars and visualization of deviation from the
     real dataset.
 
-    args:
-      variable (str): name of variable to plot
-      filename_prefix (str): prefix to name of plotfiles
-
+    :param variable: name of variable plotting histogram for
+    :type variable: str
+    :param filename_prefix: prefix in filename
+    :type filename_prefix: str
+    
     """
     df1 = self.df1
     
@@ -439,6 +443,9 @@ class daco():
 
   def plotCanvas(self, filename_suffix=''):
     """Plotting canvas of histograms for all variables in the two datasets.
+
+    :param filename_prefix: suffix in filename
+    :type filename_prefix: str
     """
     df1 = self.df1
 
@@ -471,7 +478,8 @@ class daco():
 
   def logisticRegressionBenchmark(self, target=[], features=[]):
     """Method for training a logistic regression-model on the datasets
-    and investigate the differences in the model and predictions.
+    and investigate the differences in the model and predictions. The
+    results are saved as class variables.
 
     Main features:
     - Training LR-models on synth. and real data (and save them in this class)
@@ -479,6 +487,11 @@ class daco():
     - Comparing the accuracy of the two models (several measures possible)
     - Confusion matrix + classification_report from sklearn
     - Feature importance
+
+    :param target: target values
+    :type target: list
+    :param features: features to use in training/predictions
+    :type features: list
 
     """
     from sklearn.model_selection import train_test_split
