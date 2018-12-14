@@ -379,6 +379,8 @@ class daco():
 
     df1       = self.df1
     df2       = self.df2
+    name1     = self.name1
+    name2     = self.name2
     distributions = self.distributions
     colors    = self.colors
 
@@ -391,9 +393,10 @@ class daco():
     ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
 
     ax1.bar(distributions['df1'][variable][1][:-1], distributions['df1'][variable][0]
-            , align='edge', width=width_, fill=False, edgecolor=colors[0], linewidth=1.3)#, yerr=df1_err)
+            , align='edge', width=width_, fill=False, edgecolor=colors[0], linewidth=1.3, label=name1)#, yerr=df1_err)
     ax1.bar(distributions['df2'][variable][1][:-1], distributions['df2'][variable][0]
-            , align='edge', width=width_, fill=False, edgecolor=colors[1], linewidth=1.3)
+            , align='edge', width=width_, fill=False, edgecolor=colors[1], linewidth=1.3, label=name2)
+    ax1.legend()
     ax1.set_title(variable)
     
     # Adding errors if not plotting canvas
@@ -423,6 +426,8 @@ class daco():
     :type ax2: obj
     
     """  
+    name1     = self.name1
+    name2     = self.name2
     distributions = self.distributions
     colors = self.colors
 
@@ -431,9 +436,10 @@ class daco():
 
     plt.xticks(rotation=45, ha='right')
     ax1.bar(distributions['df1'][variable][1], distributions['df1'][variable][0]
-            , align='center', width=1, fill=False, edgecolor=colors[0], linewidth=1.3) #,yerr=df1_err)
+            , align='center', width=1, fill=False, edgecolor=colors[0], linewidth=1.3, label=name1) #,yerr=df1_err)
     ax1.bar(distributions['df2'][variable][1], distributions['df2'][variable][0]
-            , align='center', width=1, fill=False, edgecolor=colors[1], linewidth=1.3)
+            , align='center', width=1, fill=False, edgecolor=colors[1], linewidth=1.3, label=name2)
+    ax1.legend()
     ax1.set_title(variable)
     
     # Adding errors of main histogram if not plotting canvas
