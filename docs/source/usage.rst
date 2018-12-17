@@ -14,6 +14,7 @@ The idea is to use it like this:
   # load your data frames
   df1 = ...
   df2 = ...
+  # Choose one of the variables in the dataset to compute statistics of
   var1 = ...
 
   # create the daco-object
@@ -28,7 +29,10 @@ The idea is to use it like this:
   # a dictionary will then be filled with values
   print(daco_obj.p_D_chisquare)
 
-The last line will produce the output on the form
+  # plot a canvas with distributions of all the variables
+  daco_obj.plotCanvas()
+
+The results from `chisquare` will be outputted on the form
 
 ::
   

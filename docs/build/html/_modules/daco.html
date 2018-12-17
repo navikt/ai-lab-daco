@@ -180,7 +180,7 @@
 <span class="sd">  settings, e.g. check if a synthetic version of a dataset is good enoug</span>
 <span class="sd">  for your use.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">,</span> <span class="n">name1</span><span class="o">=</span><span class="s1">&#39;df1&#39;</span><span class="p">,</span> <span class="n">name2</span><span class="o">=</span><span class="s1">&#39;df2&#39;</span><span class="p">,</span> <span class="n">file_dir</span><span class="o">=</span><span class="s2">&quot;plots/&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="daco.__init__"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco.__init__">[docs]</a>  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">,</span> <span class="n">name1</span><span class="o">=</span><span class="s1">&#39;df1&#39;</span><span class="p">,</span> <span class="n">name2</span><span class="o">=</span><span class="s1">&#39;df2&#39;</span><span class="p">,</span> <span class="n">file_dir</span><span class="o">=</span><span class="s2">&quot;plots/&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :param df1: dataframe to be compared. Must have header and dtype for all columns.</span>
 <span class="sd">    :param df2: dataframe to be compared. Must have header and dtype for all columns.</span>
@@ -220,9 +220,9 @@
     
     <span class="c1"># Creating dir for saving plots etc.</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_dir</span><span class="p">):</span>
-      <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">file_dir</span><span class="p">)</span>
+      <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">file_dir</span><span class="p">)</span></div>
 
-  <span class="k">def</span> <span class="nf">_checkDataframes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">):</span>
+<div class="viewcode-block" id="daco._checkDataframes"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco._checkDataframes">[docs]</a>  <span class="k">def</span> <span class="nf">_checkDataframes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Checking whether the dataframes provided fullfills the requirements:</span>
 <span class="sd">    </span>
 <span class="sd">    - The input should be pandas dataframes</span>
@@ -239,7 +239,7 @@
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Your dataframes has other datatypes than numerical and categorical&quot;</span><span class="p">)</span>
       
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
-      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Your dataframes does not contain the same columns&quot;</span><span class="p">)</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Your dataframes does not contain the same columns&quot;</span><span class="p">)</span></div>
     
 
 <div class="viewcode-block" id="daco.findDistributions"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco.findDistributions">[docs]</a>  <span class="k">def</span> <span class="nf">findDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins_</span><span class="o">=</span><span class="s1">&#39;sturges&#39;</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -639,8 +639,8 @@
 <div class="viewcode-block" id="daco.plotCanvas"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco.plotCanvas">[docs]</a>  <span class="k">def</span> <span class="nf">plotCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename_suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plotting canvas of histograms for all variables in the two datasets.</span>
 
-<span class="sd">    :param filename_prefix: suffix in filename</span>
-<span class="sd">    :type filename_prefix: str</span>
+<span class="sd">    :param filename_suffix: suffix in filename</span>
+<span class="sd">    :type filename_suffix: str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">df1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df1</span>
 
@@ -671,14 +671,15 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="daco.logisticRegressionBenchmark"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco.logisticRegressionBenchmark">[docs]</a>  <span class="k">def</span> <span class="nf">logisticRegressionBenchmark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="p">[],</span> <span class="n">features</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="daco.logisticRegressionBenchmark"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco.logisticRegressionBenchmark">[docs]</a>  <span class="k">def</span> <span class="nf">logisticRegressionBenchmark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="p">[],</span> <span class="n">features</span><span class="o">=</span><span class="p">[],</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">eval_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Method for training a logistic regression-model on the datasets</span>
 <span class="sd">    and investigate the differences in the model and predictions. The</span>
-<span class="sd">    results are saved as class variables.</span>
+<span class="sd">    results and models are saved as class variables.</span>
 
 <span class="sd">    Main features:</span>
+
 <span class="sd">    - Training LR-models on synth. and real data (and save them in this class)</span>
-<span class="sd">    - Predicting N samples</span>
+<span class="sd">    - Predicting *N* samples</span>
 <span class="sd">    - Comparing the accuracy of the two models (several measures possible)</span>
 <span class="sd">    - Confusion matrix + classification_report from sklearn</span>
 <span class="sd">    - Feature importance</span>
@@ -687,26 +688,52 @@
 <span class="sd">    :type target: list</span>
 <span class="sd">    :param features: features to use in training/predictions</span>
 <span class="sd">    :type features: list</span>
+<span class="sd">    :param test_size: size of test set</span>
+<span class="sd">    :type test_size: float</span>
+<span class="sd">    :param eval_size: size of evaluation set</span>
+<span class="sd">    :type eval_size: float</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
     <span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">LogisticRegression</span>
     <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">classification_report</span>
 
-    <span class="k">def</span> <span class="nf">plotConfusionMatrixFromLogisticRegression</span><span class="p">(</span>
-        <span class="n">clf</span>
-        <span class="p">,</span> <span class="n">X_val</span>
-        <span class="p">,</span> <span class="n">y_val</span> <span class="p">):</span>
-    
-      <span class="n">predictions</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_val</span><span class="p">)</span>
+    <span class="n">X_train1</span><span class="p">,</span> <span class="n">X_val1</span><span class="p">,</span> <span class="n">y_train1</span><span class="p">,</span> <span class="n">y_val1</span><span class="p">,</span> <span class="n">X_test1</span><span class="p">,</span> <span class="n">y_test1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataPrep</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">test_size</span><span class="p">,</span> <span class="n">eval_size</span><span class="p">)</span>
+    <span class="n">X_train2</span><span class="p">,</span> <span class="n">X_val2</span><span class="p">,</span> <span class="n">y_train2</span><span class="p">,</span> <span class="n">y_val2</span><span class="p">,</span> <span class="n">X_test2</span><span class="p">,</span> <span class="n">y_test2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataPrep</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">test_size</span><span class="p">,</span> <span class="n">eval_size</span><span class="p">)</span>
 
-      <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-      <span class="n">conf_mat</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="o">=</span><span class="n">y_val</span><span class="p">,</span> <span class="n">y_pred</span><span class="o">=</span><span class="n">predictions</span><span class="p">)</span>
-      <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">conf_mat</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
-      <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;True label&#39;</span><span class="p">)</span>
-      <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Predicted label&#39;</span><span class="p">)</span>
-      <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-      <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="c1"># Training models and calculating their accuracies</span>
+    <span class="n">clf1</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train1</span><span class="p">,</span> <span class="n">y_train1</span><span class="p">)</span>
+    <span class="n">s1</span> <span class="o">=</span> <span class="n">clf1</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test1</span><span class="p">,</span> <span class="n">y_test1</span><span class="p">)</span>
+
+    <span class="n">clf2</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train2</span><span class="p">,</span> <span class="n">y_train2</span><span class="p">)</span>
+    <span class="n">s2</span> <span class="o">=</span> <span class="n">clf2</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test2</span><span class="p">,</span> <span class="n">y_test2</span><span class="p">)</span>
+
+    <span class="c1"># saving models in class</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">LR_model1</span>  <span class="o">=</span> <span class="n">clf1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">LR_model2</span>  <span class="o">=</span> <span class="n">clf2</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score_clf1</span> <span class="o">=</span> <span class="n">s1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">score_clf2</span> <span class="o">=</span> <span class="n">s2</span>
+
+    <span class="n">name1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name1</span>
+    <span class="n">name2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name2</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">_plotConfusionMatrixFromLogisticRegression</span><span class="p">(</span><span class="n">clf1</span><span class="p">,</span> <span class="n">X_val1</span><span class="p">,</span> <span class="n">y_val1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">name1</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_plotConfusionMatrixFromLogisticRegression</span><span class="p">(</span><span class="n">clf2</span><span class="p">,</span> <span class="n">X_val2</span><span class="p">,</span> <span class="n">y_val2</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">name2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="daco.dataPrep"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco.dataPrep">[docs]</a>  <span class="k">def</span> <span class="nf">dataPrep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">test_size</span><span class="p">,</span> <span class="n">eval_size</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Data preparation for the ML-models used in DACO. Takes in the two dataframes</span>
+<span class="sd">    applies one hot encoding on categorical variables, and splits them into train,</span>
+<span class="sd">    test, and evaluation sets.</span>
+
+<span class="sd">    :param target: target values</span>
+<span class="sd">    :type target: list</span>
+<span class="sd">    :param features: features to use in training/predictions</span>
+<span class="sd">    :type features: list</span>
+<span class="sd">    :param test_size: size of test set</span>
+<span class="sd">    :type test_size: float</span>
+<span class="sd">    :param eval_size: size of evaluation set</span>
+<span class="sd">    :type eval_size: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
 
     <span class="c1"># One hot encoding categorical values</span>
     <span class="c1"># TODO if not all values are present in both df1 and df2 we will get</span>
@@ -728,30 +755,31 @@
 
     <span class="n">X_train1</span><span class="p">,</span> <span class="n">X_test1</span><span class="p">,</span> <span class="n">y_train1</span><span class="p">,</span> <span class="n">y_test1</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="n">features_new</span><span class="p">]</span>
                                                           <span class="p">,</span> <span class="n">df1</span><span class="p">[</span><span class="n">target</span><span class="p">]</span>
-                                                          <span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+                                                          <span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">)</span>
     <span class="n">X_train1</span><span class="p">,</span> <span class="n">X_val1</span><span class="p">,</span> <span class="n">y_train1</span><span class="p">,</span> <span class="n">y_val1</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X_train1</span><span class="p">,</span> <span class="n">y_train1</span>
-                                                      <span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-    
-    <span class="n">clf1</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train1</span><span class="p">,</span> <span class="n">y_train1</span><span class="p">)</span>
-    <span class="n">s1</span> <span class="o">=</span> <span class="n">clf1</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test1</span><span class="p">,</span> <span class="n">y_test1</span><span class="p">)</span>
+                                                      <span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">eval_size</span><span class="p">)</span>
 
-    <span class="n">X_train2</span><span class="p">,</span> <span class="n">X_test2</span><span class="p">,</span> <span class="n">y_train2</span><span class="p">,</span> <span class="n">y_test2</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">df2</span><span class="p">[</span><span class="n">features_new</span><span class="p">]</span>
-                                                          <span class="p">,</span> <span class="n">df2</span><span class="p">[</span><span class="n">target</span><span class="p">]</span>
-                                                          <span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-    <span class="n">X_train2</span><span class="p">,</span> <span class="n">X_val2</span><span class="p">,</span> <span class="n">y_train2</span><span class="p">,</span> <span class="n">y_val2</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X_train2</span><span class="p">,</span> <span class="n">y_train2</span>
-                                                      <span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-    
-    <span class="n">clf2</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train2</span><span class="p">,</span> <span class="n">y_train2</span><span class="p">)</span>
-    <span class="n">s2</span> <span class="o">=</span> <span class="n">clf2</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test2</span><span class="p">,</span> <span class="n">y_test2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">X_train1</span><span class="p">,</span> <span class="n">X_val1</span><span class="p">,</span> <span class="n">y_train1</span><span class="p">,</span> <span class="n">y_val1</span><span class="p">,</span> <span class="n">X_test1</span><span class="p">,</span> <span class="n">y_test1</span></div>
 
-    <span class="c1"># saving models in class</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">LR_model1</span>  <span class="o">=</span> <span class="n">clf1</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">LR_model2</span>  <span class="o">=</span> <span class="n">clf2</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">score_clf1</span> <span class="o">=</span> <span class="n">s1</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">score_clf2</span> <span class="o">=</span> <span class="n">s2</span>
+<div class="viewcode-block" id="daco._plotConfusionMatrixFromLogisticRegression"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco._plotConfusionMatrixFromLogisticRegression">[docs]</a>  <span class="k">def</span> <span class="nf">_plotConfusionMatrixFromLogisticRegression</span><span class="p">(</span><span class="bp">self</span>
+      <span class="p">,</span> <span class="n">clf</span>
+      <span class="p">,</span> <span class="n">X_val</span>
+      <span class="p">,</span> <span class="n">y_val</span>
+      <span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span> <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plotting method used in :class:`logisticRegressionBenchmark`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">confusion_matrix</span>
 
-    <span class="n">plotConfusionMatrixFromLogisticRegression</span><span class="p">(</span><span class="n">clf1</span><span class="p">,</span> <span class="n">X_val1</span><span class="p">,</span> <span class="n">y_val1</span><span class="p">)</span>
-    <span class="n">plotConfusionMatrixFromLogisticRegression</span><span class="p">(</span><span class="n">clf2</span><span class="p">,</span> <span class="n">X_val2</span><span class="p">,</span> <span class="n">y_val2</span><span class="p">)</span></div></div>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_val</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+    <span class="n">conf_mat</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="o">=</span><span class="n">y_val</span><span class="p">,</span> <span class="n">y_pred</span><span class="o">=</span><span class="n">predictions</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">conf_mat</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;True label&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Predicted label&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>

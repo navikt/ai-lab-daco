@@ -154,6 +154,7 @@
 <span class="c1"># load your data frames</span>
 <span class="n">df1</span> <span class="o">=</span> <span class="o">...</span>
 <span class="n">df2</span> <span class="o">=</span> <span class="o">...</span>
+<span class="c1"># Choose one of the variables in the dataset to compute statistics of</span>
 <span class="n">var1</span> <span class="o">=</span> <span class="o">...</span>
 
 <span class="c1"># create the daco-object</span>
@@ -167,9 +168,12 @@
 
 <span class="c1"># a dictionary will then be filled with values</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">daco_obj</span><span class="o">.</span><span class="n">p_D_chisquare</span><span class="p">)</span>
+
+<span class="c1"># plot a canvas with distributions of all the variables</span>
+<span class="n">daco_obj</span><span class="o">.</span><span class="n">plotCanvas</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>The last line will produce the output on the form</p>
+<p>The results from <cite>chisquare</cite> will be outputted on the form</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="n">var1</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">number</span><span class="o">&gt;</span><span class="p">,</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">number</span><span class="o">&gt;</span><span class="p">}}</span>
 </pre></div>
 </div>

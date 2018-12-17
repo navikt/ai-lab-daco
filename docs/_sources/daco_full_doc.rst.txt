@@ -4,4 +4,6 @@ DACO documentation
 ==================
 
 .. automodule:: daco
-   :members:
+  :special-members:
+  :private-members: 
+  :members:

@@ -1,4 +1,0 @@
-.. _daco_doc:
-
-.. automodule:: daco
-   :members:
