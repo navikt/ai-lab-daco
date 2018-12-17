@@ -494,8 +494,8 @@ class daco():
   def plotCanvas(self, filename_suffix=''):
     """Plotting canvas of histograms for all variables in the two datasets.
 
-    :param filename_prefix: suffix in filename
-    :type filename_prefix: str
+    :param filename_suffix: suffix in filename
+    :type filename_suffix: str
     """
     df1 = self.df1
 
@@ -526,14 +526,15 @@ class daco():
     plt.show()
     plt.close()
 
-  def logisticRegressionBenchmark(self, target=[], features=[]):
+  def logisticRegressionBenchmark(self, target=[], features=[], test_size=0.2, eval_size=0.2):
     """Method for training a logistic regression-model on the datasets
     and investigate the differences in the model and predictions. The
-    results are saved as class variables.
+    results and models are saved as class variables.
 
     Main features:
+
     - Training LR-models on synth. and real data (and save them in this class)
-    - Predicting N samples
+    - Predicting *N* samples
     - Comparing the accuracy of the two models (several measures possible)
     - Confusion matrix + classification_report from sklearn
     - Feature importance
@@ -542,26 +543,52 @@ class daco():
     :type target: list
     :param features: features to use in training/predictions
     :type features: list
+    :param test_size: size of test set
+    :type test_size: float
+    :param eval_size: size of evaluation set
+    :type eval_size: float
 
     """
-    from sklearn.model_selection import train_test_split
     from sklearn.linear_model import LogisticRegression
     from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-    def plotConfusionMatrixFromLogisticRegression(
-        clf
-        , X_val
-        , y_val ):
-    
-      predictions = clf.predict(X_val)
+    X_train1, X_val1, y_train1, y_val1, X_test1, y_test1 = self.dataPrep(target, features, test_size, eval_size)
+    X_train2, X_val2, y_train2, y_val2, X_test2, y_test2 = self.dataPrep(target, features, test_size, eval_size)
 
-      plt.figure()
-      conf_mat = confusion_matrix(y_true=y_val, y_pred=predictions)
-      sns.heatmap(conf_mat, annot=True, fmt='g')
-      plt.ylabel('True label')
-      plt.xlabel('Predicted label')
-      plt.show()
-      plt.close()
+    # Training models and calculating their accuracies
+    clf1 = LogisticRegression().fit(X_train1, y_train1)
+    s1 = clf1.score(X_test1, y_test1)
+
+    clf2 = LogisticRegression().fit(X_train2, y_train2)
+    s2 = clf2.score(X_test2, y_test2)
+
+    # saving models in class
+    self.LR_model1  = clf1
+    self.LR_model2  = clf2
+    self.score_clf1 = s1
+    self.score_clf2 = s2
+
+    name1 = self.name1
+    name2 = self.name2
+
+    self._plotConfusionMatrixFromLogisticRegression(clf1, X_val1, y_val1, title=name1)
+    self._plotConfusionMatrixFromLogisticRegression(clf2, X_val2, y_val2, title=name2)
+
+  def dataPrep(self, target, features, test_size, eval_size):
+    """Data preparation for the ML-models used in DACO. Takes in the two dataframes
+    applies one hot encoding on categorical variables, and splits them into train,
+    test, and evaluation sets.
+
+    :param target: target values
+    :type target: list
+    :param features: features to use in training/predictions
+    :type features: list
+    :param test_size: size of test set
+    :type test_size: float
+    :param eval_size: size of evaluation set
+    :type eval_size: float
+    """
+    from sklearn.model_selection import train_test_split
 
     # One hot encoding categorical values
     # TODO if not all values are present in both df1 and df2 we will get
@@ -583,27 +610,28 @@ class daco():
 
     X_train1, X_test1, y_train1, y_test1 = train_test_split(df1[features_new]
                                                           , df1[target]
-                                                          , test_size=0.2)
+                                                          , test_size=test_size)
     X_train1, X_val1, y_train1, y_val1 = train_test_split(X_train1, y_train1
-                                                      , test_size=0.2)
-    
-    clf1 = LogisticRegression().fit(X_train1, y_train1)
-    s1 = clf1.score(X_test1, y_test1)
+                                                      , test_size=eval_size)
 
-    X_train2, X_test2, y_train2, y_test2 = train_test_split(df2[features_new]
-                                                          , df2[target]
-                                                          , test_size=0.2)
-    X_train2, X_val2, y_train2, y_val2 = train_test_split(X_train2, y_train2
-                                                      , test_size=0.2)
-    
-    clf2 = LogisticRegression().fit(X_train2, y_train2)
-    s2 = clf2.score(X_test2, y_test2)
+    return X_train1, X_val1, y_train1, y_val1, X_test1, y_test1
 
-    # saving models in class
-    self.LR_model1  = clf1
-    self.LR_model2  = clf2
-    self.score_clf1 = s1
-    self.score_clf2 = s2
+  def _plotConfusionMatrixFromLogisticRegression(self
+      , clf
+      , X_val
+      , y_val
+      , title='' ):
+    """Plotting method used in :class:`logisticRegressionBenchmark`
+    """
+    from sklearn.metrics import confusion_matrix
 
-    plotConfusionMatrixFromLogisticRegression(clf1, X_val1, y_val1)
-    plotConfusionMatrixFromLogisticRegression(clf2, X_val2, y_val2)
+    predictions = clf.predict(X_val)
+
+    plt.figure()
+    conf_mat = confusion_matrix(y_true=y_val, y_pred=predictions)
+    sns.heatmap(conf_mat, annot=True, fmt='g')
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+    plt.title('{}'.format(title))
+    plt.show()
+    plt.close()
