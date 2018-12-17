@@ -1,0 +1,7 @@
+.. _usage:
+
+Using DACO 
+==========
+
+
+For detailed documenation of funtionality in DACO, see :ref:`updating`.

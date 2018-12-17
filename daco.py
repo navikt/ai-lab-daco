@@ -49,14 +49,15 @@ class daco():
     :type name1: str
     :type name2: str 
     """
+    # Doing some checks of the dataframes
+    self._checkDataframes(df1, df2)
+
     self.df1      = df1
     self.df2      = df2
     self.file_dir = file_dir
     self.name1 = name1
     self.name2 = name2
 
-    # Doing some checks of the dataframes
-    self.checkDataframes()
 
     # Creating dicts for saving values for different metrics
     self.p_D_chisquare       = {}
@@ -76,15 +77,13 @@ class daco():
     if not os.path.exists(file_dir):
       os.mkdir(file_dir)
 
-  def checkDataframes(self):
+  def _checkDataframes(self, df1, df2):
     """Checking whether the dataframes provided fullfills the requirements:
     
     - The input should be pandas dataframes
     - Only float or categorical variables
     - Same column names in both frames
     """
-    df1 = self.df1
-    df2 = self.df2
 
     for df in [df1, df2]:
       if not isinstance( df, type( pd.DataFrame() ) ):

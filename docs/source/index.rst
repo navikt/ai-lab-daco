@@ -10,13 +10,13 @@ Welcome to DACO's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   usage
+   daco_full_doc
+
 Fine steder å hente inspirasjon til dokumentering:
 
 - `https://realpython.com/documenting-python-code/ <https://realpython.com/documenting-python-code/>`_
 - `http://www.sphinx-doc.org/en/stable/index.html <http://www.sphinx-doc.org/en/stable/index.html>`_
-
-.. automodule:: daco
-   :members:
 
 Indices and tables
 ==================
