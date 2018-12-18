@@ -18,6 +18,8 @@
     - allow setting range, density, binning, etc. for each variable manually?
     - set a random seed globally in class
     - t-test -> ttest_ind or ttest_rel?
+    - canvas of log plots --> ???
+    - diff confusion matrix
 """
 
 import pandas as pd
@@ -65,6 +67,7 @@ class daco():
     self.hellinger_div       = {}
     self.kullbackleibler_div = {}
     self.ks2_test_val        = {}
+    self.wasserstein_val     = {}
 
     # Setting plotting colors and some parameters
     self.colors = ['tab:green', 'tab:blue']
@@ -95,7 +98,25 @@ class daco():
       
     if not set(df1.columns) == set(df2.columns):
       raise ValueError("Your dataframes does not contain the same columns")
-    
+
+  def numericalComparing(self):
+    """Compare the mean, variance, etc. of the numerical variable between the
+    two dataframes
+    """
+    df1 = self.df1
+    df2 = self.df2
+
+    desc1 = df1.describe()
+    desc2 = df2.describe()
+
+    desc_compare = {}
+
+    for variable in df1.select_dtypes(include='number').columns:
+      value1 = desc1.mean()[variable]
+      value2 = desc2.mean()[variable]
+      desc_compare['mean_{}'.format(variable)] = value1/value2
+
+    print(desc_compare)
 
   def findDistributions(self, bins_='sturges', density=True):
     """Find distributions of all variables/columns in dataframes loaded
@@ -118,6 +139,8 @@ class daco():
 
     hist1 = {}
     hist2 = {}
+    n_samples1 = {}
+    n_samples2 = {}
 
     # looping over all columns containing numerical variables
     column_numerical = df1.select_dtypes(include=[np.number]).columns
@@ -128,6 +151,8 @@ class daco():
       
       hist1[ str(column) ] = np.histogram( df1[ column ], bins=bins_, range=range_, density=density )
       hist2[ str(column) ] = np.histogram( df2[ column ], bins=hist1[ str(column) ][1], range=range_, density=density )
+      n_samples1[ str(column) ] = np.histogram( df1[ column ], bins=bins_, range=range_)[0].sum()
+      n_samples2[ str(column) ] = np.histogram( df2[ column ], bins=hist1[ str(column) ][1], range=range_ )[0].sum()
 
     # looping over all columns containing categorical variables
     column_categories = df1.select_dtypes(include=['category']).columns
@@ -142,6 +167,9 @@ class daco():
     distributions = {}
     distributions[ name1 ] = hist1
     distributions[ name2 ] = hist2
+    distributions[ name1 + '_n_samples' ] = n_samples1
+    distributions[ name2 + '_n_samples' ] = n_samples2
+    
 
     self.distributions = distributions
 
@@ -172,13 +200,13 @@ class daco():
 
   def hellinger(self, var1):
     """Calculate the Hellinger divergence for the distributions of
-    var1 in the two dataframes.
+    var1 in the two dataframes. 
     See `https://en.wikipedia.org/wiki/Hellinger_distance <https://en.wikipedia.org/wiki/Hellinger_distance>`_
 
     :param var1: name of variable in the datasets to do calculate the Hellinger divergence for.
     :type var1: str
     
-    :returns: hellinger_div
+    :returns: hellinger_div. Ouput value is in range `[0, sqrt(2)]`.
     :rtype: float
 
     """
@@ -190,7 +218,7 @@ class daco():
 
     hellinger_div_value = np.sqrt( np.sum( ( np.sqrt(dist1) - np.sqrt(dist2) )**2 ) )
 
-    hellinger_div[var1] = { 'hellinger': hellinger_div_value }
+    hellinger_div[var1] = hellinger_div_value
 
     return hellinger_div_value
 
@@ -222,9 +250,44 @@ class daco():
     # kb_div = spec.kl_div(dist1, dist2)
     kb_div = stats.entropy( dist1, dist2 )
 
-    kullbackleibler_div[var1] = { 'kullback': kb_div }
+    kullbackleibler_div[var1] = kb_div
 
     return kb_div
+
+  def wasserstein(self, var1):
+    """
+    """
+    from scipy.stats import wasserstein_distance
+
+    distributions   = self.distributions
+    wasserstein_val = self.wasserstein_val
+
+    dist1 = distributions[self.name1][var1][0]
+    dist2 = distributions[self.name2][var1][0]
+
+    wasserstein_val_ = wasserstein_distance(dist1, dist2)
+
+    wasserstein_val[var1] = wasserstein_val_
+
+    return wasserstein_val_
+
+  
+  def plotDistanceMetrics(self):
+    df1 = self.df1
+
+    for column in df1.select_dtypes(include='number').columns:
+      self.kullbackleibler(column)
+      self.bhattacharyya(column)
+      self.hellinger(column)
+
+    # forcing KL to be a number between 1 and 0.
+    kl_array = 1 - np.exp(-np.array(list(self.kullbackleibler_div.values())))
+    bha_array = np.array(list(self.bhattacharyya_dis.values()))
+    hel_array = np.array(list(self.hellinger_div.values())) / np.sqrt(2) # maybe a stupid normalization
+
+    # TODO bytte til seaborn --> må antakeligvis legge arrays over inn i en dataframe
+    plt.boxplot([kl_array, bha_array, hel_array], showmeans=True)
+    plt.show()
 
   def bhattacharyya(self, var1):
     """Calculate the Bhattacharyya distance for the distributions of
@@ -250,7 +313,7 @@ class daco():
 
     b_dis = 1 - np.sum( np.sqrt( np.multiply( normalize(dist1), normalize(dist2) ) ) )
 
-    bhattacharyya_dis[var1] = { 'bhattacharyya': b_dis }
+    bhattacharyya_dis[var1] = b_dis
 
     return b_dis
 
@@ -310,7 +373,8 @@ class daco():
     plt.figure( figsize=( 10, 10 ) )
     ax0 = sns.heatmap( corr, mask=mask, cmap=cmap, vmin=-1
                     , vmax=1, square=True, linewidths=.5, cbar=1
-                    , cbar_kws={ "fraction": .05, "shrink": .5, "orientation": "vertical" } )
+                    , cbar_kws={ "fraction": .05, "shrink": .5, "orientation": "vertical" }
+                    , annot=True )
     ax0.set_title(title)
     ax0.set_xlabel(xlabel)
     ax0.set_ylabel(ylabel)
@@ -348,7 +412,8 @@ class daco():
     plt.figure( figsize=( 10, 10 ) )
     ax0 = sns.heatmap( diff, mask=mask, cmap=cmap, vmin=-1
                     , vmax=1, square=True, linewidths=.5, cbar=1
-                    , cbar_kws={ "fraction": .05, "shrink": .5, "orientation": "vertical" } )
+                    , cbar_kws={ "fraction": .05, "shrink": .5, "orientation": "vertical" }
+                    , annot=True )
     ax0.set_title(title)
     ax0.set_xlabel(xlabel)
     ax0.set_ylabel(ylabel)
@@ -367,6 +432,9 @@ class daco():
         When plotting a canvas with all histograms ax2 should not be used
         due to layout problems.
 
+    .. todo::
+        Legge inn boxplot av hellinger et.al.
+
     :param variable: name of variable plotting histogram for
     :type variable: str
     :param ax1: axis-object for main-histogram for the variable
@@ -382,17 +450,19 @@ class daco():
     name2     = self.name2
     distributions = self.distributions
     colors    = self.colors
-
+    n_samples1 = self.distributions[name1 + '_n_samples']
+    n_samples2 = self.distributions[name2 + '_n_samples']
+    print(n_samples1, n_samples2)
     width_ = abs( max( df1[variable].max(), df2[variable].max() ) - min( df1[variable].min(), df2[variable].min() ) ) / len(distributions['df1'][variable][1])
     
-    # TODO Robindra fikser feilberegning
-    df1_err   = np.sqrt( distributions['df1'][variable][0] )
-    df2_err   = np.sqrt( distributions['df2'][variable][0] )
+    # TODO Flytte feilberegning inn i findDistributions()?
+    df1_err   =  1/np.sqrt(n_samples1[variable]) * np.sqrt( distributions['df1'][variable][0] )
+    df2_err   =  1/np.sqrt(n_samples2[variable]) * np.sqrt( distributions['df2'][variable][0] )
     ratio     = distributions['df2'][variable][0] / distributions['df1'][variable][0]
     ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
 
     ax1.bar(distributions['df1'][variable][1][:-1], distributions['df1'][variable][0]
-            , align='edge', width=width_, fill=False, edgecolor=colors[0], linewidth=1.3, label=name1)#, yerr=df1_err)
+            , align='edge', width=width_, fill=False, edgecolor=colors[0], linewidth=1.3, label=name1, yerr=df1_err)
     ax1.bar(distributions['df2'][variable][1][:-1], distributions['df2'][variable][0]
             , align='edge', width=width_, fill=False, edgecolor=colors[1], linewidth=1.3, label=name2)
     ax1.legend()
@@ -401,7 +471,7 @@ class daco():
     # Adding errors if not plotting canvas
     if ax2:
       ax2.axhline(y=1, color='k', linestyle='-', linewidth=0.7)
-      ax2.errorbar(distributions['df2'][variable][1][:-1] + width_/2, ratio, fmt='o')#, yerr=ratio_err)
+      ax2.errorbar(distributions['df2'][variable][1][:-1] + width_/2, ratio, fmt='o', yerr=ratio_err)
       ax2.set_ylim(0,2)
       # Hiding xticks on histogram
       plt.setp(ax1.get_xticklabels(), visible=False)
@@ -430,12 +500,12 @@ class daco():
     distributions = self.distributions
     colors = self.colors
 
-    # df1_err = np.sqrt( distributions['df1'][variable][0] )
-    # df2_err = np.sqrt( distributions['df2'][variable][0] )
+    df1_err = np.sqrt( distributions['df1'][variable][0] )
+    df2_err = np.sqrt( distributions['df2'][variable][0] )
 
     plt.xticks(rotation=45, ha='right')
     ax1.bar(distributions['df1'][variable][1], distributions['df1'][variable][0]
-            , align='center', width=1, fill=False, edgecolor=colors[0], linewidth=1.3, label=name1) #,yerr=df1_err)
+            , align='center', width=1, fill=False, edgecolor=colors[0], linewidth=1.3, label=name1,yerr=df1_err)
     ax1.bar(distributions['df2'][variable][1], distributions['df2'][variable][0]
             , align='center', width=1, fill=False, edgecolor=colors[1], linewidth=1.3, label=name2)
     ax1.legend()
@@ -444,7 +514,7 @@ class daco():
     # Adding errors of main histogram if not plotting canvas
     if ax2:
       ratio   = distributions['df2'][variable][0] / distributions['df1'][variable][0]
-      # ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
+      ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
       ax2.axhline(y=1, color='k', linestyle='-', linewidth=0.7)
       ax2.plot(distributions['df2'][variable][1], ratio, 'o')
       ax2.set_ylim(0,2)
@@ -568,11 +638,29 @@ class daco():
     self.score_clf1 = s1
     self.score_clf2 = s2
 
-    name1 = self.name1
-    name2 = self.name2
+    name1    = self.name1
+    name2    = self.name2
+    file_dir = self.file_dir
 
-    self._plotConfusionMatrixFromLogisticRegression(clf1, X_val1, y_val1, title=name1)
-    self._plotConfusionMatrixFromLogisticRegression(clf2, X_val2, y_val2, title=name2)
+    # Evaulating and finding confusion matrices
+    predictions1  = clf1.predict(X_val1)
+    predictions2  = clf2.predict(X_val2)
+    conf_mat1     = confusion_matrix(y_true=y_val1, y_pred=predictions1)
+    conf_mat2     = confusion_matrix(y_true=y_val2, y_pred=predictions2)
+    conf_mat_diff = conf_mat1 - conf_mat2
+
+    # Plotting confusion matrices
+    gs = matplotlib.gridspec.GridSpec(2,2)
+    ax1 = plt.subplot(gs[1, 0])
+    ax2 = plt.subplot(gs[1, 1])
+    ax3 = plt.subplot(gs[0, :])
+    self._plotConfusionMatrixFromLogisticRegression(conf_mat1, title=name1, ax=ax1)
+    self._plotConfusionMatrixFromLogisticRegression(conf_mat2, title=name2, ax=ax2)
+    self._plotConfusionMatrixFromLogisticRegression(conf_mat_diff, title=name2 + ' diff', ax=ax3)
+    plt.tight_layout()
+    plt.savefig(file_dir + 'confusion_matrix_logistic_regression.png')
+    plt.show()
+    plt.close()
 
   def dataPrep(self, target, features, test_size, eval_size):
     """Data preparation for the ML-models used in DACO. Takes in the two dataframes
@@ -617,21 +705,43 @@ class daco():
     return X_train1, X_val1, y_train1, y_val1, X_test1, y_test1
 
   def _plotConfusionMatrixFromLogisticRegression(self
-      , clf
-      , X_val
-      , y_val
-      , title='' ):
+      , conf_mat
+      , title=''
+      , ax=None):
     """Plotting method used in :class:`logisticRegressionBenchmark`
+
+    Parameters
+    ----------
+      conf_mat : array
+        confusion matrix output from `confusion_matrix` in `scipy`
+      title : str
+        title of subplot
+      ax : object
+        axis object for plotting
+
     """
-    from sklearn.metrics import confusion_matrix
 
-    predictions = clf.predict(X_val)
+    sns.heatmap(conf_mat, annot=True, fmt='g', ax=ax)
+    ax.set_xlabel('True label')
+    ax.set_ylabel('Predicted label')
+    ax.set_title('{}'.format(title))
+  
+  def plotPairplot(self):
+    """Using seaborn to plot a pairplot
+    """
+    import seaborn as sns
+    sns.est
 
-    plt.figure()
-    conf_mat = confusion_matrix(y_true=y_val, y_pred=predictions)
-    sns.heatmap(conf_mat, annot=True, fmt='g')
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
-    plt.title('{}'.format(title))
+    df1 = self.df1
+    df2 = self.df2
+
+    # adding dummy categories
+    df1['dummy'] = 0
+    df2['dummy'] = 1
+
+    # TODO finn de numeriske variablene og del de opp grupper på fire og fire
+    # for å lage flere litt mindre pairplot
+
+    full_df = pd.concat([df1, df2])
+    sns.pairplot(full_df, hue='dummy', diag_kind='hist')
     plt.show()
-    plt.close()
