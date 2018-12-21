@@ -18,8 +18,10 @@
     - allow setting range, density, binning, etc. for each variable manually?
     - set a random seed globally in class
     - t-test -> ttest_ind or ttest_rel?
-    - canvas of log plots --> ???
-    - diff confusion matrix
+    - log-axes in plots
+    - row by row comparison - for each row in synthetic dataset, find the row in the original
+      dataset with highest match and save the number as an attribute to each row in synth.
+      dataset
 """
 
 import pandas as pd
@@ -88,6 +90,9 @@ class daco():
     - Same column names in both frames
     """
 
+    # TODO implement method for checking that categorical columns in frame 1 and 2
+    # contains all values
+
     for df in [df1, df2]:
       if not isinstance( df, type( pd.DataFrame() ) ):
         raise TypeError("One of the daco-inputs is not a Pandas dataframe")
@@ -114,7 +119,7 @@ class daco():
     for variable in df1.select_dtypes(include='number').columns:
       value1 = desc1.mean()[variable]
       value2 = desc2.mean()[variable]
-      desc_compare['mean_{}'.format(variable)] = value1/value2
+      desc_compare['mean_rel_{}'.format(variable)] = value1/value2
 
     print(desc_compare)
 
@@ -139,8 +144,8 @@ class daco():
 
     hist1 = {}
     hist2 = {}
-    n_samples1 = {}
-    n_samples2 = {}
+    df1_err = {}
+    df2_err = {}
 
     # looping over all columns containing numerical variables
     column_numerical = df1.select_dtypes(include=[np.number]).columns
@@ -151,8 +156,9 @@ class daco():
       
       hist1[ str(column) ] = np.histogram( df1[ column ], bins=bins_, range=range_, density=density )
       hist2[ str(column) ] = np.histogram( df2[ column ], bins=hist1[ str(column) ][1], range=range_, density=density )
-      n_samples1[ str(column) ] = np.histogram( df1[ column ], bins=bins_, range=range_)[0].sum()
-      n_samples2[ str(column) ] = np.histogram( df2[ column ], bins=hist1[ str(column) ][1], range=range_ )[0].sum()
+      # Calculating the error of each bin: err = 1 / sqrt( N ) * sqrt(  n_i / N ), i.e. the weight is w = 1 / N, where N is the total number of samples in the histogram
+      df1_err[ str(column) ] = 1/np.sqrt(np.histogram( df1[ column ], bins=bins_, range=range_)[0].sum()) * np.sqrt( hist1[ str(column) ][0] )
+      df2_err[ str(column) ] = 1/np.sqrt(np.histogram( df2[ column ], bins=hist1[ str(column) ][1], range=range_ )[0].sum()) * np.sqrt( hist2[ str(column) ][0] )
 
     # looping over all columns containing categorical variables
     column_categories = df1.select_dtypes(include=['category']).columns
@@ -163,14 +169,16 @@ class daco():
       norm_2 = value_count2.sum()
       hist1[ str(column) ] = [ value_count1.values / norm_1, value_count1.index.categories ]
       hist2[ str(column) ] = [ value_count2.values / norm_2, value_count2.index.categories ]
+      # Calculating the error
+      df1_err[ str(column) ] =  1/np.sqrt(value_count1.values) * np.sqrt( hist1[ str(column) ][0] )
+      df2_err[ str(column) ] =  1/np.sqrt(value_count2.values) * np.sqrt( hist2[ str(column) ][0] )
     
     distributions = {}
     distributions[ name1 ] = hist1
     distributions[ name2 ] = hist2
-    distributions[ name1 + '_n_samples' ] = n_samples1
-    distributions[ name2 + '_n_samples' ] = n_samples2
+    distributions[ name1 + '_err' ] = df1_err
+    distributions[ name2 + '_err' ] = df2_err
     
-
     self.distributions = distributions
 
     return distributions
@@ -450,20 +458,20 @@ class daco():
     name2     = self.name2
     distributions = self.distributions
     colors    = self.colors
-    n_samples1 = self.distributions[name1 + '_n_samples']
-    n_samples2 = self.distributions[name2 + '_n_samples']
-    print(n_samples1, n_samples2)
     width_ = abs( max( df1[variable].max(), df2[variable].max() ) - min( df1[variable].min(), df2[variable].min() ) ) / len(distributions['df1'][variable][1])
     
     # TODO Flytte feilberegning inn i findDistributions()?
-    df1_err   =  1/np.sqrt(n_samples1[variable]) * np.sqrt( distributions['df1'][variable][0] )
-    df2_err   =  1/np.sqrt(n_samples2[variable]) * np.sqrt( distributions['df2'][variable][0] )
-    ratio     = distributions['df2'][variable][0] / distributions['df1'][variable][0]
-    ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
+    # df1_err   =  1/np.sqrt(n_samples1[variable]) * np.sqrt( distributions['df1'][variable][0] )
+    # df2_err   =  1/np.sqrt(n_samples2[variable]) * np.sqrt( distributions['df2'][variable][0] )
+    df1_err   = distributions[name1 + '_err'][variable]
+    df2_err   = distributions[name2 + '_err'][variable]
+    ratio     = distributions[name2][variable][0] / distributions[name1][variable][0]
+    ratio_err = np.sqrt( (df1_err/distributions[name1][variable][0])**2 \
+                       + (df2_err/distributions[name2][variable][0])**2 ) * ratio
 
-    ax1.bar(distributions['df1'][variable][1][:-1], distributions['df1'][variable][0]
+    ax1.bar(distributions[name1][variable][1][:-1], distributions[name1][variable][0]
             , align='edge', width=width_, fill=False, edgecolor=colors[0], linewidth=1.3, label=name1, yerr=df1_err)
-    ax1.bar(distributions['df2'][variable][1][:-1], distributions['df2'][variable][0]
+    ax1.bar(distributions[name2][variable][1][:-1], distributions[name2][variable][0]
             , align='edge', width=width_, fill=False, edgecolor=colors[1], linewidth=1.3, label=name2)
     ax1.legend()
     ax1.set_title(variable)
@@ -500,8 +508,8 @@ class daco():
     distributions = self.distributions
     colors = self.colors
 
-    df1_err = np.sqrt( distributions['df1'][variable][0] )
-    df2_err = np.sqrt( distributions['df2'][variable][0] )
+    df1_err   = distributions[name1 + '_err'][variable]
+    df2_err   = distributions[name2 + '_err'][variable]
 
     plt.xticks(rotation=45, ha='right')
     ax1.bar(distributions['df1'][variable][1], distributions['df1'][variable][0]
@@ -730,18 +738,70 @@ class daco():
     """Using seaborn to plot a pairplot
     """
     import seaborn as sns
-    sns.est
 
     df1 = self.df1
     df2 = self.df2
 
     # adding dummy categories
-    df1['dummy'] = 0
-    df2['dummy'] = 1
+    df1.loc[:, 'dummy'] = 0
+    df2.loc[:, 'dummy'] = 1
+
+    # find all columns and group them in groups of four
+    columns = df1.columns
+    i = 0 
+    col_groups = {}
+    _temp = []
+    for col in columns:
+      _temp.append(col)
+      i += 1
+      if i % 4 == 0:
+        col_groups[i] = _temp
+        _temp  = []
 
     # TODO finn de numeriske variablene og del de opp grupper på fire og fire
     # for å lage flere litt mindre pairplot
 
-    full_df = pd.concat([df1, df2])
-    sns.pairplot(full_df, hue='dummy', diag_kind='hist')
-    plt.show()
+    for key, value in col_groups.items():
+      full_df = pd.concat([df1, df2])
+      sns.pairplot(full_df, hue='dummy', diag_kind='hist')
+      plt.show() 
+
+  def rowMatching(self, atol_=1e-1, rtol_=1e-1):
+    """Method which loops over each row in synthetic dataset and finds the row
+    in the original dataset with highest match in percent, and saves this number
+    as an attribute to each row in the synthetic dataset.
+    Using numpy.isclose as a matching measure for numerical values.
+
+    Parameters
+    ----------
+    atol : float
+      The relative tolerance parameter, see Numpy docs.
+    rtol : float
+      The absolute tolerance parameter, see Numpy docs.
+
+    Returns
+    -------
+    """
+    # fetching only columns with numerical values
+    df1 = self.df1.select_dtypes(include=[np.number])
+    df2 = self.df2.select_dtypes(include=[np.number])
+    
+    # initializing dict that will be filled with entries on
+    # the form <index in df2> : [<index in df1>, match_value]
+    match_values = np.empty((len(df2), 3))
+    
+    len_row = len(df1.columns)
+    
+    i = 0
+    for row2 in df2.itertuples():
+      row_match = [None, 0]
+      for row1 in df1.itertuples():
+        # applying np.isclose and counting number of elements inside our tolerances
+        match = np.isclose(row1[1:], row2[1:], atol=atol_, rtol=rtol_)
+        match_rel = match.sum() / len_row
+        if match_rel >= row_match[1]:
+          row_match = [row1[0], match_rel]
+      match_values[i] = np.array([row2[0], row_match[0], row_match[1]])
+      i += 1
+
+    self.match_values = match_values
