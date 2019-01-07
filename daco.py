@@ -289,7 +289,7 @@ class daco():
       self.hellinger(column)
 
     # forcing KL to be a number between 1 and 0.
-    kl_array = 1 - np.exp(-np.array(list(self.kullbackleibler_div.values())))
+    kl_array = 1 - np.exp(- np.array(list(self.kullbackleibler_div.values())))
     bha_array = np.array(list(self.bhattacharyya_dis.values()))
     hel_array = np.array(list(self.hellinger_div.values())) / np.sqrt(2) # maybe a stupid normalization
 
@@ -524,7 +524,8 @@ class daco():
       ratio   = distributions['df2'][variable][0] / distributions['df1'][variable][0]
       ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
       ax2.axhline(y=1, color='k', linestyle='-', linewidth=0.7)
-      ax2.plot(distributions['df2'][variable][1], ratio, 'o')
+      # ax2.plot(distributions['df2'][variable][1], ratio, 'o')
+      ax2.errorbar(distributions['df2'][variable][1], ratio, fmt='o', yerr=ratio_err)
       ax2.set_ylim(0,2)
       # Hiding xticks on histogram
       plt.setp(ax1.get_xticklabels(), visible=False)
@@ -742,12 +743,14 @@ class daco():
     df1 = self.df1
     df2 = self.df2
 
-    # adding dummy categories
-    df1.loc[:, 'dummy'] = 0
-    df2.loc[:, 'dummy'] = 1
+    # adding dummy categories for labelling real and synth. dataset
+    df1.loc[:, 'dummy'] = 'a'
+    df2.loc[:, 'dummy'] = 'b'
+    df1.dummy = df1.dummy.astype('category')
+    df2.dummy = df2.dummy.astype('category')
 
-    # find all columns and group them in groups of four
-    columns = df1.columns
+    # find all numeric columns and group them in groups of four
+    columns = df1.select_dtypes(include=[np.number]).columns
     i = 0 
     col_groups = {}
     _temp = []
@@ -757,14 +760,13 @@ class daco():
       if i % 4 == 0:
         col_groups[i] = _temp
         _temp  = []
-
-    # TODO finn de numeriske variablene og del de opp grupper på fire og fire
-    # for å lage flere litt mindre pairplot
-
+    
     for key, value in col_groups.items():
-      full_df = pd.concat([df1, df2])
+      value = value + ['dummy'] # adding dummy-column for coloring in pairplot
+      print(value)
+      full_df = pd.concat([df1[value], df2[value]])
       sns.pairplot(full_df, hue='dummy', diag_kind='hist')
-      plt.show() 
+      plt.show()
 
   def rowMatching(self, atol_=1e-1, rtol_=1e-1):
     """Method which loops over each row in synthetic dataset and finds the row
