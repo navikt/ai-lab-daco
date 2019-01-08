@@ -22,6 +22,11 @@
     - row by row comparison - for each row in synthetic dataset, find the row in the original
       dataset with highest match and save the number as an attribute to each row in synth.
       dataset
+    - Begrense antall plot i canvas til ni(?)
+    - ML-modell-sammenlikning: trene på synt. data, test på ekte.
+    - ML-modell-sammenlikning: JordonYoonVanDerSchaar arxiv: 1806.11345v1
+    - IdentityDisclosure
+    - AttributeDisclosure
 """
 
 import pandas as pd
@@ -437,7 +442,7 @@ class daco():
     the numerical variables in dataframe.
 
     .. note::
-        When plotting a canvas with all histograms ax2 should not be used
+        When plotting a canvas with all histograms `ax2` should not be used
         due to layout problems.
 
     .. todo::
@@ -572,6 +577,9 @@ class daco():
 
   def plotCanvas(self, filename_suffix=''):
     """Plotting canvas of histograms for all variables in the two datasets.
+
+    ..todo::
+      Begrense antall plot i canvas til ni(?)
 
     :param filename_suffix: suffix in filename
     :type filename_suffix: str
