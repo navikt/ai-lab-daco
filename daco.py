@@ -577,41 +577,48 @@ class daco():
 
   def plotCanvas(self, filename_suffix=''):
     """Plotting canvas of histograms for all variables in the two datasets.
-
-    ..todo::
-      Begrense antall plot i canvas til ni(?)
+    In order to let plots stay readable a canvas will contain maximum nine
+    plots, if there are more than nine variables you will get several
+    canvases.
 
     :param filename_suffix: suffix in filename
     :type filename_suffix: str
     """
     df1 = self.df1
+    
+    # Fetching all numeric and categorical variables and gathering them in one array
+    variables_num = df1.select_dtypes(include=[np.number]).columns
+    variables_cat = df1.select_dtypes(include='category').columns
+    variables = np.concatenate((variables_num, variables_cat))
 
     # Defining layout of canvas
-    num_numerical  = len(df1.select_dtypes(include=[np.number]).columns)
-    num_categorial = len(df1.select_dtypes(include='category').columns)
-    N        = num_numerical + num_categorial
-    num_cols = 4
-    num_rows = int(np.ceil(N / num_cols))
-    gs       = matplotlib.gridspec.GridSpec(num_rows, num_cols)
+    num_plots_in_canvas = 9
+    num_numerical  = len(variables_num)
+    num_categorial = len(variables_cat)
+    num_figures = round((num_numerical+num_categorial)/num_plots_in_canvas)
 
-    # Creating figure instance and looping through all variables in
-    # dataframe.
-    fig = plt.figure(0, figsize=(20,6*num_rows))
-    i   = 0
+    for canvas_fig in range(0,num_figures):
+      num_cols = 3
+      num_rows = 3
+      gs       = matplotlib.gridspec.GridSpec(num_rows, num_cols)
 
-    # Looping through all variables in dataframes
-    for variable in df1:
-      ax = fig.add_subplot(gs[i])
-      i += 1
-      if variable in df1.select_dtypes(include=[np.number]).columns:
-        self.plotDistributionsOfVariableNumericalVariables(variable, ax1=ax)
-      elif variable in df1.select_dtypes(include='category').columns:
-        self.plotDistributionsOfVariableCategoricalVariables(variable, ax1=ax)
-    
-    plt.tight_layout()
-    plt.savefig(self.file_dir + 'canvas_' + filename_suffix + '.pdf')
-    plt.show()
-    plt.close()
+      # Creating figure instance and looping through batch of variables in
+      # dataframe.
+      fig = plt.figure(0, figsize=(15,4*num_rows))
+      i   = 0
+      # Looping through all variables in dataframes
+      for variable in variables[num_plots_in_canvas*canvas_fig:num_plots_in_canvas*(canvas_fig+1)]:
+        ax = fig.add_subplot(gs[i])
+        i += 1
+        if variable in variables_num:
+          self.plotDistributionsOfVariableNumericalVariables(variable, ax1=ax)
+        elif variable in variables_cat:
+          self.plotDistributionsOfVariableCategoricalVariables(variable, ax1=ax)
+      
+      plt.tight_layout()
+      plt.savefig(self.file_dir + 'canvas_' + filename_suffix + '_{}_.pdf'.format(canvas_fig))
+      plt.show()
+      plt.close()
 
   def logisticRegressionBenchmark(self, target=[], features=[], test_size=0.2, eval_size=0.2):
     """Method for training a logistic regression-model on the datasets
