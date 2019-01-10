@@ -235,6 +235,63 @@ for your use.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="daco.daco._trainSeveralModels">
+<code class="descname">_trainSeveralModels</code><span class="sig-paren">(</span><em>name</em>, <em>data</em>, <em>models=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._trainSeveralModels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._trainSeveralModels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method for <a class="reference internal" href="#daco.daco.trainSynthTestReal" title="daco.daco.trainSynthTestReal"><code class="xref py py-class docutils literal notranslate"><span class="pre">trainSynthTestReal</span></code></a> and <a class="reference internal" href="#daco.daco.syntheticRankingAgreement" title="daco.daco.syntheticRankingAgreement"><code class="xref py py-class docutils literal notranslate"><span class="pre">syntheticRankingAgreement</span></code></a>.
+Models and their scores are saved in dictionaries.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – name of the entry in the <code class="xref py py-class docutils literal notranslate"><span class="pre">model_dict</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">model_score</span></code></li>
+<li><strong>data</strong> (<em>tuple</em>) – tuple with training and test data in the order (X_train, y_train, X_test, y_test)</li>
+<li><strong>models</strong> (<em>list</em>) – list of tuples with models and a dict with parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>model_dict</strong> (<em>dict</em>) – dictionary containing all models trained</li>
+<li><strong>model_scores</strong> (<em>dict</em>) – dictionary containing lists with scores for each model trained</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco._trainSingleModel">
+<code class="descname">_trainSingleModel</code><span class="sig-paren">(</span><em>model</em>, <em>params</em>, <em>X_train</em>, <em>y_train</em>, <em>X_test</em>, <em>y_test</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._trainSingleModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._trainSingleModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method for training a single model and returning
+the model and its score</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> (<em>object</em>) – ML-model-object with the methods .fit() and .predict()</li>
+<li><strong>params</strong> (<em>dict</em>) – dictionary with hyperparameter to the model</li>
+<li><strong>X_train</strong> (<em>array</em>) – numpy-array with training data</li>
+<li><strong>y_train</strong> (<em>array</em>) – numpy-array with training targets</li>
+<li><strong>X_test</strong> (<em>array</em>) – numpy-array with test data</li>
+<li><strong>y_test</strong> (<em>array</em>) – numpy-array with test targets</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>model_trained</strong> (<em>object</em>) – trained model</li>
+<li><strong>scores</strong> (<em>float</em>) – test score for the model</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="daco.daco.bhattacharyya">
 <code class="descname">bhattacharyya</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.bhattacharyya"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.bhattacharyya" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the Bhattacharyya distance for the distributions of
@@ -584,9 +641,10 @@ Using numpy.isclose as a matching measure for numerical values.</p>
 
 <dl class="method">
 <dt id="daco.daco.syntheticRankingAgreement">
-<code class="descname">syntheticRankingAgreement</code><span class="sig-paren">(</span><em>model_scores=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.syntheticRankingAgreement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.syntheticRankingAgreement" title="Permalink to this definition">¶</a></dt>
+<code class="descname">syntheticRankingAgreement</code><span class="sig-paren">(</span><em>model_scores=None</em>, <em>target=None</em>, <em>features=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.syntheticRankingAgreement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.syntheticRankingAgreement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method for checking whether the synthetic dataset is useful in machine learning
-contexts. We use the “Synthetic Ranking Agreement”-method, SRA for short, see <a class="reference external" href="https://arxiv.org/pdf/1806.11345v1.pdf">https://arxiv.org/pdf/1806.11345v1.pdf</a>
+contexts. We use the “Synthetic Ranking Agreement”-method, SRA for short,
+see <a class="reference external" href="https://arxiv.org/pdf/1806.11345v1.pdf">https://arxiv.org/pdf/1806.11345v1.pdf</a>
 It is defined as</p>
 <div class="math notranslate nohighlight">
 \[\text{SRA} = \frac{1}{k(k-1)} \sum^{k}_{i=1}\sum_{j\neq i} \mathbb{I}\left( (R_i - R_j) \times (S_i - S_j) \right)\]</div>
@@ -597,28 +655,29 @@ thought of as the (emprical) probability of a comparison on the synthetic data b
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model_scores</strong> (<em>dict</em>) – dict with scores for the different algorithms on the real and synthetic dataset.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model_scores</strong> (<em>dict</em>) – dict with scores for the different algorithms on the real and synthetic dataset.</li>
+<li><strong>target</strong> (<em>list</em>) – list of training targets (if not <cite>model_scores</cite> is given)</li>
+<li><strong>features</strong> (<em>list</em>) – list of training features (if not <cite>model_scores</cite> is given)</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>sra</strong> – a single value which is the result of the formula given above.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sra</strong> – a single value which is the result of the formula given above.</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.trainModels">
-<code class="descname">trainModels</code><span class="sig-paren">(</span><em>target</em>, <em>features</em>, <em>test_size=0.2</em>, <em>eval_size=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.trainModels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.trainModels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method for training several ML-models on the two datasets given to this class.
-The models and their test scores are saved in dictionaries.</p>
-<div class="admonition-todo admonition" id="index-2">
-<p class="first admonition-title">Todo</p>
-<ul class="last simple">
-<li>let the user set the parameters for the different models</li>
-<li>let the user choose which models to train</li>
-</ul>
-</div>
+<dt id="daco.daco.trainAndTestModels">
+<code class="descname">trainAndTestModels</code><span class="sig-paren">(</span><em>target</em>, <em>features</em>, <em>models=None</em>, <em>test_size=0.2</em>, <em>eval_size=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.trainAndTestModels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.trainAndTestModels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for training several ML-models on the two datasets given to this
+class and do testing as specified by the user. The models and their test
+scores are saved in dictionaries.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -626,6 +685,7 @@ The models and their test scores are saved in dictionaries.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>target</strong> (<em>list</em>) – target values</li>
 <li><strong>features</strong> (<em>list</em>) – features to use in training/predictions</li>
+<li><strong>models</strong> (<em>list</em>) – list of tuples with models and a dict with parameters</li>
 <li><strong>test_size</strong> (<em>float</em>) – size of test set</li>
 <li><strong>eval_size</strong> (<em>float</em>) – size of evaluation set</li>
 </ul>
@@ -637,6 +697,20 @@ The models and their test scores are saved in dictionaries.</p>
 </ul>
 </p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.trainSynthTestReal">
+<code class="descname">trainSynthTestReal</code><span class="sig-paren">(</span><em>scores=None</em>, <em>target=None</em>, <em>features=None</em>, <em>test_size=0.2</em>, <em>eval_size=0.2</em>, <em>tstr_name='tstr'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.trainSynthTestReal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.trainSynthTestReal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for training model(s) on synthetic data and test on real data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scores</strong> (<em>array</em>) – numpy-array with scores from TSTR</td>
 </tr>
 </tbody>
 </table>
@@ -694,6 +768,7 @@ The models and their test scores are saved in dictionaries.</p>
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
 
   

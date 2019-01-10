@@ -970,9 +970,10 @@
 
     <span class="bp">self</span><span class="o">.</span><span class="n">match_values</span> <span class="o">=</span> <span class="n">match_values</span></div>
 
-<div class="viewcode-block" id="daco.syntheticRankingAgreement"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco.syntheticRankingAgreement">[docs]</a>  <span class="k">def</span> <span class="nf">syntheticRankingAgreement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_scores</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="daco.syntheticRankingAgreement"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco.syntheticRankingAgreement">[docs]</a>  <span class="k">def</span> <span class="nf">syntheticRankingAgreement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_scores</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Method for checking whether the synthetic dataset is useful in machine learning</span>
-<span class="sd">    contexts. We use the &quot;Synthetic Ranking Agreement&quot;-method, SRA for short, see `https://arxiv.org/pdf/1806.11345v1.pdf &lt;https://arxiv.org/pdf/1806.11345v1.pdf&gt;`_</span>
+<span class="sd">    contexts. We use the &quot;Synthetic Ranking Agreement&quot;-method, SRA for short,</span>
+<span class="sd">    see `https://arxiv.org/pdf/1806.11345v1.pdf &lt;https://arxiv.org/pdf/1806.11345v1.pdf&gt;`_</span>
 <span class="sd">    It is defined as </span>
 <span class="sd">    </span>
 <span class="sd">    .. math::</span>
@@ -986,6 +987,10 @@
 <span class="sd">    ----------</span>
 <span class="sd">      model_scores : dict</span>
 <span class="sd">        dict with scores for the different algorithms on the real and synthetic dataset.</span>
+<span class="sd">      target : list</span>
+<span class="sd">        list of training targets (if not `model_scores` is given)</span>
+<span class="sd">      features : list</span>
+<span class="sd">        list of training features (if not `model_scores` is given)</span>
 <span class="sd">      </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -994,15 +999,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">name1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name1</span>
     <span class="n">name2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name2</span>
-
+    
     <span class="k">if</span> <span class="n">model_scores</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-      <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_scores</span><span class="p">[</span><span class="n">name1</span><span class="p">])</span> <span class="c1"># number of models/algorithms</span>
-      <span class="n">S</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_scores</span><span class="p">[</span><span class="n">name1</span><span class="p">]</span> <span class="c1"># synthetic model scores</span>
-      <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_scores</span><span class="p">[</span><span class="n">name2</span><span class="p">]</span> <span class="c1"># real model scores</span>
-    <span class="k">else</span><span class="p">:</span>
+      <span class="n">_</span><span class="p">,</span> <span class="n">model_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trainAndTestModels</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
       <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">model_scores</span><span class="p">[</span><span class="n">name1</span><span class="p">])</span> <span class="c1"># number of models/algorithms</span>
       <span class="n">S</span> <span class="o">=</span> <span class="n">model_scores</span><span class="p">[</span><span class="n">name1</span><span class="p">]</span> <span class="c1"># synthetic model scores</span>
       <span class="n">R</span> <span class="o">=</span> <span class="n">model_scores</span><span class="p">[</span><span class="n">name2</span><span class="p">]</span> <span class="c1"># real model scores</span>
+    <span class="k">elif</span> <span class="n">model_scores</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">model_scores</span><span class="p">[</span><span class="n">name1</span><span class="p">])</span>
+      <span class="n">S</span> <span class="o">=</span> <span class="n">model_scores</span><span class="p">[</span><span class="n">name1</span><span class="p">]</span>
+      <span class="n">R</span> <span class="o">=</span> <span class="n">model_scores</span><span class="p">[</span><span class="n">name2</span><span class="p">]</span>
 
     <span class="n">sra</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">K</span><span class="p">):</span>
@@ -1013,13 +1019,15 @@
 
     <span class="k">return</span> <span class="n">sra</span></div>
 
-<div class="viewcode-block" id="daco.trainModels"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco.trainModels">[docs]</a>  <span class="k">def</span> <span class="nf">trainModels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">eval_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Method for training several ML-models on the two datasets given to this class.</span>
-<span class="sd">    The models and their test scores are saved in dictionaries.</span>
-
-<span class="sd">    .. todo::</span>
-<span class="sd">      - let the user set the parameters for the different models</span>
-<span class="sd">      - let the user choose which models to train</span>
+<div class="viewcode-block" id="daco.trainAndTestModels"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco.trainAndTestModels">[docs]</a>  <span class="k">def</span> <span class="nf">trainAndTestModels</span><span class="p">(</span><span class="bp">self</span>
+                        <span class="p">,</span> <span class="n">target</span>
+                        <span class="p">,</span> <span class="n">features</span>
+                        <span class="p">,</span> <span class="n">models</span><span class="o">=</span><span class="kc">None</span>
+                        <span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span>
+                        <span class="p">,</span> <span class="n">eval_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Method for training several ML-models on the two datasets given to this</span>
+<span class="sd">    class and do testing as specified by the user. The models and their test</span>
+<span class="sd">    scores are saved in dictionaries.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1027,6 +1035,8 @@
 <span class="sd">        target values</span>
 <span class="sd">      features: list</span>
 <span class="sd">        features to use in training/predictions</span>
+<span class="sd">      models : list</span>
+<span class="sd">        list of tuples with models and a dict with parameters</span>
 <span class="sd">      test_size : float</span>
 <span class="sd">        size of test set</span>
 <span class="sd">      eval_size : float</span>
@@ -1041,46 +1051,155 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">name1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name1</span>
     <span class="n">name2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name2</span>
+    
+    <span class="n">model_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">model_scores</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="n">X_train1</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">y_train1</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">X_test1</span><span class="p">,</span> <span class="n">y_test1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataPrep</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">test_size</span><span class="p">,</span> <span class="n">eval_size</span><span class="p">,</span> <span class="n">name1</span><span class="p">)</span>
-    <span class="n">X_train2</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">y_train2</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">X_test2</span><span class="p">,</span> <span class="n">y_test2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataPrep</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">test_size</span><span class="p">,</span> <span class="n">eval_size</span><span class="p">,</span> <span class="n">name2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="n">name1</span><span class="p">,</span> <span class="n">name2</span><span class="p">):</span>
+      <span class="n">X_train</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataPrep</span><span class="p">(</span><span class="n">target</span>
+                                                            <span class="p">,</span> <span class="n">features</span>
+                                                            <span class="p">,</span> <span class="n">test_size</span>
+                                                            <span class="p">,</span> <span class="n">eval_size</span>
+                                                            <span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
-    <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">accuracy_score</span>
+      <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+      <span class="n">model_dict_</span><span class="p">,</span> <span class="n">model_scores_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trainSeveralModels</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+      <span class="n">model_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">model_dict_</span><span class="p">)</span>
+      <span class="n">model_scores</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">model_scores_</span><span class="p">)</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">model_dict</span> <span class="o">=</span> <span class="n">model_dict</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">model_scores</span> <span class="o">=</span> <span class="n">model_scores</span>
+
+    <span class="k">return</span> <span class="n">model_dict</span><span class="p">,</span> <span class="n">model_scores</span></div>
+
+<div class="viewcode-block" id="daco._trainSeveralModels"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco._trainSeveralModels">[docs]</a>  <span class="k">def</span> <span class="nf">_trainSeveralModels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Private method for :class:`trainSynthTestReal` and :class:`syntheticRankingAgreement`.</span>
+<span class="sd">    Models and their scores are saved in dictionaries.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">      name : str</span>
+<span class="sd">        name of the entry in the :class:`model_dict` and :class:`model_score`</span>
+<span class="sd">      data : tuple</span>
+<span class="sd">        tuple with training and test data in the order (X_train, y_train, X_test, y_test)</span>
+<span class="sd">      models : list</span>
+<span class="sd">        list of tuples with models and a dict with parameters</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">      model_dict : dict</span>
+<span class="sd">        dictionary containing all models trained</span>
+<span class="sd">      model_scores : dict</span>
+<span class="sd">        dictionary containing lists with scores for each model trained</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
     <span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">RandomForestClassifier</span>
     <span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">GradientBoostingClassifier</span>
     <span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="k">import</span> <span class="n">KNeighborsClassifier</span>
     <span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">LogisticRegression</span>
 
-    <span class="c1"># Choosing which models to train and their parameters.</span>
-    <span class="n">models</span> <span class="o">=</span> <span class="p">[(</span><span class="n">RandomForestClassifier</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">})</span>
-              <span class="p">,</span> <span class="p">(</span><span class="n">GradientBoostingClassifier</span><span class="p">,</span> <span class="p">{})</span>
-              <span class="p">,</span> <span class="p">(</span><span class="n">KNeighborsClassifier</span><span class="p">,</span> <span class="p">{})</span>
-              <span class="p">,</span> <span class="p">(</span><span class="n">LogisticRegression</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;solver&#39;</span> <span class="p">:</span><span class="s1">&#39;liblinear&#39;</span><span class="p">})]</span>
+    <span class="k">if</span> <span class="n">models</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="c1"># choosing default set of models and parameters</span>
+      <span class="n">models</span> <span class="o">=</span> <span class="p">[(</span><span class="n">RandomForestClassifier</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">})</span>
+                <span class="p">,</span> <span class="p">(</span><span class="n">GradientBoostingClassifier</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="p">,</span> <span class="p">(</span><span class="n">KNeighborsClassifier</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="p">,</span> <span class="p">(</span><span class="n">LogisticRegression</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;solver&#39;</span> <span class="p">:</span><span class="s1">&#39;liblinear&#39;</span><span class="p">})]</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="c1"># checking that the input is correct</span>
+      <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mod</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;fit&#39;</span><span class="p">),</span> <span class="s2">&quot;The model </span><span class="si">{}</span><span class="s2"> doesn&#39;t have a .fit()-method.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mod</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mod</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">dict</span><span class="p">),</span> <span class="s2">&quot;You must provide the model&#39;s parameters in a dictionary.&quot;</span>
     
     <span class="n">model_dict</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">model_scores</span> <span class="o">=</span> <span class="p">{</span><span class="n">name1</span><span class="p">:</span> <span class="p">[],</span> <span class="n">name2</span><span class="p">:</span> <span class="p">[]}</span>
+    <span class="n">model_scores</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="p">[]}</span>
     
     <span class="k">for</span> <span class="n">mod</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
       <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training model </span><span class="si">{}</span><span class="s2"> ...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+      
+      <span class="n">clf</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trainSingleModel</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
 
-      <span class="n">_model1</span> <span class="o">=</span> <span class="n">mod</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
-      <span class="n">clf1</span> <span class="o">=</span> <span class="n">_model1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">y_train1</span><span class="p">))</span> <span class="c1"># Using ravel() since sklearn doesn&#39;t like arrays of shape (m, 1)</span>
-      <span class="n">pred1</span> <span class="o">=</span> <span class="n">clf1</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test1</span><span class="p">)</span>
-      <span class="n">s1</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">pred1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">y_test1</span><span class="p">))</span>
+      <span class="n">model_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">:</span> <span class="n">clf</span><span class="p">}</span>
+      <span class="n">model_scores</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
-      <span class="n">_model2</span> <span class="o">=</span> <span class="n">mod</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
-      <span class="n">clf2</span> <span class="o">=</span> <span class="n">_model2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">y_train2</span><span class="p">))</span>
-      <span class="n">pred2</span> <span class="o">=</span> <span class="n">clf2</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test2</span><span class="p">)</span>
-      <span class="n">s2</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">pred2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">y_test2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">model_dict</span><span class="p">,</span> <span class="n">model_scores</span></div>
 
-      <span class="n">model_dict</span><span class="p">[</span><span class="n">name1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">:</span> <span class="n">clf1</span><span class="p">}</span>
-      <span class="n">model_dict</span><span class="p">[</span><span class="n">name2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">mod</span><span class="o">.</span><span class="vm">__name__</span> <span class="p">:</span> <span class="n">clf2</span><span class="p">}</span>
-      <span class="n">model_scores</span><span class="p">[</span><span class="n">name1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span>
-      <span class="n">model_scores</span><span class="p">[</span><span class="n">name2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span>
+<div class="viewcode-block" id="daco._trainSingleModel"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco._trainSingleModel">[docs]</a>  <span class="k">def</span> <span class="nf">_trainSingleModel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Private method for training a single model and returning</span>
+<span class="sd">    the model and its score</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">model_dict</span> <span class="o">=</span> <span class="n">model_dict</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">model_scores</span> <span class="o">=</span> <span class="n">model_scores</span>
-    <span class="k">return</span> <span class="n">model_dict</span><span class="p">,</span> <span class="n">model_scores</span></div></div>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">      model : object</span>
+<span class="sd">        ML-model-object with the methods .fit() and .predict()</span>
+<span class="sd">      params : dict</span>
+<span class="sd">        dictionary with hyperparameter to the model</span>
+<span class="sd">      X_train : array</span>
+<span class="sd">        numpy-array with training data</span>
+<span class="sd">      y_train : array</span>
+<span class="sd">        numpy-array with training targets</span>
+<span class="sd">      X_test : array</span>
+<span class="sd">        numpy-array with test data</span>
+<span class="sd">      y_test : array</span>
+<span class="sd">        numpy-array with test targets</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">      model_trained : object</span>
+<span class="sd">        trained model</span>
+<span class="sd">      scores : float</span>
+<span class="sd">        test score for the model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">accuracy_score</span>
+    
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">clf</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">y_train</span><span class="p">))</span> <span class="c1"># Using ravel() since sklearn doesn&#39;t like arrays of shape (m, 1)</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">y_test</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">score</span></div>
+
+
+<div class="viewcode-block" id="daco.trainSynthTestReal"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco.trainSynthTestReal">[docs]</a>  <span class="k">def</span> <span class="nf">trainSynthTestReal</span><span class="p">(</span><span class="bp">self</span>
+                        <span class="p">,</span> <span class="n">scores</span><span class="o">=</span><span class="kc">None</span>
+                        <span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span>
+                        <span class="p">,</span> <span class="n">features</span><span class="o">=</span><span class="kc">None</span>
+                        <span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span>
+                        <span class="p">,</span> <span class="n">eval_size</span><span class="o">=</span><span class="mf">0.2</span>
+                        <span class="p">,</span> <span class="n">tstr_name</span><span class="o">=</span><span class="s1">&#39;tstr&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Method for training model(s) on synthetic data and test on real data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">      scores : array</span>
+<span class="sd">        numpy-array with scores from TSTR</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name1</span>
+    <span class="n">name2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name2</span>
+
+    <span class="k">if</span> <span class="n">scores</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="c1"># Loading synthetic training data</span>
+      <span class="n">X_train</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataPrep</span><span class="p">(</span><span class="n">target</span>
+                                                    <span class="p">,</span> <span class="n">features</span>
+                                                    <span class="p">,</span> <span class="n">test_size</span>
+                                                    <span class="p">,</span> <span class="n">eval_size</span>
+                                                    <span class="p">,</span> <span class="n">name1</span><span class="p">)</span>
+      <span class="c1"># Loading real test data</span>
+      <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataPrep</span><span class="p">(</span><span class="n">target</span>
+                                                    <span class="p">,</span> <span class="n">features</span>
+                                                    <span class="p">,</span> <span class="n">test_size</span>
+                                                    <span class="p">,</span> <span class="n">eval_size</span>
+                                                    <span class="p">,</span> <span class="n">name2</span><span class="p">)</span>
+
+      <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+
+      <span class="n">_</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trainSeveralModels</span><span class="p">(</span><span class="n">tstr_name</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="n">tstr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="n">tstr_name</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">tstr</span></div></div>
 </pre></div>
 
            </div>
@@ -1118,6 +1237,7 @@
         <script type="text/javascript" src="../_static/jquery.js"></script>
         <script type="text/javascript" src="../_static/underscore.js"></script>
         <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
 
   
