@@ -13,7 +13,7 @@ Welcome to DACO's documentation!
    usage
    daco_full_doc
 
-Fine steder å hente inspirasjon til dokumentering:
+Where to get inspiration when updating these docs:
 
 - `https://realpython.com/documenting-python-code/ <https://realpython.com/documenting-python-code/>`_
 - `http://www.sphinx-doc.org/en/stable/index.html <http://www.sphinx-doc.org/en/stable/index.html>`_

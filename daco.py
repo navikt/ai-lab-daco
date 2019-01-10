@@ -22,7 +22,6 @@
     - row by row comparison - for each row in synthetic dataset, find the row in the original
       dataset with highest match and save the number as an attribute to each row in synth.
       dataset
-    - Begrense antall plot i canvas til ni(?)
     - ML-modell-sammenlikning: trene på synt. data, test på ekte.
     - ML-modell-sammenlikning: JordonYoonVanDerSchaar arxiv: 1806.11345v1
     - IdentityDisclosure
@@ -294,7 +293,7 @@ class daco():
       self.hellinger(column)
 
     # forcing KL to be a number between 1 and 0.
-    kl_array = 1 - np.exp(- np.array(list(self.kullbackleibler_div.values())))
+    kl_array = 1 - np.exp(-np.array(list(self.kullbackleibler_div.values())))
     bha_array = np.array(list(self.bhattacharyya_dis.values()))
     hel_array = np.array(list(self.hellinger_div.values())) / np.sqrt(2) # maybe a stupid normalization
 
@@ -620,7 +619,7 @@ class daco():
       plt.show()
       plt.close()
 
-  def logisticRegressionBenchmark(self, target=[], features=[], test_size=0.2, eval_size=0.2):
+  def logisticRegressionBenchmark(self, target, features, test_size=0.2, eval_size=0.2):
     """Method for training a logistic regression-model on the datasets
     and investigate the differences in the model and predictions. The
     results and models are saved as class variables.
@@ -644,10 +643,14 @@ class daco():
 
     """
     from sklearn.linear_model import LogisticRegression
-    from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+    from sklearn.metrics import confusion_matrix, classification_report
 
-    X_train1, X_val1, y_train1, y_val1, X_test1, y_test1 = self.dataPrep(target, features, test_size, eval_size)
-    X_train2, X_val2, y_train2, y_val2, X_test2, y_test2 = self.dataPrep(target, features, test_size, eval_size)
+    name1    = self.name1
+    name2    = self.name2
+    file_dir = self.file_dir
+
+    X_train1, X_val1, y_train1, y_val1, X_test1, y_test1 = self.dataPrep(target, features, test_size, eval_size, name1)
+    X_train2, X_val2, y_train2, y_val2, X_test2, y_test2 = self.dataPrep(target, features, test_size, eval_size, name2)
 
     # Training models and calculating their accuracies
     clf1 = LogisticRegression().fit(X_train1, y_train1)
@@ -661,10 +664,6 @@ class daco():
     self.LR_model2  = clf2
     self.score_clf1 = s1
     self.score_clf2 = s2
-
-    name1    = self.name1
-    name2    = self.name2
-    file_dir = self.file_dir
 
     # Evaulating and finding confusion matrices
     predictions1  = clf1.predict(X_val1)
@@ -686,7 +685,7 @@ class daco():
     plt.show()
     plt.close()
 
-  def dataPrep(self, target, features, test_size, eval_size):
+  def dataPrep(self, target, features, test_size, eval_size, name):
     """Data preparation for the ML-models used in DACO. Takes in the two dataframes
     applies one hot encoding on categorical variables, and splits them into train,
     test, and evaluation sets.
@@ -699,6 +698,8 @@ class daco():
     :type test_size: float
     :param eval_size: size of evaluation set
     :type eval_size: float
+    :param name: name of dataset to prepare
+    :type name: str
     """
     from sklearn.model_selection import train_test_split
 
@@ -707,26 +708,27 @@ class daco():
     # different columns in each dataframe, must be fixed
     oneHotEncode = lambda df: pd.get_dummies(df, columns=df[features].select_dtypes(include='category').columns)
 
-    df1 = self.df1
-    df2 = self.df2
-
-    df1 = oneHotEncode(df1)
-    df2 = oneHotEncode(df2)
+    if name == self.name1:
+      df = self.df1
+      df = oneHotEncode(df)
+    elif name == self.name2:
+      df = self.df2
+      df = oneHotEncode(df)
 
     # generating new features list with one hot encoded features
     features_new = []
     for column in features:
-      for df_col in df1.columns:
+      for df_col in df.columns:
         if df_col.startswith(column):
           features_new.append(df_col)
 
-    X_train1, X_test1, y_train1, y_test1 = train_test_split(df1[features_new]
-                                                          , df1[target]
+    _X_train, X_test, _y_train, y_test = train_test_split(df[features_new]
+                                                          , df[target]
                                                           , test_size=test_size)
-    X_train1, X_val1, y_train1, y_val1 = train_test_split(X_train1, y_train1
+    X_train, X_val, y_train, y_val = train_test_split(_X_train, _y_train
                                                       , test_size=eval_size)
 
-    return X_train1, X_val1, y_train1, y_val1, X_test1, y_test1
+    return X_train, X_val, y_train, y_val, X_test, y_test
 
   def _plotConfusionMatrixFromLogisticRegression(self
       , conf_mat
@@ -776,7 +778,7 @@ class daco():
         col_groups[i] = _temp
         _temp  = []
     
-    for key, value in col_groups.items():
+    for _, value in col_groups.items():
       value = value + ['dummy'] # adding dummy-column for coloring in pairplot
       print(value)
       full_df = pd.concat([df1[value], df2[value]])
@@ -822,3 +824,115 @@ class daco():
       i += 1
 
     self.match_values = match_values
+
+  def syntheticRankingAgreement(self, model_scores=None):
+    r"""Method for checking whether the synthetic dataset is useful in machine learning
+    contexts. We use the "Synthetic Ranking Agreement"-method, SRA for short, see `https://arxiv.org/pdf/1806.11345v1.pdf <https://arxiv.org/pdf/1806.11345v1.pdf>`_
+    It is defined as 
+    
+    .. math::
+      \text{SRA} = \frac{1}{k(k-1)} \sum^{k}_{i=1}\sum_{j\neq i} \mathbb{I}\left( (R_i - R_j) \times (S_i - S_j) \right)
+
+    where :math:`R_k` and :math:`S_k` represents the performance score of algorithm :math:`k` on
+    the real dataset :math:`R` and the synthetic dataset :math:`S` respectively. The SRA can be
+    thought of as the (emprical) probability of a comparison on the synthetic data beain "correct".
+
+    Parameters
+    ----------
+      model_scores : dict
+        dict with scores for the different algorithms on the real and synthetic dataset.
+      
+    Returns
+    -------
+      sra : float
+        a single value which is the result of the formula given above.
+    """
+    name1 = self.name1
+    name2 = self.name2
+
+    if model_scores is None:
+      K = len(self.model_scores[name1]) # number of models/algorithms
+      S = self.model_scores[name1] # synthetic model scores
+      R = self.model_scores[name2] # real model scores
+    else:
+      K = len(model_scores[name1]) # number of models/algorithms
+      S = model_scores[name1] # synthetic model scores
+      R = model_scores[name2] # real model scores
+
+    sra = 0
+    for i in range(0,K):
+      for j in range(0,K):
+        if j != i:
+          sra += ((R[i] - R[j])*(S[i] - S[j])) > 0
+    sra *= 1/(K*(K-1))
+
+    return sra
+
+  def trainModels(self, target, features, test_size=0.2, eval_size=0.2):
+    """Method for training several ML-models on the two datasets given to this class.
+    The models and their test scores are saved in dictionaries.
+
+    .. todo::
+      - let the user set the parameters for the different models
+      - let the user choose which models to train
+    
+    Parameters
+    ----------
+      target : list
+        target values
+      features: list
+        features to use in training/predictions
+      test_size : float
+        size of test set
+      eval_size : float
+        size of evaluation set
+      
+    Returns
+    -------
+      model_dict : dict
+        dictionary with the models trained
+      model_scores : dict
+        dictionary with test scores for the models trained
+    """
+    name1 = self.name1
+    name2 = self.name2
+
+    X_train1, _, y_train1, _, X_test1, y_test1 = self.dataPrep(target, features, test_size, eval_size, name1)
+    X_train2, _, y_train2, _, X_test2, y_test2 = self.dataPrep(target, features, test_size, eval_size, name2)
+
+    from sklearn.metrics import accuracy_score
+    from sklearn.ensemble import RandomForestClassifier
+    from sklearn.ensemble import GradientBoostingClassifier
+    from sklearn.neighbors import KNeighborsClassifier
+    from sklearn.linear_model import LogisticRegression
+
+    # Choosing which models to train and their parameters.
+    models = [(RandomForestClassifier, {'n_estimators': 100})
+              , (GradientBoostingClassifier, {})
+              , (KNeighborsClassifier, {})
+              , (LogisticRegression, {'solver' :'liblinear'})]
+    
+    model_dict = {}
+    model_scores = {name1: [], name2: []}
+    
+    for mod, params in models:
+      print("Training model {} ...".format(mod.__name__))
+
+      _model1 = mod(**params)
+      clf1 = _model1.fit(X_train1, np.ravel(y_train1)) # Using ravel() since sklearn doesn't like arrays of shape (m, 1)
+      pred1 = clf1.predict(X_test1)
+      s1 = accuracy_score(pred1, np.ravel(y_test1))
+
+      _model2 = mod(**params)
+      clf2 = _model2.fit(X_train2, np.ravel(y_train2))
+      pred2 = clf2.predict(X_test2)
+      s2 = accuracy_score(pred2, np.ravel(y_test2))
+
+      model_dict[name1] = {mod.__name__ : clf1}
+      model_dict[name2] = {mod.__name__ : clf2}
+      model_scores[name1].append(s1)
+      model_scores[name2].append(s2)
+
+    self.model_dict = model_dict
+    self.model_scores = model_scores
+    return model_dict, model_scores

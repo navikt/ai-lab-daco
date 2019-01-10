@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('/Users/jonvegard/github/ai-lab-daco/'))
 # -- Project information -----------------------------------------------------
 
 project = 'DACO'
-copyright = '2018, Jon Vegard Sparre, Robindra Prabhu'
+copyright = '2019, Jon Vegard Sparre, Robindra Prabhu'
 author = 'Jon Vegard Sparre, Robindra Prabhu'
 
 # The short X.Y version
@@ -179,7 +179,7 @@ epub_exclude_files = ['search.html']
 
 # -- Extension configuration -------------------------------------------------
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.todo', 'sphinx.ext.viewcode']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.mathjax']
 # numpydoc_show_class_members = False
 # extensions = ['numpydoc']
 
