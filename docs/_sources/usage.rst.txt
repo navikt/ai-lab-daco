@@ -15,10 +15,10 @@ The idea is to use it like this:
   df1 = ...
   df2 = ...
   # Choose one of the variables in the dataset to compute statistics of
-  var1 = ...
+  var1 = 'foo'
 
   # create the daco-object
-  daco_obj = daco(df1, df2, name1='real_df', name2='fake_df')
+  daco_obj = daco(df1, df2, name1='real_df', name2='synth_df')
 
   # calculate distributions for all variables/columns in the dataframes
   dist = daco_obj.findDistributions()
@@ -32,7 +32,7 @@ The idea is to use it like this:
   # plot a canvas with distributions of all the variables
   daco_obj.plotCanvas()
 
-The results from `chisquare` will be outputted on the form
+The results from ``chisquare`` will be outputted on the form
 
 ::
   

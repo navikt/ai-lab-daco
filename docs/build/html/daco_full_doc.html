@@ -151,7 +151,6 @@
 <p class="first admonition-title">Todo</p>
 <ul class="last simple">
 <li>sequential vs tabular data (long term)</li>
-<li>differences (short term)</li>
 <li>local and global metrics</li>
 <li>differential privacy (long term)</li>
 <li>privacy checks</li>
@@ -160,13 +159,10 @@
 <li>pull plots based on the output from pd.dataframe.describe</li>
 <li>allow setting range, density, binning, etc. for each variable manually?</li>
 <li>set a random seed globally in class</li>
-<li>t-test -&gt; ttest_ind or ttest_rel?</li>
 <li>log-axes in plots</li>
 <li>row by row comparison - for each row in synthetic dataset, find the row in the original
 dataset with highest match and save the number as an attribute to each row in synth.
 dataset</li>
-<li>ML-modell-sammenlikning: trene på synt. data, test på ekte.</li>
-<li>ML-modell-sammenlikning: JordonYoonVanDerSchaar arxiv: 1806.11345v1</li>
 <li>IdentityDisclosure</li>
 <li>AttributeDisclosure</li>
 </ul>
@@ -224,7 +220,7 @@ for your use.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>conf_mat</strong> (<em>array</em>) – confusion matrix output from <cite>confusion_matrix</cite> in <cite>scipy</cite></li>
+<li><strong>conf_mat</strong> (<em>array</em>) – confusion matrix output from <code class="docutils literal notranslate"><span class="pre">confusion_matrix</span></code> in <code class="docutils literal notranslate"><span class="pre">SciPy</span></code></li>
 <li><strong>title</strong> (<em>str</em>) – title of subplot</li>
 <li><strong>ax</strong> (<em>object</em>) – axis object for plotting</li>
 </ul>
@@ -271,7 +267,7 @@ the model and its score</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> (<em>object</em>) – ML-model-object with the methods .fit() and .predict()</li>
+<li><strong>model</strong> (<em>object</em>) – ML-model-object with the methods <code class="docutils literal notranslate"><span class="pre">.fit()</span></code> and <code class="docutils literal notranslate"><span class="pre">.predict()</span></code></li>
 <li><strong>params</strong> (<em>dict</em>) – dictionary with hyperparameter to the model</li>
 <li><strong>X_train</strong> (<em>array</em>) – numpy-array with training data</li>
 <li><strong>y_train</strong> (<em>array</em>) – numpy-array with training targets</li>
@@ -321,9 +317,11 @@ See <a class="reference external" href="https://en.wikipedia.org/wiki/Bhattachar
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var1</strong> (<em>str</em>) – name of variable in the dataset to do the chisquare test.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">D, p</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>D</strong> (<em>float</em>) – The chi-squared test statistic</li>
+<li><strong>p</strong> (<em>float</em>) – p-value</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -375,6 +373,14 @@ into daco and save them in dictionaries.</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Examples</p>
+<p>By giving two Pandas dataframes we find the distributions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">daco_obj</span> <span class="o">=</span> <span class="n">daco</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="n">df2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span> <span class="o">=</span> <span class="n">daco_obj</span><span class="o">.</span><span class="n">findDistributions</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+<span class="go">{&#39;df1&#39;: {&#39;age&#39;: (array([0.01964384, 0.0258, ...]}, &#39;df2&#39;: {...}}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -389,7 +395,7 @@ See <a class="reference external" href="https://en.wikipedia.org/wiki/Hellinger_
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var1</strong> (<em>str</em>) – name of variable in the datasets to do calculate the Hellinger divergence for.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">hellinger_div. Ouput value is in range <cite>[0, sqrt(2)]</cite>.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">hellinger_div. Ouput value is in range <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">sqrt(2)]</span></code>.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
 </tr>
@@ -541,7 +547,7 @@ result as PNG-file.</p>
 <dt id="daco.daco.plotDistributionsOfVariable">
 <code class="descname">plotDistributionsOfVariable</code><span class="sig-paren">(</span><em>variable</em>, <em>filename_prefix=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.plotDistributionsOfVariable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.plotDistributionsOfVariable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plotting distributions for numerical and categorical
-variables in dataframes. Plots are saved in self.file_dir. The
+variables in dataframes. Plots are saved in <code class="xref py py-class docutils literal notranslate"><span class="pre">file_dir</span></code>. The
 plots include error bars and visualization of deviation from the
 real dataset.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -565,7 +571,7 @@ real dataset.</p>
 the categorical variables in dataframe.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">When plotting a canvas with all histograms ax2 should not be used
+<p class="last">When plotting a canvas with all histograms <code class="docutils literal notranslate"><span class="pre">ax2</span></code> should not be used
 due to layout problems.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -590,7 +596,7 @@ due to layout problems.</p>
 the numerical variables in dataframe.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">When plotting a canvas with all histograms <cite>ax2</cite> should not be used
+<p class="last">When plotting a canvas with all histograms <code class="docutils literal notranslate"><span class="pre">ax2</span></code> should not be used
 due to layout problems.</p>
 </div>
 <div class="admonition-todo admonition" id="index-1">
@@ -657,8 +663,8 @@ thought of as the (emprical) probability of a comparison on the synthetic data b
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>model_scores</strong> (<em>dict</em>) – dict with scores for the different algorithms on the real and synthetic dataset.</li>
-<li><strong>target</strong> (<em>list</em>) – list of training targets (if not <cite>model_scores</cite> is given)</li>
-<li><strong>features</strong> (<em>list</em>) – list of training features (if not <cite>model_scores</cite> is given)</li>
+<li><strong>target</strong> (<em>list</em>) – list of training targets (if not <code class="docutils literal notranslate"><span class="pre">model_scores</span></code> is given)</li>
+<li><strong>features</strong> (<em>list</em>) – list of training features (if not <code class="docutils literal notranslate"><span class="pre">model_scores</span></code> is given)</li>
 </ul>
 </td>
 </tr>
@@ -719,7 +725,16 @@ scores are saved in dictionaries.</p>
 <dl class="method">
 <dt id="daco.daco.wasserstein">
 <code class="descname">wasserstein</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.wasserstein"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.wasserstein" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Calculating the Wasserstein/”earth mover’s distance” with <code class="docutils literal notranslate"><span class="pre">SciPy</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var1</strong> (<em>str</em>) – name of variable to calculate for</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 

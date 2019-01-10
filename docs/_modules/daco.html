@@ -153,7 +153,6 @@
 
 <span class="sd">.. todo::</span>
 <span class="sd">    - sequential vs tabular data (long term)</span>
-<span class="sd">    - differences (short term)</span>
 <span class="sd">    - local and global metrics</span>
 <span class="sd">    - differential privacy (long term)</span>
 <span class="sd">    - privacy checks</span>
@@ -162,13 +161,10 @@
 <span class="sd">    - pull plots based on the output from pd.dataframe.describe</span>
 <span class="sd">    - allow setting range, density, binning, etc. for each variable manually?</span>
 <span class="sd">    - set a random seed globally in class</span>
-<span class="sd">    - t-test -&gt; ttest_ind or ttest_rel?</span>
 <span class="sd">    - log-axes in plots</span>
 <span class="sd">    - row by row comparison - for each row in synthetic dataset, find the row in the original</span>
 <span class="sd">      dataset with highest match and save the number as an attribute to each row in synth.</span>
 <span class="sd">      dataset</span>
-<span class="sd">    - ML-modell-sammenlikning: trene på synt. data, test på ekte.</span>
-<span class="sd">    - ML-modell-sammenlikning: JordonYoonVanDerSchaar arxiv: 1806.11345v1</span>
 <span class="sd">    - IdentityDisclosure</span>
 <span class="sd">    - AttributeDisclosure</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -285,6 +281,15 @@
 <span class="sd">    :returns: distributions</span>
 <span class="sd">    :rtype: dict</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    By giving two Pandas dataframes we find the distributions:</span>
+
+<span class="sd">    &gt;&gt;&gt; daco_obj = daco(df1,df2)</span>
+<span class="sd">    &gt;&gt;&gt; dist = daco_obj.findDistributions()</span>
+<span class="sd">    &gt;&gt;&gt; print(dist)</span>
+<span class="sd">    {&#39;df1&#39;: {&#39;age&#39;: (array([0.01964384, 0.0258, ...]}, &#39;df2&#39;: {...}}</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">df1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df1</span>
     <span class="n">df2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df2</span>
@@ -335,11 +340,17 @@
 <div class="viewcode-block" id="daco.chisquare"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco.chisquare">[docs]</a>  <span class="k">def</span> <span class="nf">chisquare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Method for calculating the chisquare test using scipy.stats.chisquare.</span>
 
-<span class="sd">    :param var1: name of variable in the dataset to do the chisquare test.</span>
-<span class="sd">    :type var1: str</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">      var1 : str</span>
+<span class="sd">        name of variable in the dataset to do the chisquare test.</span>
 
-<span class="sd">    :returns: D, p</span>
-<span class="sd">    :rtype: float</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">      D : float</span>
+<span class="sd">        The chi-squared test statistic</span>
+<span class="sd">      p : float</span>
+<span class="sd">        p-value</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">distributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions</span>
@@ -363,7 +374,7 @@
 <span class="sd">    :param var1: name of variable in the datasets to do calculate the Hellinger divergence for.</span>
 <span class="sd">    :type var1: str</span>
 <span class="sd">    </span>
-<span class="sd">    :returns: hellinger_div. Ouput value is in range `[0, sqrt(2)]`.</span>
+<span class="sd">    :returns: hellinger_div. Ouput value is in range ``[0, sqrt(2)]``.</span>
 <span class="sd">    :rtype: float</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -412,7 +423,12 @@
     <span class="k">return</span> <span class="n">kb_div</span></div>
 
 <div class="viewcode-block" id="daco.wasserstein"><a class="viewcode-back" href="../daco_full_doc.html#daco.daco.wasserstein">[docs]</a>  <span class="k">def</span> <span class="nf">wasserstein</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Calculating the Wasserstein/&quot;earth mover&#39;s distance&quot; with ``SciPy``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">      var1 : str</span>
+<span class="sd">         name of variable to calculate for</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="k">import</span> <span class="n">wasserstein_distance</span>
 
@@ -586,7 +602,7 @@
 <span class="sd">    the numerical variables in dataframe.</span>
 
 <span class="sd">    .. note::</span>
-<span class="sd">        When plotting a canvas with all histograms `ax2` should not be used</span>
+<span class="sd">        When plotting a canvas with all histograms ``ax2`` should not be used</span>
 <span class="sd">        due to layout problems.</span>
 
 <span class="sd">    .. todo::</span>
@@ -641,7 +657,7 @@
 <span class="sd">    the categorical variables in dataframe.</span>
 
 <span class="sd">    .. note::</span>
-<span class="sd">        When plotting a canvas with all histograms ax2 should not be used</span>
+<span class="sd">        When plotting a canvas with all histograms ``ax2`` should not be used</span>
 <span class="sd">        due to layout problems.</span>
 
 <span class="sd">    :param variable: name of variable plotting histogram for</span>
@@ -686,7 +702,7 @@
                                   <span class="p">,</span> <span class="n">variable</span>
                                   <span class="p">,</span> <span class="n">filename_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plotting distributions for numerical and categorical</span>
-<span class="sd">    variables in dataframes. Plots are saved in self.file_dir. The</span>
+<span class="sd">    variables in dataframes. Plots are saved in :class:`file_dir`. The</span>
 <span class="sd">    plots include error bars and visualization of deviation from the</span>
 <span class="sd">    real dataset.</span>
 
@@ -884,7 +900,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">      conf_mat : array</span>
-<span class="sd">        confusion matrix output from `confusion_matrix` in `scipy`</span>
+<span class="sd">        confusion matrix output from ``confusion_matrix`` in ``SciPy``</span>
 <span class="sd">      title : str</span>
 <span class="sd">        title of subplot</span>
 <span class="sd">      ax : object</span>
@@ -988,9 +1004,9 @@
 <span class="sd">      model_scores : dict</span>
 <span class="sd">        dict with scores for the different algorithms on the real and synthetic dataset.</span>
 <span class="sd">      target : list</span>
-<span class="sd">        list of training targets (if not `model_scores` is given)</span>
+<span class="sd">        list of training targets (if not ``model_scores`` is given)</span>
 <span class="sd">      features : list</span>
-<span class="sd">        list of training features (if not `model_scores` is given)</span>
+<span class="sd">        list of training features (if not ``model_scores`` is given)</span>
 <span class="sd">      </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1133,7 +1149,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">      model : object</span>
-<span class="sd">        ML-model-object with the methods .fit() and .predict()</span>
+<span class="sd">        ML-model-object with the methods ``.fit()`` and ``.predict()``</span>
 <span class="sd">      params : dict</span>
 <span class="sd">        dictionary with hyperparameter to the model</span>
 <span class="sd">      X_train : array</span>

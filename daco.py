@@ -8,7 +8,6 @@
 
 .. todo::
     - sequential vs tabular data (long term)
-    - differences (short term)
     - local and global metrics
     - differential privacy (long term)
     - privacy checks
@@ -17,13 +16,10 @@
     - pull plots based on the output from pd.dataframe.describe
     - allow setting range, density, binning, etc. for each variable manually?
     - set a random seed globally in class
-    - t-test -> ttest_ind or ttest_rel?
     - log-axes in plots
     - row by row comparison - for each row in synthetic dataset, find the row in the original
       dataset with highest match and save the number as an attribute to each row in synth.
       dataset
-    - ML-modell-sammenlikning: trene på synt. data, test på ekte.
-    - ML-modell-sammenlikning: JordonYoonVanDerSchaar arxiv: 1806.11345v1
     - IdentityDisclosure
     - AttributeDisclosure
 """
@@ -140,6 +136,15 @@ class daco():
     :returns: distributions
     :rtype: dict
 
+    Examples
+    --------
+    By giving two Pandas dataframes we find the distributions:
+
+    >>> daco_obj = daco(df1,df2)
+    >>> dist = daco_obj.findDistributions()
+    >>> print(dist)
+    {'df1': {'age': (array([0.01964384, 0.0258, ...]}, 'df2': {...}}
+
     """
     df1 = self.df1
     df2 = self.df2
@@ -190,11 +195,17 @@ class daco():
   def chisquare(self, var1):
     """Method for calculating the chisquare test using scipy.stats.chisquare.
 
-    :param var1: name of variable in the dataset to do the chisquare test.
-    :type var1: str
+    Parameters
+    ----------
+      var1 : str
+        name of variable in the dataset to do the chisquare test.
 
-    :returns: D, p
-    :rtype: float
+    Returns
+    -------
+      D : float
+        The chi-squared test statistic
+      p : float
+        p-value
 
     """
     distributions = self.distributions
@@ -218,7 +229,7 @@ class daco():
     :param var1: name of variable in the datasets to do calculate the Hellinger divergence for.
     :type var1: str
     
-    :returns: hellinger_div. Ouput value is in range `[0, sqrt(2)]`.
+    :returns: hellinger_div. Ouput value is in range ``[0, sqrt(2)]``.
     :rtype: float
 
     """
@@ -267,7 +278,12 @@ class daco():
     return kb_div
 
   def wasserstein(self, var1):
-    """
+    """Calculating the Wasserstein/"earth mover's distance" with ``SciPy``.
+
+    Parameters
+    ----------
+      var1 : str
+         name of variable to calculate for
     """
     from scipy.stats import wasserstein_distance
 
@@ -441,7 +457,7 @@ class daco():
     the numerical variables in dataframe.
 
     .. note::
-        When plotting a canvas with all histograms `ax2` should not be used
+        When plotting a canvas with all histograms ``ax2`` should not be used
         due to layout problems.
 
     .. todo::
@@ -496,7 +512,7 @@ class daco():
     the categorical variables in dataframe.
 
     .. note::
-        When plotting a canvas with all histograms ax2 should not be used
+        When plotting a canvas with all histograms ``ax2`` should not be used
         due to layout problems.
 
     :param variable: name of variable plotting histogram for
@@ -541,7 +557,7 @@ class daco():
                                   , variable
                                   , filename_prefix=''):
     """Plotting distributions for numerical and categorical
-    variables in dataframes. Plots are saved in self.file_dir. The
+    variables in dataframes. Plots are saved in :class:`file_dir`. The
     plots include error bars and visualization of deviation from the
     real dataset.
 
@@ -739,7 +755,7 @@ class daco():
     Parameters
     ----------
       conf_mat : array
-        confusion matrix output from `confusion_matrix` in `scipy`
+        confusion matrix output from ``confusion_matrix`` in ``SciPy``
       title : str
         title of subplot
       ax : object
@@ -843,9 +859,9 @@ class daco():
       model_scores : dict
         dict with scores for the different algorithms on the real and synthetic dataset.
       target : list
-        list of training targets (if not `model_scores` is given)
+        list of training targets (if not ``model_scores`` is given)
       features : list
-        list of training features (if not `model_scores` is given)
+        list of training features (if not ``model_scores`` is given)
       
     Returns
     -------
@@ -988,7 +1004,7 @@ class daco():
     Parameters
     ----------
       model : object
-        ML-model-object with the methods .fit() and .predict()
+        ML-model-object with the methods ``.fit()`` and ``.predict()``
       params : dict
         dictionary with hyperparameter to the model
       X_train : array
