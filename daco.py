@@ -825,9 +825,10 @@ class daco():
 
     self.match_values = match_values
 
-  def syntheticRankingAgreement(self, model_scores=None):
+  def syntheticRankingAgreement(self, model_scores=None, target=None, features=None):
     r"""Method for checking whether the synthetic dataset is useful in machine learning
-    contexts. We use the "Synthetic Ranking Agreement"-method, SRA for short, see `https://arxiv.org/pdf/1806.11345v1.pdf <https://arxiv.org/pdf/1806.11345v1.pdf>`_
+    contexts. We use the "Synthetic Ranking Agreement"-method, SRA for short,
+    see `https://arxiv.org/pdf/1806.11345v1.pdf <https://arxiv.org/pdf/1806.11345v1.pdf>`_
     It is defined as 
     
     .. math::
@@ -841,6 +842,10 @@ class daco():
     ----------
       model_scores : dict
         dict with scores for the different algorithms on the real and synthetic dataset.
+      target : list
+        list of training targets (if not `model_scores` is given)
+      features : list
+        list of training features (if not `model_scores` is given)
       
     Returns
     -------
@@ -849,15 +854,16 @@ class daco():
     """
     name1 = self.name1
     name2 = self.name2
-
+    
     if model_scores is None:
-      K = len(self.model_scores[name1]) # number of models/algorithms
-      S = self.model_scores[name1] # synthetic model scores
-      R = self.model_scores[name2] # real model scores
-    else:
+      _, model_scores = self.trainAndTestModels(target, features)
       K = len(model_scores[name1]) # number of models/algorithms
       S = model_scores[name1] # synthetic model scores
       R = model_scores[name2] # real model scores
+    elif model_scores is not None:
+      K = len(model_scores[name1])
+      S = model_scores[name1]
+      R = model_scores[name2]
 
     sra = 0
     for i in range(0,K):
@@ -868,13 +874,15 @@ class daco():
 
     return sra
 
-  def trainModels(self, target, features, test_size=0.2, eval_size=0.2):
-    """Method for training several ML-models on the two datasets given to this class.
-    The models and their test scores are saved in dictionaries.
-
-    .. todo::
-      - let the user set the parameters for the different models
-      - let the user choose which models to train
+  def trainAndTestModels(self
+                        , target
+                        , features
+                        , models=None
+                        , test_size=0.2
+                        , eval_size=0.2):
+    """Method for training several ML-models on the two datasets given to this
+    class and do testing as specified by the user. The models and their test
+    scores are saved in dictionaries.
     
     Parameters
     ----------
@@ -882,6 +890,8 @@ class daco():
         target values
       features: list
         features to use in training/predictions
+      models : list
+        list of tuples with models and a dict with parameters
       test_size : float
         size of test set
       eval_size : float
@@ -896,43 +906,152 @@ class daco():
     """
     name1 = self.name1
     name2 = self.name2
+    
+    model_dict = {}
+    model_scores = {}
 
-    X_train1, _, y_train1, _, X_test1, y_test1 = self.dataPrep(target, features, test_size, eval_size, name1)
-    X_train2, _, y_train2, _, X_test2, y_test2 = self.dataPrep(target, features, test_size, eval_size, name2)
+    for name in (name1, name2):
+      X_train, _, y_train, _, X_test, y_test = self.dataPrep(target
+                                                            , features
+                                                            , test_size
+                                                            , eval_size
+                                                            , name)
 
-    from sklearn.metrics import accuracy_score
+      data = (X_train, y_train, X_test, y_test)
+      model_dict_, model_scores_ = self._trainSeveralModels(name, data)
+
+      model_dict.update(model_dict_)
+      model_scores.update(model_scores_)
+
+    self.model_dict = model_dict
+    self.model_scores = model_scores
+
+    return model_dict, model_scores
+
+  def _trainSeveralModels(self, name, data, models=None):
+    """Private method for :class:`trainSynthTestReal` and :class:`syntheticRankingAgreement`.
+    Models and their scores are saved in dictionaries.
+
+    Parameters
+    ----------
+      name : str
+        name of the entry in the :class:`model_dict` and :class:`model_score`
+      data : tuple
+        tuple with training and test data in the order (X_train, y_train, X_test, y_test)
+      models : list
+        list of tuples with models and a dict with parameters
+
+    Returns
+    -------
+      model_dict : dict
+        dictionary containing all models trained
+      model_scores : dict
+        dictionary containing lists with scores for each model trained
+    """
+    
+    X_train, y_train, X_test, y_test = data[0], data[1], data[2], data[3]
+
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.ensemble import GradientBoostingClassifier
     from sklearn.neighbors import KNeighborsClassifier
     from sklearn.linear_model import LogisticRegression
 
-    # Choosing which models to train and their parameters.
-    models = [(RandomForestClassifier, {'n_estimators': 100})
-              , (GradientBoostingClassifier, {})
-              , (KNeighborsClassifier, {})
-              , (LogisticRegression, {'solver' :'liblinear'})]
+    if models is None:
+      # choosing default set of models and parameters
+      models = [(RandomForestClassifier, {'n_estimators': 100})
+                , (GradientBoostingClassifier, {})
+                , (KNeighborsClassifier, {})
+                , (LogisticRegression, {'solver' :'liblinear'})]
+    else:
+      # checking that the input is correct
+      for mod in models:
+        assert hasattr(mod[0], 'fit'), "The model {} doesn't have a .fit()-method.".format(mod[0].__name__)
+        assert isinstance(mod[1], dict), "You must provide the model's parameters in a dictionary."
     
     model_dict = {}
-    model_scores = {name1: [], name2: []}
+    model_scores = {name: []}
     
     for mod, params in models:
       print("Training model {} ...".format(mod.__name__))
+      
+      clf, s = self._trainSingleModel(mod, params, X_train, y_train, X_test, y_test)
 
-      _model1 = mod(**params)
-      clf1 = _model1.fit(X_train1, np.ravel(y_train1)) # Using ravel() since sklearn doesn't like arrays of shape (m, 1)
-      pred1 = clf1.predict(X_test1)
-      s1 = accuracy_score(pred1, np.ravel(y_test1))
+      model_dict[name] = {mod.__name__ : clf}
+      model_scores[name].append(s)
 
-      _model2 = mod(**params)
-      clf2 = _model2.fit(X_train2, np.ravel(y_train2))
-      pred2 = clf2.predict(X_test2)
-      s2 = accuracy_score(pred2, np.ravel(y_test2))
-
-      model_dict[name1] = {mod.__name__ : clf1}
-      model_dict[name2] = {mod.__name__ : clf2}
-      model_scores[name1].append(s1)
-      model_scores[name2].append(s2)
-
-    self.model_dict = model_dict
-    self.model_scores = model_scores
     return model_dict, model_scores
+
+  def _trainSingleModel(self, model, params, X_train, y_train, X_test, y_test):
+    """Private method for training a single model and returning
+    the model and its score
+
+    Parameters
+    ----------
+      model : object
+        ML-model-object with the methods .fit() and .predict()
+      params : dict
+        dictionary with hyperparameter to the model
+      X_train : array
+        numpy-array with training data
+      y_train : array
+        numpy-array with training targets
+      X_test : array
+        numpy-array with test data
+      y_test : array
+        numpy-array with test targets
+
+    Returns
+    -------
+      model_trained : object
+        trained model
+      scores : float
+        test score for the model
+    """
+    from sklearn.metrics import accuracy_score
+    
+    model = model(**params)
+    clf = model.fit(X_train, np.ravel(y_train)) # Using ravel() since sklearn doesn't like arrays of shape (m, 1)
+    pred = clf.predict(X_test)
+    score = accuracy_score(pred, np.ravel(y_test))
+
+    return model, score
+
+
+  def trainSynthTestReal(self
+                        , scores=None
+                        , target=None
+                        , features=None
+                        , test_size=0.2
+                        , eval_size=0.2
+                        , tstr_name='tstr'):
+    """Method for training model(s) on synthetic data and test on real data.
+
+    Parameters
+    ----------
+      scores : array
+        numpy-array with scores from TSTR
+    """
+    name1 = self.name1
+    name2 = self.name2
+
+    if scores is None:
+      # Loading synthetic training data
+      X_train, _, y_train, _, _, _ = self.dataPrep(target
+                                                    , features
+                                                    , test_size
+                                                    , eval_size
+                                                    , name1)
+      # Loading real test data
+      _, _, _, _, X_test, y_test = self.dataPrep(target
+                                                    , features
+                                                    , test_size
+                                                    , eval_size
+                                                    , name2)
+
+      data = (X_train, y_train, X_test, y_test)
+
+      _, scores = self._trainSeveralModels(tstr_name, data)
+
+    tstr = np.mean(scores[tstr_name])
+
+    return tstr
