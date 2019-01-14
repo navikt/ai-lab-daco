@@ -1,4 +1,0 @@
-Kolmogorov-Smirnov
-t-test
-chi2
-B-dist
