@@ -3,8 +3,6 @@ DACO - Dataframe Comparing tool
 
 You are now trapped inside the repository containing the beginnings of a package/class for comparing two Pandas dataframes in Python. The goal is to be able to compare dataframes in several contexts, for example checking whether a synthetic dataset is good enough for your purposes.
 
-[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://GitHub.com/Naereen/StrapDown.js/releases/)
-
 The full docs are found [here](https://navikt.github.io/ai-lab-daco/).
 
 ## Install
