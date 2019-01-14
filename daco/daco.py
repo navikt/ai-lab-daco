@@ -299,24 +299,6 @@ class daco():
 
     return wasserstein_val_
 
-  
-  def plotDistanceMetrics(self):
-    df1 = self.df1
-
-    for column in df1.select_dtypes(include='number').columns:
-      self.kullbackleibler(column)
-      self.bhattacharyya(column)
-      self.hellinger(column)
-
-    # forcing KL to be a number between 1 and 0.
-    kl_array = 1 - np.exp(-np.array(list(self.kullbackleibler_div.values())))
-    bha_array = np.array(list(self.bhattacharyya_dis.values()))
-    hel_array = np.array(list(self.hellinger_div.values())) / np.sqrt(2) # maybe a stupid normalization
-
-    # TODO bytte til seaborn --> må antakeligvis legge arrays over inn i en dataframe
-    plt.boxplot([kl_array, bha_array, hel_array], showmeans=True)
-    plt.show()
-
   def bhattacharyya(self, var1):
     """Calculate the Bhattacharyya distance for the distributions of
     var1 in the two dataframes.
@@ -344,6 +326,61 @@ class daco():
     bhattacharyya_dis[var1] = b_dis
 
     return b_dis
+
+  def _findAndNormalizeDistances(self):
+    """Calculate and normalize distances for all numerical variables.
+
+    Returns
+    -------
+      kl_array : array
+        Kullback-Leibler values
+      bha_array : array
+        Bhattacharyya values
+      hel_array : array
+        Hellinger values
+    """
+    df1 = self.df1
+
+    for column in df1.select_dtypes(include='number').columns:
+      self.kullbackleibler(column)
+      self.bhattacharyya(column)
+      self.hellinger(column)
+
+    # forcing KL to be a number between 1 and 0.
+    kl_array = 1 - np.exp(-np.array(list(self.kullbackleibler_div.values())))
+    bha_array = np.array(list(self.bhattacharyya_dis.values()))
+    hel_array = np.array(list(self.hellinger_div.values())) / np.sqrt(2) # maybe a stupid normalization
+
+    return kl_array, bha_array, hel_array
+
+  def printDistances(self):
+    """Print a nice markdown table with the distance metrics for all numerical
+    variables.
+
+    Returns
+    -------
+      distance_values : dict
+        a dict containing all values calculated
+    """
+    df1 = self.df1
+
+    kl_array, bha_array, hel_array = self._findAndNormalizeDistances()
+
+    print(f"| Variable             | Kullback | Bhattacharyya | Hellinger |")
+    for column, kl, bha, hel in zip(df1.select_dtypes(include='number').columns, kl_array, bha_array, hel_array):
+      print(f"| {column:20} | {kl:8.2f} | {bha:13.2f} | {hel:9.2f} |")
+
+    return 0
+
+  def plotDistanceMetrics(self):
+    """Plot boxplot of the distance metrics Kullback-Leibler, Bhattacharyya, and
+    Hellinger for all numerical variables.
+    """
+    kl_array, bha_array, hel_array = self._findAndNormalizeDistances()
+
+    # TODO bytte til seaborn --> må antakeligvis legge arrays over inn i en dataframe
+    plt.boxplot([kl_array, bha_array, hel_array], showmeans=True)
+    plt.show()
 
   def ks2_test(self, var):
     """Method using the scipy.stats.ks_2samp for computing the Kolmogorov-
@@ -1031,7 +1068,6 @@ class daco():
     score = accuracy_score(pred, np.ravel(y_test))
 
     return model, score
-
 
   def trainSynthTestReal(self
                         , scores=None
