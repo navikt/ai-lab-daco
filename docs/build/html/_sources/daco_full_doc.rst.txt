@@ -3,7 +3,7 @@
 DACO documentation
 ==================
 
-.. automodule:: daco
+.. automodule:: daco.daco
   :special-members:
   :private-members: 
   :members:
