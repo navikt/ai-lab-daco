@@ -39,10 +39,11 @@ class daco():
   settings, e.g. check if a synthetic version of a dataset is good enoug
   for your use.
   """
-  def __init__( self, df1, df2, name1='df1', name2='df2', file_dir="plots/"):
+  def __init__(self, df1, df2, name1='df1', name2='df2', file_dir="plots/"):
     """
     :param df1: dataframe to be compared. Must have header and dtype for all columns.
-    :param df2: dataframe to be compared. Must have header and dtype for all columns.
+    :param df2: dataframe to be compared. Must have header and dtype for all columns. This is\
+    treated as the synthetic version of df1 throughout the module.
     :type df1: dataframe
     :type df2: dataframe
 
@@ -51,7 +52,7 @@ class daco():
     :param name1: names of dataframes, used as keys in dictionaries containing info about dataframes
     :param name2: names of dataframes, used as keys in dictionaries containing info about dataframes
     :type name1: str
-    :type name2: str 
+    :type name2: str
     """
     # Doing some checks of the dataframes
     self._checkDataframes(df1, df2)
@@ -77,14 +78,14 @@ class daco():
     matplotlib.rcParams['xtick.labelsize'] = 12
     matplotlib.rcParams['ytick.labelsize'] = 12
     matplotlib.rcParams['legend.fontsize'] = 12
-    
+
     # Creating dir for saving plots etc.
     if not os.path.exists(file_dir):
       os.mkdir(file_dir)
 
   def _checkDataframes(self, df1, df2):
     """Checking whether the dataframes provided fullfills the requirements:
-    
+
     - The input should be pandas dataframes
     - Only float or categorical variables
     - Same column names in both frames
@@ -94,13 +95,13 @@ class daco():
     # contains all values
 
     for df in [df1, df2]:
-      if not isinstance( df, type( pd.DataFrame() ) ):
+      if not isinstance(df, type(pd.DataFrame())):
         raise TypeError("One of the daco-inputs is not a Pandas dataframe")
 
       col_names = df.select_dtypes(include=[np.number, 'category']).columns
       if not set(df.columns) == set(col_names):
         raise TypeError("Your dataframes has other datatypes than numerical and categorical")
-      
+
     if not set(df1.columns) == set(df2.columns):
       raise ValueError("Your dataframes does not contain the same columns")
 
@@ -128,11 +129,11 @@ class daco():
     into daco and save them in dictionaries.
 
     :param bins: number of bins in histogram/distribution or how to find the number of bins.
-    :type bins: int 
-        
+    :type bins: int
+
     :param density: if True a normalised distribution is returned.
     :type density: bool
-    
+
     :returns: distributions
     :rtype: dict
 
@@ -159,15 +160,26 @@ class daco():
     # looping over all columns containing numerical variables
     column_numerical = df1.select_dtypes(include=[np.number]).columns
     for column in column_numerical:
-      min_val = min(df1[ column ].min(), df2[ column ].min())
-      max_val = max(df1[ column ].max(), df2[ column ].max())
+      min_val = min(df1[column].min(), df2[column].min())
+      max_val = max(df1[column].max(), df2[column].max())
       range_ = (min_val, max_val)
-      
-      hist1[ str(column) ] = np.histogram( df1[ column ], bins=bins_, range=range_, density=density )
-      hist2[ str(column) ] = np.histogram( df2[ column ], bins=hist1[ str(column) ][1], range=range_, density=density )
-      # Calculating the error of each bin: err = 1 / sqrt( N ) * sqrt(  n_i / N ), i.e. the weight is w = 1 / N, where N is the total number of samples in the histogram
-      df1_err[ str(column) ] = 1/np.sqrt(np.histogram( df1[ column ], bins=bins_, range=range_)[0].sum()) * np.sqrt( hist1[ str(column) ][0] )
-      df2_err[ str(column) ] = 1/np.sqrt(np.histogram( df2[ column ], bins=hist1[ str(column) ][1], range=range_ )[0].sum()) * np.sqrt( hist2[ str(column) ][0] )
+
+      hist1[str(column)] = np.histogram(df1[column]
+                                        , bins=bins_
+                                        , range=range_
+                                        , density=density)
+      hist2[str(column)] = np.histogram(df2[column]
+                                        , bins=hist1[str(column)][1]
+                                        , range=range_
+                                        , density=density)
+      # Calculating the error of each bin: err = 1 / sqrt( N ) * sqrt(  n_i / N ),
+      # i.e. the weight is w = 1 / N, where N is the total number of samples in the histogram
+      df1_err[str(column)] = 1 / np.sqrt(np.histogram(df1[column]
+                                        , bins=bins_
+                                        , range=range_)[0].sum()) * np.sqrt(hist1[str(column)][0])
+      df2_err[str(column)] = 1 / np.sqrt(np.histogram(df2[column]
+                                        , bins=hist1[str(column)][1]
+                                        , range=range_)[0].sum()) * np.sqrt(hist2[str(column)][0])
 
     # looping over all columns containing categorical variables
     column_categories = df1.select_dtypes(include=['category']).columns
@@ -176,18 +188,18 @@ class daco():
       value_count2 = df2[column].value_counts(sort=False)
       norm_1 = value_count1.sum()
       norm_2 = value_count2.sum()
-      hist1[ str(column) ] = [ value_count1.values / norm_1, value_count1.index.categories ]
-      hist2[ str(column) ] = [ value_count2.values / norm_2, value_count2.index.categories ]
+      hist1[str(column)] = [value_count1.values / norm_1, value_count1.index.categories]
+      hist2[str(column)] = [value_count2.values / norm_2, value_count2.index.categories]
       # Calculating the error
-      df1_err[ str(column) ] =  1/np.sqrt(value_count1.values) * np.sqrt( hist1[ str(column) ][0] )
-      df2_err[ str(column) ] =  1/np.sqrt(value_count2.values) * np.sqrt( hist2[ str(column) ][0] )
-    
+      df1_err[str(column)] = 1 / np.sqrt(value_count1.values) * np.sqrt(hist1[str(column)][0])
+      df2_err[str(column)] = 1 / np.sqrt(value_count2.values) * np.sqrt(hist2[str(column)][0])
+
     distributions = {}
-    distributions[ name1 ] = hist1
-    distributions[ name2 ] = hist2
-    distributions[ name1 + '_err' ] = df1_err
-    distributions[ name2 + '_err' ] = df2_err
-    
+    distributions[name1] = hist1
+    distributions[name2] = hist2
+    distributions[name1 + '_err'] = df1_err
+    distributions[name2 + '_err'] = df2_err
+
     self.distributions = distributions
 
     return distributions
@@ -214,21 +226,30 @@ class daco():
     dist1 = distributions[self.name1][var1][0]
     dist2 = distributions[self.name2][var1][0]
 
-    D, p = scipy.stats.chisquare( dist1, dist2 )
+    D, p = scipy.stats.chisquare(dist1, dist2)
 
     # Saving results in dictionary
-    p_D_chisquare[var1] = { 'D': D, 'pvalue': p }
+    p_D_chisquare[var1] = {'D': D, 'pvalue': p}
 
     return D, p
 
+  def _hellingerDivergence(self, dist1, dist2):
+    """Private method calculating the Hellinger divergence.
+    """
+
+    hellinger_div_value = np.sqrt(np.sum((np.sqrt(dist1) - np.sqrt(dist2))**2))
+
+    return hellinger_div_value
+
   def hellinger(self, var1):
     """Calculate the Hellinger divergence for the distributions of
-    var1 in the two dataframes. 
-    See `https://en.wikipedia.org/wiki/Hellinger_distance <https://en.wikipedia.org/wiki/Hellinger_distance>`_
+    var1 in the two dataframes.
+    See `https://en.wikipedia.org/wiki/Hellinger_distance \
+    <https://en.wikipedia.org/wiki/Hellinger_distance>`_
 
     :param var1: name of variable in the datasets to do calculate the Hellinger divergence for.
     :type var1: str
-    
+
     :returns: hellinger_div. Ouput value is in range ``[0, sqrt(2)]``.
     :rtype: float
 
@@ -239,7 +260,7 @@ class daco():
     dist1 = distributions[self.name1][var1][0]
     dist2 = distributions[self.name2][var1][0]
 
-    hellinger_div_value = np.sqrt( np.sum( ( np.sqrt(dist1) - np.sqrt(dist2) )**2 ) )
+    hellinger_div_value = self._hellingerDivergence(dist1, dist2)
 
     hellinger_div[var1] = hellinger_div_value
 
@@ -249,12 +270,14 @@ class daco():
     """Calculate Kullback-Leibler divergence for the distributions of
     var1 in the two dataframes with scipy.stats.entropy.
 
-    - `https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence <https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence>`_
-    - `https://en.wikipedia.org/wiki/Kullback–Leibler_divergence <https://en.wikipedia.org/wiki/Kullback–Leibler_divergence>`_
+    - `https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence \
+    <https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence>`_
+    - `https://en.wikipedia.org/wiki/Kullback–Leibler_divergence 
+    \<https://en.wikipedia.org/wiki/Kullback–Leibler_divergence>`_
 
     :param var1: name of variable to do calculate the Kullback-Leibler divergence for. Must be contained in the dataframes.
     :type var1: str
-    
+
     :returns: kb_div
     :rtype: float
 
@@ -271,7 +294,7 @@ class daco():
     # return sp.entropy(p, q)
 
     # kb_div = spec.kl_div(dist1, dist2)
-    kb_div = stats.entropy( dist1, dist2 )
+    kb_div = stats.entropy(dist1, dist2)
 
     kullbackleibler_div[var1] = kb_div
 
@@ -302,11 +325,12 @@ class daco():
   def bhattacharyya(self, var1):
     """Calculate the Bhattacharyya distance for the distributions of
     var1 in the two dataframes.
-    See `https://en.wikipedia.org/wiki/Bhattacharyya_distance <https://en.wikipedia.org/wiki/Bhattacharyya_distance>`_
+    See `https://en.wikipedia.org/wiki/Bhattacharyya_distance \
+    <https://en.wikipedia.org/wiki/Bhattacharyya_distance>`_
 
     :param var1: name of variable in the datasets to do calculate the Bhattacharyya distance for.
     :type var1: str
-    
+
     :returns: b_dis
     :rtype: float
 
@@ -321,7 +345,7 @@ class daco():
     def normalize(h):
       return h/np.sum(h)
 
-    b_dis = 1 - np.sum( np.sqrt( np.multiply( normalize(dist1), normalize(dist2) ) ) )
+    b_dis = 1 - np.sum(np.sqrt(np.multiply(normalize(dist1), normalize(dist2))))
 
     bhattacharyya_dis[var1] = b_dis
 
@@ -859,7 +883,7 @@ class daco():
     df2 = self.df2.select_dtypes(include=[np.number])
     
     # initializing dict that will be filled with entries on
-    # the form <index in df2> : [<index in df1>, match_value]
+    # the form [<index in df2>, <index in df1>, match_value]
     match_values = np.empty((len(df2), 3))
     
     len_row = len(df1.columns)
@@ -877,6 +901,38 @@ class daco():
       i += 1
 
     self.match_values = match_values
+
+    return match_values
+
+  def hellingerRowForRow(self):
+    """Method for comparing finding the pair of rows in the datasets that have
+    the best match.
+    """
+
+    # fetching only columns with numerical values
+    df1 = self.df1.select_dtypes(include=[np.number])
+    df2 = self.df2.select_dtypes(include=[np.number])
+
+    # initializing dict that will be filled with entries on
+    # the form [<index in df2>, <index in df1>, match_value]
+    match_values = np.empty((len(df2), 3))
+    
+    len_row = len(df1.columns)
+    
+    i = 0
+    for row2 in df2.itertuples():
+      row_match = [None, 0]
+      for row1 in df1.itertuples():
+        # applying np.isclose and counting number of elements inside our tolerances
+        match = self._hellingerDivergence(row1[1:], row2[1:])
+        match_rel = match.sum() / len_row
+        if match_rel >= row_match[1]:
+          row_match = [row1[0], match_rel]
+      match_values[i] = np.array([row2[0], row_match[0], row_match[1]])
+      i += 1
+
+    self.hellinger_row = match_values
+    return match_values
 
   def syntheticRankingAgreement(self, model_scores=None, target=None, features=None):
     r"""Method for checking whether the synthetic dataset is useful in machine learning
