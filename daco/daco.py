@@ -17,9 +17,6 @@
     - allow setting range, density, binning, etc. for each variable manually?
     - set a random seed globally in class
     - log-axes in plots
-    - row by row comparison - for each row in synthetic dataset, find the row in the original
-      dataset with highest match and save the number as an attribute to each row in synth.
-      dataset
     - IdentityDisclosure
     - AttributeDisclosure
 """
@@ -107,7 +104,16 @@ class daco():
 
   def numericalComparing(self):
     """Compare the mean, variance, etc. of the numerical variable between the
-    two dataframes
+    two dataframes. For each numerical variable we calculate the mean of the
+    values in both dataframes, then we divide the mean value of the variable in
+    the first dataframe on the second one to find how much they differ.
+
+    Returns
+    -------
+      desc_compare : dict
+        contains the relative mean values of all numerical variables in both
+        dataframes.
+
     """
     df1 = self.df1
     df2 = self.df2
@@ -123,6 +129,7 @@ class daco():
       desc_compare['mean_rel_{}'.format(variable)] = value1/value2
 
     print(desc_compare)
+    return(desc_compare)
 
   def findDistributions(self, bins_='sturges', density=True):
     """Find distributions of all variables/columns in dataframes loaded
@@ -489,7 +496,7 @@ class daco():
     df1       = self.df1
     df2       = self.df2
     file_dir  = self.file_dir
-    
+
     corr1 = df1.corr()
     corr2 = df2.corr()
     diff  = corr1 - corr2
@@ -830,7 +837,10 @@ class daco():
     ax.set_title('{}'.format(title))
   
   def plotPairplot(self):
-    """Using seaborn to plot a pairplot
+    """Using seaborn to plot a pairplot of numerical variables.
+
+    .. todo::
+        Issues with the layout, not all parts are visible.
     """
     import seaborn as sns
 
@@ -857,9 +867,10 @@ class daco():
     
     for _, value in col_groups.items():
       value = value + ['dummy'] # adding dummy-column for coloring in pairplot
-      print(value)
+      # print(value)
       full_df = pd.concat([df1[value], df2[value]])
-      sns.pairplot(full_df, hue='dummy', diag_kind='hist')
+      sns.pairplot(full_df, hue='dummy', diag_kind='hist', plot_kws=dict(figure=fig))
+      plt.tight_layout()
       plt.show()
 
   def rowMatching(self, atol_=1e-1, rtol_=1e-1):
@@ -870,13 +881,16 @@ class daco():
 
     Parameters
     ----------
-    atol : float
-      The relative tolerance parameter, see Numpy docs.
-    rtol : float
-      The absolute tolerance parameter, see Numpy docs.
+      atol : float
+        The relative tolerance parameter, see Numpy docs.
+      rtol : float
+        The absolute tolerance parameter, see Numpy docs.
 
     Returns
     -------
+      match_values : array
+        array with dimensions (len(df2), 3) where each row contains
+        ``[<index in df2>, <index in df1>, match_value]``.
     """
     # fetching only columns with numerical values
     df1 = self.df1.select_dtypes(include=[np.number])
@@ -907,6 +921,12 @@ class daco():
   def hellingerRowForRow(self):
     """Method for comparing finding the pair of rows in the datasets that have
     the best match.
+
+    .. warning::
+        Very slow implementation!
+
+    .. todo::
+        Parallellize?
     """
 
     # fetching only columns with numerical values
