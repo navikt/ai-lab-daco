@@ -160,9 +160,6 @@
 <li>allow setting range, density, binning, etc. for each variable manually?</li>
 <li>set a random seed globally in class</li>
 <li>log-axes in plots</li>
-<li>row by row comparison - for each row in synthetic dataset, find the row in the original
-dataset with highest match and save the number as an attribute to each row in synth.
-dataset</li>
 <li>IdentityDisclosure</li>
 <li>AttributeDisclosure</li>
 </ul>
@@ -260,6 +257,11 @@ for your use.</p>
 <code class="descname">_trainSeveralModels</code><span class="sig-paren">(</span><em>name</em>, <em>data</em>, <em>models=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco/daco.html#daco._trainSeveralModels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.daco._trainSeveralModels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method for <a class="reference internal" href="#daco.daco.daco.trainSynthTestReal" title="daco.daco.daco.trainSynthTestReal"><code class="xref py py-class docutils literal notranslate"><span class="pre">trainSynthTestReal</span></code></a> and <a class="reference internal" href="#daco.daco.daco.syntheticRankingAgreement" title="daco.daco.daco.syntheticRankingAgreement"><code class="xref py py-class docutils literal notranslate"><span class="pre">syntheticRankingAgreement</span></code></a>.
 Models and their scores are saved in dictionaries.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is constrained to only use
+models with a <code class="docutils literal notranslate"><span class="pre">.fit()</span></code>-method.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -433,6 +435,14 @@ See <a class="reference external" href="https://en.wikipedia.org/wiki/Hellinger_
 <code class="descname">hellingerRowForRow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco/daco.html#daco.hellingerRowForRow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.daco.hellingerRowForRow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method for comparing finding the pair of rows in the datasets that have
 the best match.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Very slow implementation!</p>
+</div>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Parallellize?</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -514,7 +524,20 @@ results and models are saved as class variables.</p>
 <dt id="daco.daco.daco.numericalComparing">
 <code class="descname">numericalComparing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco/daco.html#daco.numericalComparing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.daco.numericalComparing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compare the mean, variance, etc. of the numerical variable between the
-two dataframes</p>
+two dataframes. For each numerical variable we calculate the mean of the
+values in both dataframes, then we divide the mean value of the variable in
+the first dataframe on the second one to find how much they differ.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>desc_compare</strong> – contains the relative mean values of all numerical variables in both
+dataframes.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -638,7 +661,7 @@ the numerical variables in dataframe.</p>
 <p class="last">When plotting a canvas with all histograms <code class="docutils literal notranslate"><span class="pre">ax2</span></code> should not be used
 due to layout problems.</p>
 </div>
-<div class="admonition-todo admonition" id="index-1">
+<div class="admonition-todo admonition" id="index-2">
 <p class="first admonition-title">Todo</p>
 <p class="last">Legge inn boxplot av hellinger et.al.</p>
 </div>
@@ -660,7 +683,11 @@ due to layout problems.</p>
 <dl class="method">
 <dt id="daco.daco.daco.plotPairplot">
 <code class="descname">plotPairplot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco/daco.html#daco.plotPairplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.daco.plotPairplot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Using seaborn to plot a pairplot</p>
+<dd><p>Using seaborn to plot a pairplot of numerical variables.</p>
+<div class="admonition-todo admonition" id="index-3">
+<p class="first admonition-title">Todo</p>
+<p class="last">Issues with the layout, not all parts are visible.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -691,10 +718,17 @@ Using numpy.isclose as a matching measure for numerical values.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>atol</strong> (<em>float</em>) – The relative tolerance parameter, see Numpy docs.</li>
 <li><strong>rtol</strong> (<em>float</em>) – The absolute tolerance parameter, see Numpy docs.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>match_values</strong> – array with dimensions (len(df2), 3) where each row contains
+<code class="docutils literal notranslate"><span class="pre">[&lt;index</span> <span class="pre">in</span> <span class="pre">df2&gt;,</span> <span class="pre">&lt;index</span> <span class="pre">in</span> <span class="pre">df1&gt;,</span> <span class="pre">match_value]</span></code>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array</p>
 </td>
 </tr>
 </tbody>

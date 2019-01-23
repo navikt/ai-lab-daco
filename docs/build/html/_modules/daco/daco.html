@@ -164,9 +164,6 @@
 <span class="sd">    - allow setting range, density, binning, etc. for each variable manually?</span>
 <span class="sd">    - set a random seed globally in class</span>
 <span class="sd">    - log-axes in plots</span>
-<span class="sd">    - row by row comparison - for each row in synthetic dataset, find the row in the original</span>
-<span class="sd">      dataset with highest match and save the number as an attribute to each row in synth.</span>
-<span class="sd">      dataset</span>
 <span class="sd">    - IdentityDisclosure</span>
 <span class="sd">    - AttributeDisclosure</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -186,7 +183,7 @@
 <span class="sd">  settings, e.g. check if a synthetic version of a dataset is good enoug</span>
 <span class="sd">  for your use.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="daco.__init__"><a class="viewcode-back" href="../../daco_full_doc.html#daco.daco.daco.__init__">[docs]</a>  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">,</span> <span class="n">name1</span><span class="o">=</span><span class="s1">&#39;df1&#39;</span><span class="p">,</span> <span class="n">name2</span><span class="o">=</span><span class="s1">&#39;df2&#39;</span><span class="p">,</span> <span class="n">file_dir</span><span class="o">=</span><span class="s2">&quot;plots/&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="daco.__init__"><a class="viewcode-back" href="../../daco_full_doc.html#daco.daco.daco.__init__">[docs]</a>  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">,</span> <span class="n">name1</span><span class="o">=</span><span class="s1">&#39;df1&#39;</span><span class="p">,</span> <span class="n">name2</span><span class="o">=</span><span class="s1">&#39;df2&#39;</span><span class="p">,</span> <span class="n">file_dir</span><span class="o">=</span><span class="s2">&quot;plots/&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    :param df1: dataframe to be compared. Must have header and dtype for all columns.</span>
 <span class="sd">    :param df2: dataframe to be compared. Must have header and dtype for all columns. This is\</span>
@@ -199,7 +196,7 @@
 <span class="sd">    :param name1: names of dataframes, used as keys in dictionaries containing info about dataframes</span>
 <span class="sd">    :param name2: names of dataframes, used as keys in dictionaries containing info about dataframes</span>
 <span class="sd">    :type name1: str</span>
-<span class="sd">    :type name2: str </span>
+<span class="sd">    :type name2: str</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Doing some checks of the dataframes</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_checkDataframes</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">)</span>
@@ -225,14 +222,14 @@
     <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;xtick.labelsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">12</span>
     <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;ytick.labelsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">12</span>
     <span class="n">matplotlib</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;legend.fontsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">12</span>
-    
+
     <span class="c1"># Creating dir for saving plots etc.</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_dir</span><span class="p">):</span>
       <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">file_dir</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="daco._checkDataframes"><a class="viewcode-back" href="../../daco_full_doc.html#daco.daco.daco._checkDataframes">[docs]</a>  <span class="k">def</span> <span class="nf">_checkDataframes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Checking whether the dataframes provided fullfills the requirements:</span>
-<span class="sd">    </span>
+
 <span class="sd">    - The input should be pandas dataframes</span>
 <span class="sd">    - Only float or categorical variables</span>
 <span class="sd">    - Same column names in both frames</span>
@@ -242,19 +239,28 @@
     <span class="c1"># contains all values</span>
 
     <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="p">[</span><span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">]:</span>
-      <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span> <span class="n">df</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span> <span class="p">)</span> <span class="p">):</span>
+      <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">())):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;One of the daco-inputs is not a Pandas dataframe&quot;</span><span class="p">)</span>
 
       <span class="n">col_names</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="s1">&#39;category&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
       <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">col_names</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Your dataframes has other datatypes than numerical and categorical&quot;</span><span class="p">)</span>
-      
+
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">df1</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
       <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Your dataframes does not contain the same columns&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="daco.numericalComparing"><a class="viewcode-back" href="../../daco_full_doc.html#daco.daco.daco.numericalComparing">[docs]</a>  <span class="k">def</span> <span class="nf">numericalComparing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compare the mean, variance, etc. of the numerical variable between the</span>
-<span class="sd">    two dataframes</span>
+<span class="sd">    two dataframes. For each numerical variable we calculate the mean of the</span>
+<span class="sd">    values in both dataframes, then we divide the mean value of the variable in</span>
+<span class="sd">    the first dataframe on the second one to find how much they differ.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">      desc_compare : dict</span>
+<span class="sd">        contains the relative mean values of all numerical variables in both</span>
+<span class="sd">        dataframes.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">df1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df1</span>
     <span class="n">df2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df2</span>
@@ -269,18 +275,19 @@
       <span class="n">value2</span> <span class="o">=</span> <span class="n">desc2</span><span class="o">.</span><span class="n">mean</span><span class="p">()[</span><span class="n">variable</span><span class="p">]</span>
       <span class="n">desc_compare</span><span class="p">[</span><span class="s1">&#39;mean_rel_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">variable</span><span class="p">)]</span> <span class="o">=</span> <span class="n">value1</span><span class="o">/</span><span class="n">value2</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">desc_compare</span><span class="p">)</span></div>
+    <span class="nb">print</span><span class="p">(</span><span class="n">desc_compare</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">desc_compare</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="daco.findDistributions"><a class="viewcode-back" href="../../daco_full_doc.html#daco.daco.daco.findDistributions">[docs]</a>  <span class="k">def</span> <span class="nf">findDistributions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bins_</span><span class="o">=</span><span class="s1">&#39;sturges&#39;</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Find distributions of all variables/columns in dataframes loaded</span>
 <span class="sd">    into daco and save them in dictionaries.</span>
 
 <span class="sd">    :param bins: number of bins in histogram/distribution or how to find the number of bins.</span>
-<span class="sd">    :type bins: int </span>
-<span class="sd">        </span>
+<span class="sd">    :type bins: int</span>
+
 <span class="sd">    :param density: if True a normalised distribution is returned.</span>
 <span class="sd">    :type density: bool</span>
-<span class="sd">    </span>
+
 <span class="sd">    :returns: distributions</span>
 <span class="sd">    :rtype: dict</span>
 
@@ -307,15 +314,26 @@
     <span class="c1"># looping over all columns containing numerical variables</span>
     <span class="n">column_numerical</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
     <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">column_numerical</span><span class="p">:</span>
-      <span class="n">min_val</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span> <span class="n">column</span> <span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">df2</span><span class="p">[</span> <span class="n">column</span> <span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
-      <span class="n">max_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span> <span class="n">column</span> <span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">df2</span><span class="p">[</span> <span class="n">column</span> <span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+      <span class="n">min_val</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">df2</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+      <span class="n">max_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">df2</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
       <span class="n">range_</span> <span class="o">=</span> <span class="p">(</span><span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">)</span>
-      
-      <span class="n">hist1</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span> <span class="n">df1</span><span class="p">[</span> <span class="n">column</span> <span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins_</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span> <span class="p">)</span>
-      <span class="n">hist2</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span> <span class="n">df2</span><span class="p">[</span> <span class="n">column</span> <span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">hist1</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span> <span class="p">)</span>
-      <span class="c1"># Calculating the error of each bin: err = 1 / sqrt( N ) * sqrt(  n_i / N ), i.e. the weight is w = 1 / N, where N is the total number of samples in the histogram</span>
-      <span class="n">df1_err</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span> <span class="n">df1</span><span class="p">[</span> <span class="n">column</span> <span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins_</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">hist1</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
-      <span class="n">df2_err</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span> <span class="n">df2</span><span class="p">[</span> <span class="n">column</span> <span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="n">hist1</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">hist2</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+
+      <span class="n">hist1</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+                                        <span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins_</span>
+                                        <span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span>
+                                        <span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">)</span>
+      <span class="n">hist2</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">df2</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+                                        <span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">hist1</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span>
+                                        <span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span>
+                                        <span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">)</span>
+      <span class="c1"># Calculating the error of each bin: err = 1 / sqrt( N ) * sqrt(  n_i / N ),</span>
+      <span class="c1"># i.e. the weight is w = 1 / N, where N is the total number of samples in the histogram</span>
+      <span class="n">df1_err</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">df1</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+                                        <span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins_</span>
+                                        <span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">hist1</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)][</span><span class="mi">0</span><span class="p">])</span>
+      <span class="n">df2_err</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">df2</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+                                        <span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">hist1</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span>
+                                        <span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">hist2</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)][</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="c1"># looping over all columns containing categorical variables</span>
     <span class="n">column_categories</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
@@ -324,18 +342,18 @@
       <span class="n">value_count2</span> <span class="o">=</span> <span class="n">df2</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
       <span class="n">norm_1</span> <span class="o">=</span> <span class="n">value_count1</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
       <span class="n">norm_2</span> <span class="o">=</span> <span class="n">value_count2</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-      <span class="n">hist1</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">]</span> <span class="o">=</span> <span class="p">[</span> <span class="n">value_count1</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="n">norm_1</span><span class="p">,</span> <span class="n">value_count1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">categories</span> <span class="p">]</span>
-      <span class="n">hist2</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">]</span> <span class="o">=</span> <span class="p">[</span> <span class="n">value_count2</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="n">norm_2</span><span class="p">,</span> <span class="n">value_count2</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">categories</span> <span class="p">]</span>
+      <span class="n">hist1</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="n">value_count1</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="n">norm_1</span><span class="p">,</span> <span class="n">value_count1</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">categories</span><span class="p">]</span>
+      <span class="n">hist2</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="n">value_count2</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="n">norm_2</span><span class="p">,</span> <span class="n">value_count2</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">categories</span><span class="p">]</span>
       <span class="c1"># Calculating the error</span>
-      <span class="n">df1_err</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">]</span> <span class="o">=</span>  <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">value_count1</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">hist1</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
-      <span class="n">df2_err</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">]</span> <span class="o">=</span>  <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">value_count2</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">hist2</span><span class="p">[</span> <span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)</span> <span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
-    
+      <span class="n">df1_err</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">value_count1</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">hist1</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)][</span><span class="mi">0</span><span class="p">])</span>
+      <span class="n">df2_err</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">value_count2</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">hist2</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)][</span><span class="mi">0</span><span class="p">])</span>
+
     <span class="n">distributions</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">distributions</span><span class="p">[</span> <span class="n">name1</span> <span class="p">]</span> <span class="o">=</span> <span class="n">hist1</span>
-    <span class="n">distributions</span><span class="p">[</span> <span class="n">name2</span> <span class="p">]</span> <span class="o">=</span> <span class="n">hist2</span>
-    <span class="n">distributions</span><span class="p">[</span> <span class="n">name1</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span> <span class="p">]</span> <span class="o">=</span> <span class="n">df1_err</span>
-    <span class="n">distributions</span><span class="p">[</span> <span class="n">name2</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span> <span class="p">]</span> <span class="o">=</span> <span class="n">df2_err</span>
-    
+    <span class="n">distributions</span><span class="p">[</span><span class="n">name1</span><span class="p">]</span> <span class="o">=</span> <span class="n">hist1</span>
+    <span class="n">distributions</span><span class="p">[</span><span class="n">name2</span><span class="p">]</span> <span class="o">=</span> <span class="n">hist2</span>
+    <span class="n">distributions</span><span class="p">[</span><span class="n">name1</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df1_err</span>
+    <span class="n">distributions</span><span class="p">[</span><span class="n">name2</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df2_err</span>
+
     <span class="bp">self</span><span class="o">.</span><span class="n">distributions</span> <span class="o">=</span> <span class="n">distributions</span>
 
     <span class="k">return</span> <span class="n">distributions</span></div>
@@ -362,10 +380,10 @@
     <span class="n">dist1</span> <span class="o">=</span> <span class="n">distributions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name1</span><span class="p">][</span><span class="n">var1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">dist2</span> <span class="o">=</span> <span class="n">distributions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name2</span><span class="p">][</span><span class="n">var1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="n">D</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">chisquare</span><span class="p">(</span> <span class="n">dist1</span><span class="p">,</span> <span class="n">dist2</span> <span class="p">)</span>
+    <span class="n">D</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">chisquare</span><span class="p">(</span><span class="n">dist1</span><span class="p">,</span> <span class="n">dist2</span><span class="p">)</span>
 
     <span class="c1"># Saving results in dictionary</span>
-    <span class="n">p_D_chisquare</span><span class="p">[</span><span class="n">var1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="n">D</span><span class="p">,</span> <span class="s1">&#39;pvalue&#39;</span><span class="p">:</span> <span class="n">p</span> <span class="p">}</span>
+    <span class="n">p_D_chisquare</span><span class="p">[</span><span class="n">var1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="n">D</span><span class="p">,</span> <span class="s1">&#39;pvalue&#39;</span><span class="p">:</span> <span class="n">p</span><span class="p">}</span>
 
     <span class="k">return</span> <span class="n">D</span><span class="p">,</span> <span class="n">p</span></div>
 
@@ -373,18 +391,19 @@
     <span class="sd">&quot;&quot;&quot;Private method calculating the Hellinger divergence.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">hellinger_div_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dist1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dist2</span><span class="p">)</span> <span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="n">hellinger_div_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dist1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dist2</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">hellinger_div_value</span></div>
 
 <div class="viewcode-block" id="daco.hellinger"><a class="viewcode-back" href="../../daco_full_doc.html#daco.daco.daco.hellinger">[docs]</a>  <span class="k">def</span> <span class="nf">hellinger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate the Hellinger divergence for the distributions of</span>
-<span class="sd">    var1 in the two dataframes. </span>
-<span class="sd">    See `https://en.wikipedia.org/wiki/Hellinger_distance &lt;https://en.wikipedia.org/wiki/Hellinger_distance&gt;`_</span>
+<span class="sd">    var1 in the two dataframes.</span>
+<span class="sd">    See `https://en.wikipedia.org/wiki/Hellinger_distance \</span>
+<span class="sd">    &lt;https://en.wikipedia.org/wiki/Hellinger_distance&gt;`_</span>
 
 <span class="sd">    :param var1: name of variable in the datasets to do calculate the Hellinger divergence for.</span>
 <span class="sd">    :type var1: str</span>
-<span class="sd">    </span>
+
 <span class="sd">    :returns: hellinger_div. Ouput value is in range ``[0, sqrt(2)]``.</span>
 <span class="sd">    :rtype: float</span>
 
@@ -405,12 +424,14 @@
     <span class="sd">&quot;&quot;&quot;Calculate Kullback-Leibler divergence for the distributions of</span>
 <span class="sd">    var1 in the two dataframes with scipy.stats.entropy.</span>
 
-<span class="sd">    - `https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence &lt;https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence&gt;`_</span>
-<span class="sd">    - `https://en.wikipedia.org/wiki/Kullback–Leibler_divergence &lt;https://en.wikipedia.org/wiki/Kullback–Leibler_divergence&gt;`_</span>
+<span class="sd">    - `https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence \</span>
+<span class="sd">    &lt;https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence&gt;`_</span>
+<span class="sd">    - `https://en.wikipedia.org/wiki/Kullback–Leibler_divergence \</span>
+<span class="sd">    &lt;https://en.wikipedia.org/wiki/Kullback–Leibler_divergence&gt;`_</span>
 
 <span class="sd">    :param var1: name of variable to do calculate the Kullback-Leibler divergence for. Must be contained in the dataframes.</span>
 <span class="sd">    :type var1: str</span>
-<span class="sd">    </span>
+
 <span class="sd">    :returns: kb_div</span>
 <span class="sd">    :rtype: float</span>
 
@@ -427,7 +448,7 @@
     <span class="c1"># return sp.entropy(p, q)</span>
 
     <span class="c1"># kb_div = spec.kl_div(dist1, dist2)</span>
-    <span class="n">kb_div</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">entropy</span><span class="p">(</span> <span class="n">dist1</span><span class="p">,</span> <span class="n">dist2</span> <span class="p">)</span>
+    <span class="n">kb_div</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">entropy</span><span class="p">(</span><span class="n">dist1</span><span class="p">,</span> <span class="n">dist2</span><span class="p">)</span>
 
     <span class="n">kullbackleibler_div</span><span class="p">[</span><span class="n">var1</span><span class="p">]</span> <span class="o">=</span> <span class="n">kb_div</span>
 
@@ -458,11 +479,12 @@
 <div class="viewcode-block" id="daco.bhattacharyya"><a class="viewcode-back" href="../../daco_full_doc.html#daco.daco.daco.bhattacharyya">[docs]</a>  <span class="k">def</span> <span class="nf">bhattacharyya</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate the Bhattacharyya distance for the distributions of</span>
 <span class="sd">    var1 in the two dataframes.</span>
-<span class="sd">    See `https://en.wikipedia.org/wiki/Bhattacharyya_distance &lt;https://en.wikipedia.org/wiki/Bhattacharyya_distance&gt;`_</span>
+<span class="sd">    See `https://en.wikipedia.org/wiki/Bhattacharyya_distance \</span>
+<span class="sd">    &lt;https://en.wikipedia.org/wiki/Bhattacharyya_distance&gt;`_</span>
 
 <span class="sd">    :param var1: name of variable in the datasets to do calculate the Bhattacharyya distance for.</span>
 <span class="sd">    :type var1: str</span>
-<span class="sd">    </span>
+
 <span class="sd">    :returns: b_dis</span>
 <span class="sd">    :rtype: float</span>
 
@@ -477,7 +499,7 @@
     <span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
       <span class="k">return</span> <span class="n">h</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
 
-    <span class="n">b_dis</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span> <span class="n">normalize</span><span class="p">(</span><span class="n">dist1</span><span class="p">),</span> <span class="n">normalize</span><span class="p">(</span><span class="n">dist2</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="n">b_dis</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">normalize</span><span class="p">(</span><span class="n">dist1</span><span class="p">),</span> <span class="n">normalize</span><span class="p">(</span><span class="n">dist2</span><span class="p">))))</span>
 
     <span class="n">bhattacharyya_dis</span><span class="p">[</span><span class="n">var1</span><span class="p">]</span> <span class="o">=</span> <span class="n">b_dis</span>
 
@@ -621,7 +643,7 @@
     <span class="n">df1</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df1</span>
     <span class="n">df2</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df2</span>
     <span class="n">file_dir</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_dir</span>
-    
+
     <span class="n">corr1</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
     <span class="n">corr2</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
     <span class="n">diff</span>  <span class="o">=</span> <span class="n">corr1</span> <span class="o">-</span> <span class="n">corr2</span>
@@ -962,7 +984,10 @@
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="p">))</span></div>
   
 <div class="viewcode-block" id="daco.plotPairplot"><a class="viewcode-back" href="../../daco_full_doc.html#daco.daco.daco.plotPairplot">[docs]</a>  <span class="k">def</span> <span class="nf">plotPairplot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Using seaborn to plot a pairplot</span>
+    <span class="sd">&quot;&quot;&quot;Using seaborn to plot a pairplot of numerical variables.</span>
+
+<span class="sd">    .. todo::</span>
+<span class="sd">        Issues with the layout, not all parts are visible.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 
@@ -989,9 +1014,10 @@
     
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">col_groups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
       <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;dummy&#39;</span><span class="p">]</span> <span class="c1"># adding dummy-column for coloring in pairplot</span>
-      <span class="nb">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+      <span class="c1"># print(value)</span>
       <span class="n">full_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df1</span><span class="p">[</span><span class="n">value</span><span class="p">],</span> <span class="n">df2</span><span class="p">[</span><span class="n">value</span><span class="p">]])</span>
-      <span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">full_df</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;dummy&#39;</span><span class="p">,</span> <span class="n">diag_kind</span><span class="o">=</span><span class="s1">&#39;hist&#39;</span><span class="p">)</span>
+      <span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">full_df</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;dummy&#39;</span><span class="p">,</span> <span class="n">diag_kind</span><span class="o">=</span><span class="s1">&#39;hist&#39;</span><span class="p">,</span> <span class="n">plot_kws</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">figure</span><span class="o">=</span><span class="n">fig</span><span class="p">))</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
       <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="daco.rowMatching"><a class="viewcode-back" href="../../daco_full_doc.html#daco.daco.daco.rowMatching">[docs]</a>  <span class="k">def</span> <span class="nf">rowMatching</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atol_</span><span class="o">=</span><span class="mf">1e-1</span><span class="p">,</span> <span class="n">rtol_</span><span class="o">=</span><span class="mf">1e-1</span><span class="p">):</span>
@@ -1002,13 +1028,16 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    atol : float</span>
-<span class="sd">      The relative tolerance parameter, see Numpy docs.</span>
-<span class="sd">    rtol : float</span>
-<span class="sd">      The absolute tolerance parameter, see Numpy docs.</span>
+<span class="sd">      atol : float</span>
+<span class="sd">        The relative tolerance parameter, see Numpy docs.</span>
+<span class="sd">      rtol : float</span>
+<span class="sd">        The absolute tolerance parameter, see Numpy docs.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
+<span class="sd">      match_values : array</span>
+<span class="sd">        array with dimensions (len(df2), 3) where each row contains</span>
+<span class="sd">        ``[&lt;index in df2&gt;, &lt;index in df1&gt;, match_value]``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># fetching only columns with numerical values</span>
     <span class="n">df1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df1</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span>
@@ -1039,6 +1068,12 @@
 <div class="viewcode-block" id="daco.hellingerRowForRow"><a class="viewcode-back" href="../../daco_full_doc.html#daco.daco.daco.hellingerRowForRow">[docs]</a>  <span class="k">def</span> <span class="nf">hellingerRowForRow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Method for comparing finding the pair of rows in the datasets that have</span>
 <span class="sd">    the best match.</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">        Very slow implementation!</span>
+
+<span class="sd">    .. todo::</span>
+<span class="sd">        Parallellize?</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># fetching only columns with numerical values</span>
@@ -1159,7 +1194,7 @@
                                                             <span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
       <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
-      <span class="n">model_dict_</span><span class="p">,</span> <span class="n">model_scores_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trainSeveralModels</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+      <span class="n">model_dict_</span><span class="p">,</span> <span class="n">model_scores_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trainSeveralModels</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="p">)</span>
 
       <span class="n">model_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">model_dict_</span><span class="p">)</span>
       <span class="n">model_scores</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">model_scores_</span><span class="p">)</span>
@@ -1172,6 +1207,10 @@
 <div class="viewcode-block" id="daco._trainSeveralModels"><a class="viewcode-back" href="../../daco_full_doc.html#daco.daco.daco._trainSeveralModels">[docs]</a>  <span class="k">def</span> <span class="nf">_trainSeveralModels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">models</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Private method for :class:`trainSynthTestReal` and :class:`syntheticRankingAgreement`.</span>
 <span class="sd">    Models and their scores are saved in dictionaries.</span>
+<span class="sd">    </span>
+<span class="sd">    .. note::</span>
+<span class="sd">      This method is constrained to only use</span>
+<span class="sd">      models with a ``.fit()``-method.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

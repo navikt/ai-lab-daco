@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 .. module:: daco
    :platform: Unix, macOS
@@ -29,7 +31,7 @@ import matplotlib
 import scipy, os
 from scipy import stats
 
-class daco():
+class daco_main():
   """ Class for comparing two Pandas dataframes.
 
   The purpose of this class is to easily compare datasets in different
@@ -279,8 +281,8 @@ class daco():
 
     - `https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence \
     <https://medium.com/@cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence>`_
-    - `https://en.wikipedia.org/wiki/Kullback–Leibler_divergence 
-    \<https://en.wikipedia.org/wiki/Kullback–Leibler_divergence>`_
+    - `https://en.wikipedia.org/wiki/Kullback–Leibler_divergence \
+    <https://en.wikipedia.org/wiki/Kullback–Leibler_divergence>`_
 
     :param var1: name of variable to do calculate the Kullback-Leibler divergence for. Must be contained in the dataframes.
     :type var1: str
@@ -397,9 +399,9 @@ class daco():
 
     kl_array, bha_array, hel_array = self._findAndNormalizeDistances()
 
-    print(f"| Variable             | Kullback | Bhattacharyya | Hellinger |")
+    print("| Variable             | Kullback | Bhattacharyya | Hellinger |")
     for column, kl, bha, hel in zip(df1.select_dtypes(include='number').columns, kl_array, bha_array, hel_array):
-      print(f"| {column:20} | {kl:8.2f} | {bha:13.2f} | {hel:9.2f} |")
+      print("| {column:20} | {kl:8.2f} | {bha:13.2f} | {hel:9.2f} |")
 
     return 0
 
@@ -1047,7 +1049,7 @@ class daco():
                                                             , name)
 
       data = (X_train, y_train, X_test, y_test)
-      model_dict_, model_scores_ = self._trainSeveralModels(name, data)
+      model_dict_, model_scores_ = self._trainSeveralModels(name, data, models)
 
       model_dict.update(model_dict_)
       model_scores.update(model_scores_)
@@ -1060,6 +1062,10 @@ class daco():
   def _trainSeveralModels(self, name, data, models=None):
     """Private method for :class:`trainSynthTestReal` and :class:`syntheticRankingAgreement`.
     Models and their scores are saved in dictionaries.
+    
+    .. note::
+      This method is constrained to only use
+      models with a ``.fit()``-method.
 
     Parameters
     ----------
@@ -1094,7 +1100,6 @@ class daco():
     else:
       # checking that the input is correct
       for mod in models:
-        assert hasattr(mod[0], 'fit'), "The model {} doesn't have a .fit()-method.".format(mod[0].__name__)
         assert isinstance(mod[1], dict), "You must provide the model's parameters in a dictionary."
     
     model_dict = {}
@@ -1137,6 +1142,8 @@ class daco():
         test score for the model
     """
     from sklearn.metrics import accuracy_score
+    
+    assert hasattr(model, 'fit'), "The model {} doesn't have a .fit()-method.".format(model.__name__)
     
     model = model(**params)
     clf = model.fit(X_train, np.ravel(y_train)) # Using ravel() since sklearn doesn't like arrays of shape (m, 1)
