@@ -6,6 +6,8 @@
 Welcome to DACO's documentation!
 ================================
 
+**Date**: |today| **Version**: |version|
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
