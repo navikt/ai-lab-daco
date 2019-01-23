@@ -30,7 +30,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import scipy, os
 from scipy import stats
-from .daco_plot import plot
+from daco.daco_plot import plot
 
 class daco(plot):
   """ Class for comparing two Pandas dataframes.

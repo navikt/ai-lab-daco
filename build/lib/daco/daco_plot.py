@@ -23,7 +23,7 @@ import scipy, os
 from scipy import stats
 
 class plot():
-  """ Class for plotting the metrics found in :class:``daco_main``.
+  """ Class for plotting the metrics found in :class:`daco`.
   """
   def plotDistanceMetrics(self):
     """Plot boxplot of the distance metrics Kullback-Leibler, Bhattacharyya, and
