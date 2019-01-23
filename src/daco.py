@@ -31,7 +31,7 @@ import matplotlib
 import scipy, os
 from scipy import stats
 
-class daco_main():
+class daco():
   """ Class for comparing two Pandas dataframes.
 
   The purpose of this class is to easily compare datasets in different
