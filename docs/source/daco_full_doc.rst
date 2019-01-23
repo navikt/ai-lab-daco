@@ -3,7 +3,12 @@
 DACO documentation
 ==================
 
-.. automodule:: daco.daco
+.. automodule:: daco
+  :special-members:
+  :private-members: 
+  :members:
+
+.. automodule:: daco_plot
   :special-members:
   :private-members: 
   :members:

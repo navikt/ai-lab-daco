@@ -9,7 +9,7 @@ The idea is to use it like this:
 
 ::
 
-  from daco import daco
+  from daco.daco import daco
 
   # load your data frames
   df1 = ...

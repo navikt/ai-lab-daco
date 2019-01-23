@@ -7,8 +7,8 @@ setuptools.setup(
     author_email="jon.vegard.sparre@nav.no",
     description="A package for comparing two datasets",
     url="https://navikt.github.io/ai-lab-daco/",
-    packages=['daco'],
-    package_dir={'daco': 'src'},
+    packages=['daco', 'daco_plot'],
+    package_dir={'daco': 'src', 'daco_plot': 'src'},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
