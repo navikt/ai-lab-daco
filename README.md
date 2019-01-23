@@ -7,7 +7,7 @@ The full docs are found [here](https://navikt.github.io/ai-lab-daco/).
 
 ## Install
 1. Clone this repo
-2. ``cd`` into ``daco/``
+2. ``cd`` into this repo
 3. Run ``pip install .``
 4. Voilà!
 
@@ -16,7 +16,7 @@ The full docs are found [here](https://navikt.github.io/ai-lab-daco/).
 
 The idea is to use it like this:
 ```python
-from daco import daco
+from daco.daco import daco
 
 # load your data frames
 df1 = ...
