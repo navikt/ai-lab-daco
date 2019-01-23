@@ -38,4 +38,4 @@ The results from ``chisquare`` will be outputted on the form
   
   {var1: {'D': <number>, 'p': <number>}}
 
-For detailed documenation of funtionality in DACO, see :ref:`daco_full_doc`.
+For detailed documenation of funtionality in DACO, see :ref:`daco_main`.

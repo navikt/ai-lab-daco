@@ -79,7 +79,8 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../usage.html">Using DACO</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../daco_full_doc.html">DACO documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daco_main.html">DACO - main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daco_plot.html">DACO - plot module</a></li>
 </ul>
 
             
@@ -167,10 +168,10 @@
 <span class="kn">import</span> <span class="nn">scipy</span><span class="o">,</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">stats</span>
 
-<div class="viewcode-block" id="plot"><a class="viewcode-back" href="../daco_full_doc.html#daco_plot.plot">[docs]</a><span class="k">class</span> <span class="nc">plot</span><span class="p">():</span>
+<div class="viewcode-block" id="plot"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot">[docs]</a><span class="k">class</span> <span class="nc">plot</span><span class="p">():</span>
   <span class="sd">&quot;&quot;&quot; Class for plotting the metrics found in :class:`daco`.</span>
 <span class="sd">  &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="plot.plotDistanceMetrics"><a class="viewcode-back" href="../daco_full_doc.html#daco_plot.plot.plotDistanceMetrics">[docs]</a>  <span class="k">def</span> <span class="nf">plotDistanceMetrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="plot.plotDistanceMetrics"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotDistanceMetrics">[docs]</a>  <span class="k">def</span> <span class="nf">plotDistanceMetrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plot boxplot of the distance metrics Kullback-Leibler, Bhattacharyya, and</span>
 <span class="sd">    Hellinger for all numerical variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -180,7 +181,7 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">boxplot</span><span class="p">([</span><span class="n">kl_array</span><span class="p">,</span> <span class="n">bha_array</span><span class="p">,</span> <span class="n">hel_array</span><span class="p">],</span> <span class="n">showmeans</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="plot.plotCorrelation"><a class="viewcode-back" href="../daco_full_doc.html#daco_plot.plot.plotCorrelation">[docs]</a>  <span class="k">def</span> <span class="nf">plotCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;correlations&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="plot.plotCorrelation"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotCorrelation">[docs]</a>  <span class="k">def</span> <span class="nf">plotCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;correlations&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plotting correlations between columns in a dataframe and saving as PNG-file.</span>
 <span class="sd">    </span>
 <span class="sd">    :param xlabel: label på x-aksen</span>
@@ -213,7 +214,7 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="plot.plotCorrelationDiff"><a class="viewcode-back" href="../daco_full_doc.html#daco_plot.plot.plotCorrelationDiff">[docs]</a>  <span class="k">def</span> <span class="nf">plotCorrelationDiff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;correlations&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="plot.plotCorrelationDiff"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotCorrelationDiff">[docs]</a>  <span class="k">def</span> <span class="nf">plotCorrelationDiff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;correlations&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plotting diff of correlations between columns in two dataframes and saving</span>
 <span class="sd">    result as PNG-file.</span>
 <span class="sd">    </span>
@@ -252,7 +253,7 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="plot.plotDistributionsOfVariableNumericalVariables"><a class="viewcode-back" href="../daco_full_doc.html#daco_plot.plot.plotDistributionsOfVariableNumericalVariables">[docs]</a>  <span class="k">def</span> <span class="nf">plotDistributionsOfVariableNumericalVariables</span><span class="p">(</span><span class="bp">self</span>
+<div class="viewcode-block" id="plot.plotDistributionsOfVariableNumericalVariables"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotDistributionsOfVariableNumericalVariables">[docs]</a>  <span class="k">def</span> <span class="nf">plotDistributionsOfVariableNumericalVariables</span><span class="p">(</span><span class="bp">self</span>
                                                   <span class="p">,</span> <span class="n">variable</span>
                                                   <span class="p">,</span> <span class="n">ax1</span><span class="o">=</span><span class="kc">None</span>
                                                   <span class="p">,</span> <span class="n">ax2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -307,7 +308,7 @@
       <span class="c1"># Hiding xticks on histogram</span>
       <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax1</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">(),</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="plot.plotDistributionsOfVariableCategoricalVariables"><a class="viewcode-back" href="../daco_full_doc.html#daco_plot.plot.plotDistributionsOfVariableCategoricalVariables">[docs]</a>  <span class="k">def</span> <span class="nf">plotDistributionsOfVariableCategoricalVariables</span><span class="p">(</span><span class="bp">self</span>
+<div class="viewcode-block" id="plot.plotDistributionsOfVariableCategoricalVariables"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotDistributionsOfVariableCategoricalVariables">[docs]</a>  <span class="k">def</span> <span class="nf">plotDistributionsOfVariableCategoricalVariables</span><span class="p">(</span><span class="bp">self</span>
                                   <span class="p">,</span> <span class="n">variable</span>
                                   <span class="p">,</span> <span class="n">ax1</span><span class="o">=</span><span class="kc">None</span>
                                   <span class="p">,</span> <span class="n">ax2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -356,7 +357,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">ax2</span><span class="p">:</span>
       <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">variable</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="plot.plotDistributionsOfVariable"><a class="viewcode-back" href="../daco_full_doc.html#daco_plot.plot.plotDistributionsOfVariable">[docs]</a>  <span class="k">def</span> <span class="nf">plotDistributionsOfVariable</span><span class="p">(</span><span class="bp">self</span>
+<div class="viewcode-block" id="plot.plotDistributionsOfVariable"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotDistributionsOfVariable">[docs]</a>  <span class="k">def</span> <span class="nf">plotDistributionsOfVariable</span><span class="p">(</span><span class="bp">self</span>
                                   <span class="p">,</span> <span class="n">variable</span>
                                   <span class="p">,</span> <span class="n">filename_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plotting distributions for numerical and categorical</span>
@@ -393,7 +394,7 @@
 
     <span class="k">return</span> <span class="mi">0</span></div>
 
-<div class="viewcode-block" id="plot.plotCanvas"><a class="viewcode-back" href="../daco_full_doc.html#daco_plot.plot.plotCanvas">[docs]</a>  <span class="k">def</span> <span class="nf">plotCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename_suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="plot.plotCanvas"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotCanvas">[docs]</a>  <span class="k">def</span> <span class="nf">plotCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename_suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Plotting canvas of histograms for all variables in the two datasets.</span>
 <span class="sd">    In order to let plots stay readable a canvas will contain maximum nine</span>
 <span class="sd">    plots, if there are more than nine variables you will get several</span>
@@ -438,7 +439,7 @@
       <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
       <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
   
-<div class="viewcode-block" id="plot.plotPairplot"><a class="viewcode-back" href="../daco_full_doc.html#daco_plot.plot.plotPairplot">[docs]</a>  <span class="k">def</span> <span class="nf">plotPairplot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="plot.plotPairplot"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotPairplot">[docs]</a>  <span class="k">def</span> <span class="nf">plotPairplot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Using seaborn to plot a pairplot of numerical variables.</span>
 
 <span class="sd">    .. todo::</span>

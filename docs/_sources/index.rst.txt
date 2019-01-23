@@ -11,7 +11,8 @@ Welcome to DACO's documentation!
    :caption: Contents:
 
    usage
-   daco_full_doc
+   daco_main
+   daco_plot
 
 Where to get inspiration when updating these docs:
 
