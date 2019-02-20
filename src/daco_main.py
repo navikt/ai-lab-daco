@@ -30,7 +30,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import scipy, os
 from scipy import stats
-from daco.daco_plot import plot
+from daco_plot import plot
 
 class daco(plot):
   """ Class for comparing two Pandas dataframes.
@@ -402,7 +402,7 @@ class daco(plot):
 
     print("| Variable             | Kullback | Bhattacharyya | Hellinger |")
     for column, kl, bha, hel in zip(df1.select_dtypes(include='number').columns, kl_array, bha_array, hel_array):
-      print("| {column:20} | {kl:8.2f} | {bha:13.2f} | {hel:9.2f} |")
+      print(f"| {column:20} | {kl:8.2f} | {bha:13.2f} | {hel:9.2f} |")
 
     return 0
 
