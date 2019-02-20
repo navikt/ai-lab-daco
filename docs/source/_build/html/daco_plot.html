@@ -1,0 +1,384 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>DACO - plot module &mdash; DACO  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="DACO - main module" href="daco_main.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> DACO
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Using DACO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="daco_main.html">DACO - main module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">DACO - plot module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DACO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>DACO - plot module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/daco_plot.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-daco_plot">
+<span id="daco-plot-module"></span><span id="daco-plot"></span><h1>DACO - plot module<a class="headerlink" href="#module-daco_plot" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-daco_plot"></span><div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>plotting/smart plotting, i.e. show only anomalies</li>
+<li>pull plots based on the output from pd.dataframe.describe</li>
+<li>allow setting range, density, binning, etc. for each variable manually?</li>
+</ul>
+</div>
+<dl class="class">
+<dt id="daco_plot.plot">
+<em class="property">class </em><code class="descclassname">daco_plot.</code><code class="descname">plot</code><a class="reference internal" href="_modules/daco_plot.html#plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_plot.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for plotting the metrics found in <a class="reference internal" href="daco_main.html#module-daco" title="daco: Tool for comparing two datasets. (Unix, macOS)"><code class="xref py py-class docutils literal notranslate"><span class="pre">daco</span></code></a>.</p>
+<dl class="attribute">
+<dt id="daco_plot.plot.__weakref__">
+<code class="descname">__weakref__</code><a class="headerlink" href="#daco_plot.plot.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco_plot.plot.plotCanvas">
+<code class="descname">plotCanvas</code><span class="sig-paren">(</span><em>filename_suffix=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_plot.html#plot.plotCanvas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_plot.plot.plotCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plotting canvas of histograms for all variables in the two datasets.
+In order to let plots stay readable a canvas will contain maximum nine
+plots, if there are more than nine variables you will get several
+canvases.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename_suffix</strong> (<em>str</em>) – suffix in filename</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco_plot.plot.plotCorrelation">
+<code class="descname">plotCorrelation</code><span class="sig-paren">(</span><em>xlabel=''</em>, <em>ylabel=''</em>, <em>title=''</em>, <em>filename='correlations'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_plot.html#plot.plotCorrelation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_plot.plot.plotCorrelation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plotting correlations between columns in a dataframe and saving as PNG-file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xlabel</strong> (<em>str</em>) – label på x-aksen</li>
+<li><strong>ylabel</strong> (<em>str</em>) – label på y-aksen</li>
+<li><strong>title</strong> (<em>str</em>) – plottittel</li>
+<li><strong>filename</strong> (<em>str</em>) – name of plot file</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco_plot.plot.plotCorrelationDiff">
+<code class="descname">plotCorrelationDiff</code><span class="sig-paren">(</span><em>xlabel=''</em>, <em>ylabel=''</em>, <em>title=''</em>, <em>filename='correlations'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_plot.html#plot.plotCorrelationDiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_plot.plot.plotCorrelationDiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plotting diff of correlations between columns in two dataframes and saving
+result as PNG-file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xlabel</strong> (<em>str</em>) – label på x-aksen</li>
+<li><strong>ylabel</strong> (<em>str</em>) – label på y-aksen</li>
+<li><strong>title</strong> (<em>str</em>) – plottittel</li>
+<li><strong>filename</strong> (<em>str</em>) – name of plot file</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco_plot.plot.plotDistanceMetrics">
+<code class="descname">plotDistanceMetrics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_plot.html#plot.plotDistanceMetrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_plot.plot.plotDistanceMetrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot boxplot of the distance metrics Kullback-Leibler, Bhattacharyya, and
+Hellinger for all numerical variables.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco_plot.plot.plotDistributionsOfVariable">
+<code class="descname">plotDistributionsOfVariable</code><span class="sig-paren">(</span><em>variable</em>, <em>filename_prefix=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_plot.html#plot.plotDistributionsOfVariable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_plot.plot.plotDistributionsOfVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plotting distributions for numerical and categorical
+variables in dataframes. Plots are saved in <code class="xref py py-class docutils literal notranslate"><span class="pre">file_dir</span></code>. The
+plots include error bars and visualization of deviation from the
+real dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>variable</strong> (<em>str</em>) – name of variable plotting histogram for</li>
+<li><strong>filename_prefix</strong> (<em>str</em>) – prefix in filename</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco_plot.plot.plotDistributionsOfVariableCategoricalVariables">
+<code class="descname">plotDistributionsOfVariableCategoricalVariables</code><span class="sig-paren">(</span><em>variable</em>, <em>ax1=None</em>, <em>ax2=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_plot.html#plot.plotDistributionsOfVariableCategoricalVariables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_plot.plot.plotDistributionsOfVariableCategoricalVariables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function for <a class="reference internal" href="#daco_plot.plot.plotDistributionsOfVariable" title="daco_plot.plot.plotDistributionsOfVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">plotDistributionsOfVariable</span></code></a> plotting
+the categorical variables in dataframe.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When plotting a canvas with all histograms <code class="docutils literal notranslate"><span class="pre">ax2</span></code> should not be used
+due to layout problems.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>variable</strong> (<em>str</em>) – name of variable plotting histogram for</li>
+<li><strong>ax1</strong> (<em>obj</em>) – axis-object for main-histogram for the variable</li>
+<li><strong>ax2</strong> (<em>obj</em>) – axis-object for error-histogram placed below main histogram</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco_plot.plot.plotDistributionsOfVariableNumericalVariables">
+<code class="descname">plotDistributionsOfVariableNumericalVariables</code><span class="sig-paren">(</span><em>variable</em>, <em>ax1=None</em>, <em>ax2=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_plot.html#plot.plotDistributionsOfVariableNumericalVariables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_plot.plot.plotDistributionsOfVariableNumericalVariables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function for <a class="reference internal" href="#daco_plot.plot.plotDistributionsOfVariable" title="daco_plot.plot.plotDistributionsOfVariable"><code class="xref py py-class docutils literal notranslate"><span class="pre">plotDistributionsOfVariable</span></code></a> plotting
+the numerical variables in dataframe.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When plotting a canvas with all histograms <code class="docutils literal notranslate"><span class="pre">ax2</span></code> should not be used
+due to layout problems.</p>
+</div>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Legge inn boxplot av hellinger et.al.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>variable</strong> (<em>str</em>) – name of variable plotting histogram for</li>
+<li><strong>ax1</strong> (<em>obj</em>) – axis-object for main-histogram for the variable</li>
+<li><strong>ax2</strong> (<em>obj</em>) – axis-object for error-histogram placed below main histogram</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco_plot.plot.plotPairplot">
+<code class="descname">plotPairplot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_plot.html#plot.plotPairplot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_plot.plot.plotPairplot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Using seaborn to plot a pairplot of numerical variables.</p>
+<div class="admonition-todo admonition" id="index-2">
+<p class="first admonition-title">Todo</p>
+<p class="last">Issues with the layout, not all parts are visible.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="daco_main.html" class="btn btn-neutral" title="DACO - main module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Jon Vegard Sparre, Robindra Prabhu
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

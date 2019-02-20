@@ -14,7 +14,8 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('/Users/jonvegard/github/ai-lab-daco/src'))
+# sys.path.insert(0, os.path.abspath('/Users/jonvegard/github/ai-lab-daco/src'))
+sys.path.insert(0, os.path.abspath('../../src'))
 
 
 # -- Project information -----------------------------------------------------

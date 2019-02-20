@@ -1,0 +1,742 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>DACO - main module &mdash; DACO  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="DACO - plot module" href="daco_plot.html" />
+    <link rel="prev" title="Using DACO" href="usage.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> DACO
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Using DACO</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">DACO - main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="daco_plot.html">DACO - plot module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DACO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>DACO - main module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/daco_main.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-daco">
+<span id="daco-main-module"></span><span id="daco-main"></span><h1>DACO - main module<a class="headerlink" href="#module-daco" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-daco"></span><div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<ul class="last simple">
+<li>sequential vs tabular data (long term)</li>
+<li>local and global metrics</li>
+<li>differential privacy (long term)</li>
+<li>privacy checks</li>
+<li>mean, variance, … ( this is available in pandas)</li>
+<li>plotting/smart plotting, i.e. show only anomalies</li>
+<li>pull plots based on the output from pd.dataframe.describe</li>
+<li>allow setting range, density, binning, etc. for each variable manually?</li>
+<li>set a random seed globally in class</li>
+<li>log-axes in plots</li>
+<li>IdentityDisclosure</li>
+<li>AttributeDisclosure</li>
+</ul>
+</div>
+<dl class="class">
+<dt id="daco.daco">
+<em class="property">class </em><code class="descclassname">daco.</code><code class="descname">daco</code><span class="sig-paren">(</span><em>df1</em>, <em>df2</em>, <em>name1='df1'</em>, <em>name2='df2'</em>, <em>file_dir='plots/'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for comparing two Pandas dataframes.</p>
+<p>The purpose of this class is to easily compare datasets in different
+settings, e.g. check if a synthetic version of a dataset is good enoug
+for your use.</p>
+<dl class="method">
+<dt id="daco.daco.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>df1</em>, <em>df2</em>, <em>name1='df1'</em>, <em>name2='df2'</em>, <em>file_dir='plots/'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>df1</strong> (<em>dataframe</em>) – dataframe to be compared. Must have header and dtype for all columns.</li>
+<li><strong>df2</strong> (<em>dataframe</em>) – dataframe to be compared. Must have header and dtype for all columns. This is    treated as the synthetic version of df1 throughout the module.</li>
+<li><strong>file_dir</strong> (<em>str</em>) – path to directory where plots are saved</li>
+<li><strong>name1</strong> (<em>str</em>) – names of dataframes, used as keys in dictionaries containing info about dataframes</li>
+<li><strong>name2</strong> (<em>str</em>) – names of dataframes, used as keys in dictionaries containing info about dataframes</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco._checkDataframes">
+<code class="descname">_checkDataframes</code><span class="sig-paren">(</span><em>df1</em>, <em>df2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._checkDataframes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._checkDataframes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking whether the dataframes provided fullfills the requirements:</p>
+<ul class="simple">
+<li>The input should be pandas dataframes</li>
+<li>Only float or categorical variables</li>
+<li>Same column names in both frames</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco._findAndNormalizeDistances">
+<code class="descname">_findAndNormalizeDistances</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._findAndNormalizeDistances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._findAndNormalizeDistances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate and normalize distances for all numerical variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>kl_array</strong> (<em>array</em>) – Kullback-Leibler values</li>
+<li><strong>bha_array</strong> (<em>array</em>) – Bhattacharyya values</li>
+<li><strong>hel_array</strong> (<em>array</em>) – Hellinger values</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco._hellingerDivergence">
+<code class="descname">_hellingerDivergence</code><span class="sig-paren">(</span><em>dist1</em>, <em>dist2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._hellingerDivergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._hellingerDivergence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method calculating the Hellinger divergence.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco._plotConfusionMatrixFromLogisticRegression">
+<code class="descname">_plotConfusionMatrixFromLogisticRegression</code><span class="sig-paren">(</span><em>conf_mat</em>, <em>title=''</em>, <em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._plotConfusionMatrixFromLogisticRegression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._plotConfusionMatrixFromLogisticRegression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plotting method used in <a class="reference internal" href="#daco.daco.logisticRegressionBenchmark" title="daco.daco.logisticRegressionBenchmark"><code class="xref py py-class docutils literal notranslate"><span class="pre">logisticRegressionBenchmark</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>conf_mat</strong> (<em>array</em>) – confusion matrix output from <code class="docutils literal notranslate"><span class="pre">confusion_matrix</span></code> in <code class="docutils literal notranslate"><span class="pre">SciPy</span></code></li>
+<li><strong>title</strong> (<em>str</em>) – title of subplot</li>
+<li><strong>ax</strong> (<em>object</em>) – axis object for plotting</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco._trainSeveralModels">
+<code class="descname">_trainSeveralModels</code><span class="sig-paren">(</span><em>name</em>, <em>data</em>, <em>models=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._trainSeveralModels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._trainSeveralModels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method for <a class="reference internal" href="#daco.daco.trainSynthTestReal" title="daco.daco.trainSynthTestReal"><code class="xref py py-class docutils literal notranslate"><span class="pre">trainSynthTestReal</span></code></a> and <a class="reference internal" href="#daco.daco.syntheticRankingAgreement" title="daco.daco.syntheticRankingAgreement"><code class="xref py py-class docutils literal notranslate"><span class="pre">syntheticRankingAgreement</span></code></a>.
+Models and their scores are saved in dictionaries.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This method is constrained to only use
+models with a <code class="docutils literal notranslate"><span class="pre">.fit()</span></code>-method.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – name of the entry in the <code class="xref py py-class docutils literal notranslate"><span class="pre">model_dict</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">model_score</span></code></li>
+<li><strong>data</strong> (<em>tuple</em>) – tuple with training and test data in the order (X_train, y_train, X_test, y_test)</li>
+<li><strong>models</strong> (<em>list</em>) – list of tuples with models and a dict with parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>model_dict</strong> (<em>dict</em>) – dictionary containing all models trained</li>
+<li><strong>model_scores</strong> (<em>dict</em>) – dictionary containing lists with scores for each model trained</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco._trainSingleModel">
+<code class="descname">_trainSingleModel</code><span class="sig-paren">(</span><em>model</em>, <em>params</em>, <em>X_train</em>, <em>y_train</em>, <em>X_test</em>, <em>y_test</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._trainSingleModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._trainSingleModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method for training a single model and returning
+the model and its score</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> (<em>object</em>) – ML-model-object with the methods <code class="docutils literal notranslate"><span class="pre">.fit()</span></code> and <code class="docutils literal notranslate"><span class="pre">.predict()</span></code></li>
+<li><strong>params</strong> (<em>dict</em>) – dictionary with hyperparameter to the model</li>
+<li><strong>X_train</strong> (<em>array</em>) – numpy-array with training data</li>
+<li><strong>y_train</strong> (<em>array</em>) – numpy-array with training targets</li>
+<li><strong>X_test</strong> (<em>array</em>) – numpy-array with test data</li>
+<li><strong>y_test</strong> (<em>array</em>) – numpy-array with test targets</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>model_trained</strong> (<em>object</em>) – trained model</li>
+<li><strong>scores</strong> (<em>float</em>) – test score for the model</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.bhattacharyya">
+<code class="descname">bhattacharyya</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.bhattacharyya"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.bhattacharyya" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the Bhattacharyya distance for the distributions of
+var1 in the two dataframes.
+See <a class="reference external" href="https://en.wikipedia.org/wiki/Bhattacharyya_distance">https://en.wikipedia.org/wiki/Bhattacharyya_distance</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var1</strong> (<em>str</em>) – name of variable in the datasets to do calculate the Bhattacharyya distance for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">b_dis</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.chisquare">
+<code class="descname">chisquare</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.chisquare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.chisquare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for calculating the chisquare test using scipy.stats.chisquare.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var1</strong> (<em>str</em>) – name of variable in the dataset to do the chisquare test.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>D</strong> (<em>float</em>) – The chi-squared test statistic</li>
+<li><strong>p</strong> (<em>float</em>) – p-value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.dataPrep">
+<code class="descname">dataPrep</code><span class="sig-paren">(</span><em>target</em>, <em>features</em>, <em>test_size</em>, <em>eval_size</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.dataPrep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.dataPrep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data preparation for the ML-models used in DACO. Takes in the two dataframes
+applies one hot encoding on categorical variables, and splits them into train,
+test, and evaluation sets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>target</strong> (<em>list</em>) – target values</li>
+<li><strong>features</strong> (<em>list</em>) – features to use in training/predictions</li>
+<li><strong>test_size</strong> (<em>float</em>) – size of test set</li>
+<li><strong>eval_size</strong> (<em>float</em>) – size of evaluation set</li>
+<li><strong>name</strong> (<em>str</em>) – name of dataset to prepare</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.findDistributions">
+<code class="descname">findDistributions</code><span class="sig-paren">(</span><em>bins_='sturges'</em>, <em>density=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.findDistributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.findDistributions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find distributions of all variables/columns in dataframes loaded
+into daco and save them in dictionaries.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>bins</strong> (<em>int</em>) – number of bins in histogram/distribution or how to find the number of bins.</li>
+<li><strong>density</strong> (<em>bool</em>) – if True a normalised distribution is returned.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">distributions</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>By giving two Pandas dataframes we find the distributions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">daco_obj</span> <span class="o">=</span> <span class="n">daco</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span><span class="n">df2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span> <span class="o">=</span> <span class="n">daco_obj</span><span class="o">.</span><span class="n">findDistributions</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+<span class="go">{&#39;df1&#39;: {&#39;age&#39;: (array([0.01964384, 0.0258, ...]}, &#39;df2&#39;: {...}}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.hellinger">
+<code class="descname">hellinger</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.hellinger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.hellinger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the Hellinger divergence for the distributions of
+var1 in the two dataframes.
+See <a class="reference external" href="https://en.wikipedia.org/wiki/Hellinger_distance">https://en.wikipedia.org/wiki/Hellinger_distance</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var1</strong> (<em>str</em>) – name of variable in the datasets to do calculate the Hellinger divergence for.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">hellinger_div. Ouput value is in range <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">sqrt(2)]</span></code>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.hellingerRowForRow">
+<code class="descname">hellingerRowForRow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.hellingerRowForRow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.hellingerRowForRow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for comparing finding the pair of rows in the datasets that have
+the best match.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Very slow implementation!</p>
+</div>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Parallellize?</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.ks2_test">
+<code class="descname">ks2_test</code><span class="sig-paren">(</span><em>var</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.ks2_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.ks2_test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method using the scipy.stats.ks_2samp for computing the Kolmogorov-
+Smirnov statistic on two samples. The result is added to a dictionary
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ks2_test_val</span></code> keeping the results of all calculations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var1</strong> (<em>str</em>) – name of variable in the datasets to do the test on.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>statistic</strong> (<em>float</em>) – KS statistic</li>
+<li><strong>pvalue</strong> (<em>float</em>) – two-tailed p-value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.kullbackleibler">
+<code class="descname">kullbackleibler</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.kullbackleibler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.kullbackleibler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate Kullback-Leibler divergence for the distributions of
+var1 in the two dataframes with scipy.stats.entropy.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://medium.com/&#64;cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence">https://medium.com/&#64;cotra.marko/making-sense-of-the-kullback-leibler-kl-divergence</a></li>
+<li><a class="reference external" href="https://en.wikipedia.org/wiki/Kullback–Leibler_divergence">https://en.wikipedia.org/wiki/Kullback–Leibler_divergence</a></li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var1</strong> (<em>str</em>) – name of variable to do calculate the Kullback-Leibler divergence for. Must be contained in the dataframes.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">kb_div</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.logisticRegressionBenchmark">
+<code class="descname">logisticRegressionBenchmark</code><span class="sig-paren">(</span><em>target</em>, <em>features</em>, <em>test_size=0.2</em>, <em>eval_size=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.logisticRegressionBenchmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.logisticRegressionBenchmark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for training a logistic regression-model on the datasets
+and investigate the differences in the model and predictions. The
+results and models are saved as class variables.</p>
+<p>Main features:</p>
+<ul class="simple">
+<li>Training LR-models on synth. and real data (and save them in this class)</li>
+<li>Predicting <em>N</em> samples</li>
+<li>Comparing the accuracy of the two models (several measures possible)</li>
+<li>Confusion matrix + classification_report from sklearn</li>
+<li>Feature importance</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>target</strong> (<em>list</em>) – target values</li>
+<li><strong>features</strong> (<em>list</em>) – features to use in training/predictions</li>
+<li><strong>test_size</strong> (<em>float</em>) – size of test set</li>
+<li><strong>eval_size</strong> (<em>float</em>) – size of evaluation set</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.numericalComparing">
+<code class="descname">numericalComparing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.numericalComparing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.numericalComparing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the mean, variance, etc. of the numerical variable between the
+two dataframes. For each numerical variable we calculate the mean of the
+values in both dataframes, then we divide the mean value of the variable in
+the first dataframe on the second one to find how much they differ.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>desc_compare</strong> – contains the relative mean values of all numerical variables in both
+dataframes.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.printDistances">
+<code class="descname">printDistances</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.printDistances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.printDistances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print a nice markdown table with the distance metrics for all numerical
+variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>distance_values</strong> – a dict containing all values calculated</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.rowMatching">
+<code class="descname">rowMatching</code><span class="sig-paren">(</span><em>atol_=0.1</em>, <em>rtol_=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.rowMatching"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.rowMatching" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method which loops over each row in synthetic dataset and finds the row
+in the original dataset with highest match in percent, and saves this number
+as an attribute to each row in the synthetic dataset.
+Using numpy.isclose as a matching measure for numerical values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>atol</strong> (<em>float</em>) – The relative tolerance parameter, see Numpy docs.</li>
+<li><strong>rtol</strong> (<em>float</em>) – The absolute tolerance parameter, see Numpy docs.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>match_values</strong> – array with dimensions (len(df2), 3) where each row contains
+<code class="docutils literal notranslate"><span class="pre">[&lt;index</span> <span class="pre">in</span> <span class="pre">df2&gt;,</span> <span class="pre">&lt;index</span> <span class="pre">in</span> <span class="pre">df1&gt;,</span> <span class="pre">match_value]</span></code>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.syntheticRankingAgreement">
+<code class="descname">syntheticRankingAgreement</code><span class="sig-paren">(</span><em>model_scores=None</em>, <em>target=None</em>, <em>features=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.syntheticRankingAgreement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.syntheticRankingAgreement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for checking whether the synthetic dataset is useful in machine learning
+contexts. We use the “Synthetic Ranking Agreement”-method, SRA for short,
+see <a class="reference external" href="https://arxiv.org/pdf/1806.11345v1.pdf">https://arxiv.org/pdf/1806.11345v1.pdf</a>
+It is defined as</p>
+<div class="math notranslate nohighlight">
+\[\text{SRA} = \frac{1}{k(k-1)} \sum^{k}_{i=1}\sum_{j\neq i} \mathbb{I}\left( (R_i - R_j) \times (S_i - S_j) \right)\]</div>
+<p>where <span class="math notranslate nohighlight">\(R_k\)</span> and <span class="math notranslate nohighlight">\(S_k\)</span> represents the performance score of algorithm <span class="math notranslate nohighlight">\(k\)</span> on
+the real dataset <span class="math notranslate nohighlight">\(R\)</span> and the synthetic dataset <span class="math notranslate nohighlight">\(S\)</span> respectively. The SRA can be
+thought of as the (emprical) probability of a comparison on the synthetic data beain “correct”.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model_scores</strong> (<em>dict</em>) – dict with scores for the different algorithms on the real and synthetic dataset.</li>
+<li><strong>target</strong> (<em>list</em>) – list of training targets (if not <code class="docutils literal notranslate"><span class="pre">model_scores</span></code> is given)</li>
+<li><strong>features</strong> (<em>list</em>) – list of training features (if not <code class="docutils literal notranslate"><span class="pre">model_scores</span></code> is given)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>sra</strong> – a single value which is the result of the formula given above.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.trainAndTestModels">
+<code class="descname">trainAndTestModels</code><span class="sig-paren">(</span><em>target</em>, <em>features</em>, <em>models=None</em>, <em>test_size=0.2</em>, <em>eval_size=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.trainAndTestModels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.trainAndTestModels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for training several ML-models on the two datasets given to this
+class and do testing as specified by the user. The models and their test
+scores are saved in dictionaries.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>target</strong> (<em>list</em>) – target values</li>
+<li><strong>features</strong> (<em>list</em>) – features to use in training/predictions</li>
+<li><strong>models</strong> (<em>list</em>) – list of tuples with models and a dict with parameters</li>
+<li><strong>test_size</strong> (<em>float</em>) – size of test set</li>
+<li><strong>eval_size</strong> (<em>float</em>) – size of evaluation set</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>model_dict</strong> (<em>dict</em>) – dictionary with the models trained</li>
+<li><strong>model_scores</strong> (<em>dict</em>) – dictionary with test scores for the models trained</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.trainSynthTestReal">
+<code class="descname">trainSynthTestReal</code><span class="sig-paren">(</span><em>scores=None</em>, <em>target=None</em>, <em>features=None</em>, <em>test_size=0.2</em>, <em>eval_size=0.2</em>, <em>tstr_name='tstr'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.trainSynthTestReal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.trainSynthTestReal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for training model(s) on synthetic data and test on real data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scores</strong> (<em>array</em>) – numpy-array with scores from TSTR</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="daco.daco.wasserstein">
+<code class="descname">wasserstein</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.wasserstein"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.wasserstein" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculating the Wasserstein/”earth mover’s distance” with <code class="docutils literal notranslate"><span class="pre">SciPy</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var1</strong> (<em>str</em>) – name of variable to calculate for</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="daco_plot.html" class="btn btn-neutral float-right" title="DACO - plot module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="usage.html" class="btn btn-neutral" title="Using DACO" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Jon Vegard Sparre, Robindra Prabhu
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

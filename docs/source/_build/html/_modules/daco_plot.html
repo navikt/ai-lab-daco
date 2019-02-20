@@ -1,0 +1,533 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>daco_plot &mdash; DACO  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> DACO
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Using DACO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daco_main.html">DACO - main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../daco_plot.html">DACO - plot module</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DACO</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>daco_plot</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for daco_plot</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. module:: daco_plot</span>
+<span class="sd">   :platform: Unix, macOS</span>
+<span class="sd">   :synopsis: Plotting module for DACO.</span>
+
+<span class="sd">.. moduleauthor:: Jon Vegard Sparre</span>
+<span class="sd">                  Robindra Prabhu</span>
+
+<span class="sd">.. todo::</span>
+<span class="sd">    - plotting/smart plotting, i.e. show only anomalies</span>
+<span class="sd">    - pull plots based on the output from pd.dataframe.describe</span>
+<span class="sd">    - allow setting range, density, binning, etc. for each variable manually?</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">scipy</span><span class="o">,</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">stats</span>
+
+<div class="viewcode-block" id="plot"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot">[docs]</a><span class="k">class</span> <span class="nc">plot</span><span class="p">():</span>
+  <span class="sd">&quot;&quot;&quot; Class for plotting the metrics found in :class:`daco`.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="plot.plotDistanceMetrics"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotDistanceMetrics">[docs]</a>  <span class="k">def</span> <span class="nf">plotDistanceMetrics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plot boxplot of the distance metrics Kullback-Leibler, Bhattacharyya, and</span>
+<span class="sd">    Hellinger for all numerical variables.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">kl_array</span><span class="p">,</span> <span class="n">bha_array</span><span class="p">,</span> <span class="n">hel_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_findAndNormalizeDistances</span><span class="p">()</span>
+
+    <span class="c1"># TODO bytte til seaborn --&gt; må antakeligvis legge arrays over inn i en dataframe</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">boxplot</span><span class="p">([</span><span class="n">kl_array</span><span class="p">,</span> <span class="n">bha_array</span><span class="p">,</span> <span class="n">hel_array</span><span class="p">],</span> <span class="n">showmeans</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="plot.plotCorrelation"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotCorrelation">[docs]</a>  <span class="k">def</span> <span class="nf">plotCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;correlations&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plotting correlations between columns in a dataframe and saving as PNG-file.</span>
+<span class="sd">    </span>
+<span class="sd">    :param xlabel: label på x-aksen</span>
+<span class="sd">    :type xlabel: str</span>
+<span class="sd">    :param ylabel: label på y-aksen</span>
+<span class="sd">    :type ylabel: str</span>
+<span class="sd">    :param title: plottittel</span>
+<span class="sd">    :type title: str</span>
+<span class="sd">    :param filename: name of plot file</span>
+<span class="sd">    :type filename: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">df1</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df1</span>
+    <span class="n">file_dir</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_dir</span>
+    
+    <span class="n">corr</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>                            <span class="c1"># Pandasfunksjonalitet finner korrelasjonene.</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span> <span class="n">corr</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span> <span class="p">)</span>  <span class="c1"># Lager matrise som setter øvre triangel i X_df</span>
+    <span class="n">mask</span><span class="p">[</span> <span class="n">np</span><span class="o">.</span><span class="n">triu_indices_from</span><span class="p">(</span> <span class="n">mask</span> <span class="p">)</span> <span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># til null for å gjøre korrelasjonsplottet enklere.</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">diverging_palette</span><span class="p">(</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">as_cmap</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="n">ax0</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span> <span class="n">corr</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span>
+                    <span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="mi">1</span>
+                    <span class="p">,</span> <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span> <span class="s2">&quot;fraction&quot;</span><span class="p">:</span> <span class="o">.</span><span class="mi">05</span><span class="p">,</span> <span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;vertical&quot;</span> <span class="p">}</span>
+                    <span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+    <span class="n">ax0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">ax0</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">ax0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">file_dir</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="plot.plotCorrelationDiff"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotCorrelationDiff">[docs]</a>  <span class="k">def</span> <span class="nf">plotCorrelationDiff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;correlations&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plotting diff of correlations between columns in two dataframes and saving</span>
+<span class="sd">    result as PNG-file.</span>
+<span class="sd">    </span>
+<span class="sd">    :param xlabel: label på x-aksen</span>
+<span class="sd">    :type xlabel: str</span>
+<span class="sd">    :param ylabel: label på y-aksen</span>
+<span class="sd">    :type ylabel: str</span>
+<span class="sd">    :param title: plottittel</span>
+<span class="sd">    :type title: str</span>
+<span class="sd">    :param filename: name of plot file</span>
+<span class="sd">    :type filename: str</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">df1</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df1</span>
+    <span class="n">df2</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df2</span>
+    <span class="n">file_dir</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_dir</span>
+
+    <span class="n">corr1</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
+    <span class="n">corr2</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
+    <span class="n">diff</span>  <span class="o">=</span> <span class="n">corr1</span> <span class="o">-</span> <span class="n">corr2</span>
+
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span> <span class="n">diff</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span> <span class="p">)</span>
+    <span class="n">mask</span><span class="p">[</span> <span class="n">np</span><span class="o">.</span><span class="n">triu_indices_from</span><span class="p">(</span> <span class="n">mask</span> <span class="p">)</span> <span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">diverging_palette</span><span class="p">(</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">as_cmap</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="n">ax0</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span> <span class="n">diff</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span>
+                    <span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="mi">1</span>
+                    <span class="p">,</span> <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span> <span class="s2">&quot;fraction&quot;</span><span class="p">:</span> <span class="o">.</span><span class="mi">05</span><span class="p">,</span> <span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;vertical&quot;</span> <span class="p">}</span>
+                    <span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+    <span class="n">ax0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">ax0</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">ax0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">file_dir</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="plot.plotDistributionsOfVariableNumericalVariables"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotDistributionsOfVariableNumericalVariables">[docs]</a>  <span class="k">def</span> <span class="nf">plotDistributionsOfVariableNumericalVariables</span><span class="p">(</span><span class="bp">self</span>
+                                                  <span class="p">,</span> <span class="n">variable</span>
+                                                  <span class="p">,</span> <span class="n">ax1</span><span class="o">=</span><span class="kc">None</span>
+                                                  <span class="p">,</span> <span class="n">ax2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper function for :class:`plotDistributionsOfVariable` plotting</span>
+<span class="sd">    the numerical variables in dataframe.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        When plotting a canvas with all histograms ``ax2`` should not be used</span>
+<span class="sd">        due to layout problems.</span>
+
+<span class="sd">    .. todo::</span>
+<span class="sd">        Legge inn boxplot av hellinger et.al.</span>
+
+<span class="sd">    :param variable: name of variable plotting histogram for</span>
+<span class="sd">    :type variable: str</span>
+<span class="sd">    :param ax1: axis-object for main-histogram for the variable</span>
+<span class="sd">    :type ax1: obj</span>
+<span class="sd">    :param ax2: axis-object for error-histogram placed below main histogram</span>
+<span class="sd">    :type ax2: obj</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">df1</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df1</span>
+    <span class="n">df2</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df2</span>
+    <span class="n">name1</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name1</span>
+    <span class="n">name2</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name2</span>
+    <span class="n">distributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions</span>
+    <span class="n">colors</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colors</span>
+    <span class="n">width_</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span> <span class="nb">max</span><span class="p">(</span> <span class="n">df1</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">df2</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="p">)</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span> <span class="n">df1</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">df2</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="p">)</span> <span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">distributions</span><span class="p">[</span><span class="s1">&#39;df1&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="c1"># TODO Flytte feilberegning inn i findDistributions()?</span>
+    <span class="c1"># df1_err   =  1/np.sqrt(n_samples1[variable]) * np.sqrt( distributions[&#39;df1&#39;][variable][0] )</span>
+    <span class="c1"># df2_err   =  1/np.sqrt(n_samples2[variable]) * np.sqrt( distributions[&#39;df2&#39;][variable][0] )</span>
+    <span class="n">df1_err</span>   <span class="o">=</span> <span class="n">distributions</span><span class="p">[</span><span class="n">name1</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">]</span>
+    <span class="n">df2_err</span>   <span class="o">=</span> <span class="n">distributions</span><span class="p">[</span><span class="n">name2</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">]</span>
+    <span class="n">ratio</span>     <span class="o">=</span> <span class="n">distributions</span><span class="p">[</span><span class="n">name2</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">distributions</span><span class="p">[</span><span class="n">name1</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ratio_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="p">(</span><span class="n">df1_err</span><span class="o">/</span><span class="n">distributions</span><span class="p">[</span><span class="n">name1</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> \
+                       <span class="o">+</span> <span class="p">(</span><span class="n">df2_err</span><span class="o">/</span><span class="n">distributions</span><span class="p">[</span><span class="n">name2</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span> <span class="o">*</span> <span class="n">ratio</span>
+
+    <span class="n">ax1</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">distributions</span><span class="p">[</span><span class="n">name1</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">distributions</span><span class="p">[</span><span class="n">name1</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;edge&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width_</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name1</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">df1_err</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">distributions</span><span class="p">[</span><span class="n">name2</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">distributions</span><span class="p">[</span><span class="n">name2</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;edge&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width_</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name2</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+    
+    <span class="c1"># Adding errors if not plotting canvas</span>
+    <span class="k">if</span> <span class="n">ax2</span><span class="p">:</span>
+      <span class="n">ax2</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+      <span class="n">ax2</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">distributions</span><span class="p">[</span><span class="s1">&#39;df2&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">width_</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">ratio_err</span><span class="p">)</span>
+      <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+      <span class="c1"># Hiding xticks on histogram</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax1</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">(),</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="plot.plotDistributionsOfVariableCategoricalVariables"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotDistributionsOfVariableCategoricalVariables">[docs]</a>  <span class="k">def</span> <span class="nf">plotDistributionsOfVariableCategoricalVariables</span><span class="p">(</span><span class="bp">self</span>
+                                  <span class="p">,</span> <span class="n">variable</span>
+                                  <span class="p">,</span> <span class="n">ax1</span><span class="o">=</span><span class="kc">None</span>
+                                  <span class="p">,</span> <span class="n">ax2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper function for :class:`plotDistributionsOfVariable` plotting</span>
+<span class="sd">    the categorical variables in dataframe.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">        When plotting a canvas with all histograms ``ax2`` should not be used</span>
+<span class="sd">        due to layout problems.</span>
+
+<span class="sd">    :param variable: name of variable plotting histogram for</span>
+<span class="sd">    :type variable: str</span>
+<span class="sd">    :param ax1: axis-object for main-histogram for the variable</span>
+<span class="sd">    :type ax1: obj</span>
+<span class="sd">    :param ax2: axis-object for error-histogram placed below main histogram</span>
+<span class="sd">    :type ax2: obj</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>  
+    <span class="n">name1</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name1</span>
+    <span class="n">name2</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name2</span>
+    <span class="n">distributions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distributions</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colors</span>
+
+    <span class="n">df1_err</span>   <span class="o">=</span> <span class="n">distributions</span><span class="p">[</span><span class="n">name1</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">]</span>
+    <span class="n">df2_err</span>   <span class="o">=</span> <span class="n">distributions</span><span class="p">[</span><span class="n">name2</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">]</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">distributions</span><span class="p">[</span><span class="s1">&#39;df1&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">distributions</span><span class="p">[</span><span class="s1">&#39;df1&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name1</span><span class="p">,</span><span class="n">yerr</span><span class="o">=</span><span class="n">df1_err</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">distributions</span><span class="p">[</span><span class="s1">&#39;df2&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">distributions</span><span class="p">[</span><span class="s1">&#39;df2&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name2</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+    
+    <span class="c1"># Adding errors of main histogram if not plotting canvas</span>
+    <span class="k">if</span> <span class="n">ax2</span><span class="p">:</span>
+      <span class="n">ratio</span>   <span class="o">=</span> <span class="n">distributions</span><span class="p">[</span><span class="s1">&#39;df2&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">distributions</span><span class="p">[</span><span class="s1">&#39;df1&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+      <span class="n">ratio_err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="p">(</span><span class="n">df1_err</span><span class="o">/</span><span class="n">distributions</span><span class="p">[</span><span class="s1">&#39;df1&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">df2_err</span><span class="o">/</span><span class="n">distributions</span><span class="p">[</span><span class="s1">&#39;df2&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span><span class="o">*</span><span class="n">ratio</span>
+      <span class="n">ax2</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+      <span class="c1"># ax2.plot(distributions[&#39;df2&#39;][variable][1], ratio, &#39;o&#39;)</span>
+      <span class="n">ax2</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">distributions</span><span class="p">[</span><span class="s1">&#39;df2&#39;</span><span class="p">][</span><span class="n">variable</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">ratio</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">yerr</span><span class="o">=</span><span class="n">ratio_err</span><span class="p">)</span>
+      <span class="n">ax2</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+      <span class="c1"># Hiding xticks on histogram</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">setp</span><span class="p">(</span><span class="n">ax1</span><span class="o">.</span><span class="n">get_xticklabels</span><span class="p">(),</span> <span class="n">visible</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ax2</span><span class="p">:</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">variable</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="plot.plotDistributionsOfVariable"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotDistributionsOfVariable">[docs]</a>  <span class="k">def</span> <span class="nf">plotDistributionsOfVariable</span><span class="p">(</span><span class="bp">self</span>
+                                  <span class="p">,</span> <span class="n">variable</span>
+                                  <span class="p">,</span> <span class="n">filename_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plotting distributions for numerical and categorical</span>
+<span class="sd">    variables in dataframes. Plots are saved in :class:`file_dir`. The</span>
+<span class="sd">    plots include error bars and visualization of deviation from the</span>
+<span class="sd">    real dataset.</span>
+
+<span class="sd">    :param variable: name of variable plotting histogram for</span>
+<span class="sd">    :type variable: str</span>
+<span class="sd">    :param filename_prefix: prefix in filename</span>
+<span class="sd">    :type filename_prefix: str</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df1</span>
+    
+    <span class="c1"># Defining layout of figure</span>
+    <span class="n">gs</span>  <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">height_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ax2</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sharex</span><span class="o">=</span><span class="n">ax1</span><span class="p">)</span>
+
+    <span class="c1"># Checking dtype of variable and plotting data</span>
+    <span class="k">if</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">plotDistributionsOfVariableNumericalVariables</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">ax1</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">plotDistributionsOfVariableCategoricalVariables</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">ax1</span><span class="o">=</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="o">=</span><span class="n">ax2</span><span class="p">)</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">variable</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_dir</span> <span class="o">+</span> <span class="n">filename_prefix</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.pdf&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="plot.plotCanvas"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotCanvas">[docs]</a>  <span class="k">def</span> <span class="nf">plotCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename_suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plotting canvas of histograms for all variables in the two datasets.</span>
+<span class="sd">    In order to let plots stay readable a canvas will contain maximum nine</span>
+<span class="sd">    plots, if there are more than nine variables you will get several</span>
+<span class="sd">    canvases.</span>
+
+<span class="sd">    :param filename_suffix: suffix in filename</span>
+<span class="sd">    :type filename_suffix: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df1</span>
+    
+    <span class="c1"># Fetching all numeric and categorical variables and gathering them in one array</span>
+    <span class="n">variables_num</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">variables_cat</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">variables</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">variables_num</span><span class="p">,</span> <span class="n">variables_cat</span><span class="p">))</span>
+
+    <span class="c1"># Defining layout of canvas</span>
+    <span class="n">num_plots_in_canvas</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">num_numerical</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables_num</span><span class="p">)</span>
+    <span class="n">num_categorial</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables_cat</span><span class="p">)</span>
+    <span class="n">num_figures</span> <span class="o">=</span> <span class="nb">round</span><span class="p">((</span><span class="n">num_numerical</span><span class="o">+</span><span class="n">num_categorial</span><span class="p">)</span><span class="o">/</span><span class="n">num_plots_in_canvas</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">canvas_fig</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">num_figures</span><span class="p">):</span>
+      <span class="n">num_cols</span> <span class="o">=</span> <span class="mi">3</span>
+      <span class="n">num_rows</span> <span class="o">=</span> <span class="mi">3</span>
+      <span class="n">gs</span>       <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="n">num_rows</span><span class="p">,</span> <span class="n">num_cols</span><span class="p">)</span>
+
+      <span class="c1"># Creating figure instance and looping through batch of variables in</span>
+      <span class="c1"># dataframe.</span>
+      <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">4</span><span class="o">*</span><span class="n">num_rows</span><span class="p">))</span>
+      <span class="n">i</span>   <span class="o">=</span> <span class="mi">0</span>
+      <span class="c1"># Looping through all variables in dataframes</span>
+      <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">[</span><span class="n">num_plots_in_canvas</span><span class="o">*</span><span class="n">canvas_fig</span><span class="p">:</span><span class="n">num_plots_in_canvas</span><span class="o">*</span><span class="p">(</span><span class="n">canvas_fig</span><span class="o">+</span><span class="mi">1</span><span class="p">)]:</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">variables_num</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">plotDistributionsOfVariableNumericalVariables</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">ax1</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">variables_cat</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">plotDistributionsOfVariableCategoricalVariables</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">ax1</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+      
+      <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_dir</span> <span class="o">+</span> <span class="s1">&#39;canvas_&#39;</span> <span class="o">+</span> <span class="n">filename_suffix</span> <span class="o">+</span> <span class="s1">&#39;_</span><span class="si">{}</span><span class="s1">_.pdf&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">canvas_fig</span><span class="p">))</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+  
+<div class="viewcode-block" id="plot.plotPairplot"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotPairplot">[docs]</a>  <span class="k">def</span> <span class="nf">plotPairplot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Using seaborn to plot a pairplot of numerical variables.</span>
+
+<span class="sd">    .. todo::</span>
+<span class="sd">        Issues with the layout, not all parts are visible.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+
+    <span class="n">df1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df1</span>
+    <span class="n">df2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df2</span>
+
+    <span class="c1"># adding dummy categories for labelling real and synth. dataset</span>
+    <span class="n">df1</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;dummy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;a&#39;</span>
+    <span class="n">df2</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s1">&#39;dummy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;b&#39;</span>
+    <span class="n">df1</span><span class="o">.</span><span class="n">dummy</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">dummy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
+    <span class="n">df2</span><span class="o">.</span><span class="n">dummy</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">dummy</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
+
+    <span class="c1"># find all numeric columns and group them in groups of four</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">include</span><span class="o">=</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span> 
+    <span class="n">col_groups</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">_temp</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
+      <span class="n">_temp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+      <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+      <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">col_groups</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_temp</span>
+        <span class="n">_temp</span>  <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">col_groups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+      <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;dummy&#39;</span><span class="p">]</span> <span class="c1"># adding dummy-column for coloring in pairplot</span>
+      <span class="c1"># print(value)</span>
+      <span class="n">full_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df1</span><span class="p">[</span><span class="n">value</span><span class="p">],</span> <span class="n">df2</span><span class="p">[</span><span class="n">value</span><span class="p">]])</span>
+      <span class="n">sns</span><span class="o">.</span><span class="n">pairplot</span><span class="p">(</span><span class="n">full_df</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;dummy&#39;</span><span class="p">,</span> <span class="n">diag_kind</span><span class="o">=</span><span class="s1">&#39;hist&#39;</span><span class="p">)</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+      <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Jon Vegard Sparre, Robindra Prabhu
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -3,7 +3,7 @@
 DACO - main module
 ==================
 
-.. automodule:: daco
+.. automodule:: daco_main
   :special-members:
   :private-members: 
   :members:

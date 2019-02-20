@@ -151,8 +151,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-daco">
-<span id="daco-main-module"></span><span id="daco-main"></span><h1>DACO - main module<a class="headerlink" href="#module-daco" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-daco_main">
+<span id="daco-main-module"></span><span id="daco-main"></span><h1>DACO - main module<a class="headerlink" href="#module-daco_main" title="Permalink to this headline">¶</a></h1>
 <span class="target" id="module-daco"></span><div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
 <ul class="last simple">
@@ -171,15 +171,15 @@
 </ul>
 </div>
 <dl class="class">
-<dt id="daco.daco">
-<em class="property">class </em><code class="descclassname">daco.</code><code class="descname">daco</code><span class="sig-paren">(</span><em>df1</em>, <em>df2</em>, <em>name1='df1'</em>, <em>name2='df2'</em>, <em>file_dir='plots/'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco">
+<em class="property">class </em><code class="descclassname">daco_main.</code><code class="descname">daco</code><span class="sig-paren">(</span><em>df1</em>, <em>df2</em>, <em>name1='df1'</em>, <em>name2='df2'</em>, <em>file_dir='plots/'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class for comparing two Pandas dataframes.</p>
 <p>The purpose of this class is to easily compare datasets in different
 settings, e.g. check if a synthetic version of a dataset is good enoug
 for your use.</p>
 <dl class="method">
-<dt id="daco.daco.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>df1</em>, <em>df2</em>, <em>name1='df1'</em>, <em>name2='df2'</em>, <em>file_dir='plots/'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.__init__" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>df1</em>, <em>df2</em>, <em>name1='df1'</em>, <em>name2='df2'</em>, <em>file_dir='plots/'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -198,8 +198,8 @@ for your use.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco._checkDataframes">
-<code class="descname">_checkDataframes</code><span class="sig-paren">(</span><em>df1</em>, <em>df2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._checkDataframes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._checkDataframes" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco._checkDataframes">
+<code class="descname">_checkDataframes</code><span class="sig-paren">(</span><em>df1</em>, <em>df2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco._checkDataframes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco._checkDataframes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checking whether the dataframes provided fullfills the requirements:</p>
 <ul class="simple">
 <li>The input should be pandas dataframes</li>
@@ -209,8 +209,8 @@ for your use.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco._findAndNormalizeDistances">
-<code class="descname">_findAndNormalizeDistances</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._findAndNormalizeDistances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._findAndNormalizeDistances" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco._findAndNormalizeDistances">
+<code class="descname">_findAndNormalizeDistances</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco._findAndNormalizeDistances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco._findAndNormalizeDistances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate and normalize distances for all numerical variables.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -228,15 +228,15 @@ for your use.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco._hellingerDivergence">
-<code class="descname">_hellingerDivergence</code><span class="sig-paren">(</span><em>dist1</em>, <em>dist2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._hellingerDivergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._hellingerDivergence" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco._hellingerDivergence">
+<code class="descname">_hellingerDivergence</code><span class="sig-paren">(</span><em>dist1</em>, <em>dist2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco._hellingerDivergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco._hellingerDivergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method calculating the Hellinger divergence.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco._plotConfusionMatrixFromLogisticRegression">
-<code class="descname">_plotConfusionMatrixFromLogisticRegression</code><span class="sig-paren">(</span><em>conf_mat</em>, <em>title=''</em>, <em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._plotConfusionMatrixFromLogisticRegression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._plotConfusionMatrixFromLogisticRegression" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plotting method used in <a class="reference internal" href="#daco.daco.logisticRegressionBenchmark" title="daco.daco.logisticRegressionBenchmark"><code class="xref py py-class docutils literal notranslate"><span class="pre">logisticRegressionBenchmark</span></code></a></p>
+<dt id="daco_main.daco._plotConfusionMatrixFromLogisticRegression">
+<code class="descname">_plotConfusionMatrixFromLogisticRegression</code><span class="sig-paren">(</span><em>conf_mat</em>, <em>title=''</em>, <em>ax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco._plotConfusionMatrixFromLogisticRegression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco._plotConfusionMatrixFromLogisticRegression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plotting method used in <a class="reference internal" href="#daco_main.daco.logisticRegressionBenchmark" title="daco_main.daco.logisticRegressionBenchmark"><code class="xref py py-class docutils literal notranslate"><span class="pre">logisticRegressionBenchmark</span></code></a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -253,9 +253,9 @@ for your use.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco._trainSeveralModels">
-<code class="descname">_trainSeveralModels</code><span class="sig-paren">(</span><em>name</em>, <em>data</em>, <em>models=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._trainSeveralModels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._trainSeveralModels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Private method for <a class="reference internal" href="#daco.daco.trainSynthTestReal" title="daco.daco.trainSynthTestReal"><code class="xref py py-class docutils literal notranslate"><span class="pre">trainSynthTestReal</span></code></a> and <a class="reference internal" href="#daco.daco.syntheticRankingAgreement" title="daco.daco.syntheticRankingAgreement"><code class="xref py py-class docutils literal notranslate"><span class="pre">syntheticRankingAgreement</span></code></a>.
+<dt id="daco_main.daco._trainSeveralModels">
+<code class="descname">_trainSeveralModels</code><span class="sig-paren">(</span><em>name</em>, <em>data</em>, <em>models=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco._trainSeveralModels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco._trainSeveralModels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method for <a class="reference internal" href="#daco_main.daco.trainSynthTestReal" title="daco_main.daco.trainSynthTestReal"><code class="xref py py-class docutils literal notranslate"><span class="pre">trainSynthTestReal</span></code></a> and <a class="reference internal" href="#daco_main.daco.syntheticRankingAgreement" title="daco_main.daco.syntheticRankingAgreement"><code class="xref py py-class docutils literal notranslate"><span class="pre">syntheticRankingAgreement</span></code></a>.
 Models and their scores are saved in dictionaries.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -285,8 +285,8 @@ models with a <code class="docutils literal notranslate"><span class="pre">.fit(
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco._trainSingleModel">
-<code class="descname">_trainSingleModel</code><span class="sig-paren">(</span><em>model</em>, <em>params</em>, <em>X_train</em>, <em>y_train</em>, <em>X_test</em>, <em>y_test</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco._trainSingleModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco._trainSingleModel" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco._trainSingleModel">
+<code class="descname">_trainSingleModel</code><span class="sig-paren">(</span><em>model</em>, <em>params</em>, <em>X_train</em>, <em>y_train</em>, <em>X_test</em>, <em>y_test</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco._trainSingleModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco._trainSingleModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method for training a single model and returning
 the model and its score</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -315,8 +315,8 @@ the model and its score</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.bhattacharyya">
-<code class="descname">bhattacharyya</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.bhattacharyya"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.bhattacharyya" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.bhattacharyya">
+<code class="descname">bhattacharyya</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.bhattacharyya"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.bhattacharyya" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the Bhattacharyya distance for the distributions of
 var1 in the two dataframes.
 See <a class="reference external" href="https://en.wikipedia.org/wiki/Bhattacharyya_distance">https://en.wikipedia.org/wiki/Bhattacharyya_distance</a></p>
@@ -335,8 +335,8 @@ See <a class="reference external" href="https://en.wikipedia.org/wiki/Bhattachar
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.chisquare">
-<code class="descname">chisquare</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.chisquare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.chisquare" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.chisquare">
+<code class="descname">chisquare</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.chisquare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.chisquare" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method for calculating the chisquare test using scipy.stats.chisquare.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -355,8 +355,8 @@ See <a class="reference external" href="https://en.wikipedia.org/wiki/Bhattachar
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.dataPrep">
-<code class="descname">dataPrep</code><span class="sig-paren">(</span><em>target</em>, <em>features</em>, <em>test_size</em>, <em>eval_size</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.dataPrep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.dataPrep" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.dataPrep">
+<code class="descname">dataPrep</code><span class="sig-paren">(</span><em>target</em>, <em>features</em>, <em>test_size</em>, <em>eval_size</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.dataPrep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.dataPrep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data preparation for the ML-models used in DACO. Takes in the two dataframes
 applies one hot encoding on categorical variables, and splits them into train,
 test, and evaluation sets.</p>
@@ -378,8 +378,8 @@ test, and evaluation sets.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.findDistributions">
-<code class="descname">findDistributions</code><span class="sig-paren">(</span><em>bins_='sturges'</em>, <em>density=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.findDistributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.findDistributions" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.findDistributions">
+<code class="descname">findDistributions</code><span class="sig-paren">(</span><em>bins_='sturges'</em>, <em>density=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.findDistributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.findDistributions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find distributions of all variables/columns in dataframes loaded
 into daco and save them in dictionaries.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -411,8 +411,8 @@ into daco and save them in dictionaries.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.hellinger">
-<code class="descname">hellinger</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.hellinger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.hellinger" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.hellinger">
+<code class="descname">hellinger</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.hellinger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.hellinger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the Hellinger divergence for the distributions of
 var1 in the two dataframes.
 See <a class="reference external" href="https://en.wikipedia.org/wiki/Hellinger_distance">https://en.wikipedia.org/wiki/Hellinger_distance</a></p>
@@ -431,8 +431,8 @@ See <a class="reference external" href="https://en.wikipedia.org/wiki/Hellinger_
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.hellingerRowForRow">
-<code class="descname">hellingerRowForRow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.hellingerRowForRow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.hellingerRowForRow" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.hellingerRowForRow">
+<code class="descname">hellingerRowForRow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.hellingerRowForRow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.hellingerRowForRow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method for comparing finding the pair of rows in the datasets that have
 the best match.</p>
 <div class="admonition warning">
@@ -446,8 +446,8 @@ the best match.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.ks2_test">
-<code class="descname">ks2_test</code><span class="sig-paren">(</span><em>var</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.ks2_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.ks2_test" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.ks2_test">
+<code class="descname">ks2_test</code><span class="sig-paren">(</span><em>var</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.ks2_test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.ks2_test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method using the scipy.stats.ks_2samp for computing the Kolmogorov-
 Smirnov statistic on two samples. The result is added to a dictionary
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ks2_test_val</span></code> keeping the results of all calculations.</p>
@@ -468,8 +468,8 @@ Smirnov statistic on two samples. The result is added to a dictionary
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.kullbackleibler">
-<code class="descname">kullbackleibler</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.kullbackleibler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.kullbackleibler" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.kullbackleibler">
+<code class="descname">kullbackleibler</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.kullbackleibler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.kullbackleibler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate Kullback-Leibler divergence for the distributions of
 var1 in the two dataframes with scipy.stats.entropy.</p>
 <ul class="simple">
@@ -491,8 +491,8 @@ var1 in the two dataframes with scipy.stats.entropy.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.logisticRegressionBenchmark">
-<code class="descname">logisticRegressionBenchmark</code><span class="sig-paren">(</span><em>target</em>, <em>features</em>, <em>test_size=0.2</em>, <em>eval_size=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.logisticRegressionBenchmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.logisticRegressionBenchmark" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.logisticRegressionBenchmark">
+<code class="descname">logisticRegressionBenchmark</code><span class="sig-paren">(</span><em>target</em>, <em>features</em>, <em>test_size=0.2</em>, <em>eval_size=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.logisticRegressionBenchmark"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.logisticRegressionBenchmark" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method for training a logistic regression-model on the datasets
 and investigate the differences in the model and predictions. The
 results and models are saved as class variables.</p>
@@ -521,8 +521,8 @@ results and models are saved as class variables.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.numericalComparing">
-<code class="descname">numericalComparing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.numericalComparing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.numericalComparing" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.numericalComparing">
+<code class="descname">numericalComparing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.numericalComparing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.numericalComparing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compare the mean, variance, etc. of the numerical variable between the
 two dataframes. For each numerical variable we calculate the mean of the
 values in both dataframes, then we divide the mean value of the variable in
@@ -541,8 +541,8 @@ dataframes.</td>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.printDistances">
-<code class="descname">printDistances</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.printDistances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.printDistances" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.printDistances">
+<code class="descname">printDistances</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.printDistances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.printDistances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print a nice markdown table with the distance metrics for all numerical
 variables.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -558,8 +558,8 @@ variables.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.rowMatching">
-<code class="descname">rowMatching</code><span class="sig-paren">(</span><em>atol_=0.1</em>, <em>rtol_=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.rowMatching"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.rowMatching" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.rowMatching">
+<code class="descname">rowMatching</code><span class="sig-paren">(</span><em>atol_=0.1</em>, <em>rtol_=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.rowMatching"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.rowMatching" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method which loops over each row in synthetic dataset and finds the row
 in the original dataset with highest match in percent, and saves this number
 as an attribute to each row in the synthetic dataset.
@@ -586,8 +586,8 @@ Using numpy.isclose as a matching measure for numerical values.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.syntheticRankingAgreement">
-<code class="descname">syntheticRankingAgreement</code><span class="sig-paren">(</span><em>model_scores=None</em>, <em>target=None</em>, <em>features=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.syntheticRankingAgreement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.syntheticRankingAgreement" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.syntheticRankingAgreement">
+<code class="descname">syntheticRankingAgreement</code><span class="sig-paren">(</span><em>model_scores=None</em>, <em>target=None</em>, <em>features=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.syntheticRankingAgreement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.syntheticRankingAgreement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method for checking whether the synthetic dataset is useful in machine learning
 contexts. We use the “Synthetic Ranking Agreement”-method, SRA for short,
 see <a class="reference external" href="https://arxiv.org/pdf/1806.11345v1.pdf">https://arxiv.org/pdf/1806.11345v1.pdf</a>
@@ -619,8 +619,8 @@ thought of as the (emprical) probability of a comparison on the synthetic data b
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.trainAndTestModels">
-<code class="descname">trainAndTestModels</code><span class="sig-paren">(</span><em>target</em>, <em>features</em>, <em>models=None</em>, <em>test_size=0.2</em>, <em>eval_size=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.trainAndTestModels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.trainAndTestModels" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.trainAndTestModels">
+<code class="descname">trainAndTestModels</code><span class="sig-paren">(</span><em>target</em>, <em>features</em>, <em>models=None</em>, <em>test_size=0.2</em>, <em>eval_size=0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.trainAndTestModels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.trainAndTestModels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method for training several ML-models on the two datasets given to this
 class and do testing as specified by the user. The models and their test
 scores are saved in dictionaries.</p>
@@ -649,8 +649,8 @@ scores are saved in dictionaries.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.trainSynthTestReal">
-<code class="descname">trainSynthTestReal</code><span class="sig-paren">(</span><em>scores=None</em>, <em>target=None</em>, <em>features=None</em>, <em>test_size=0.2</em>, <em>eval_size=0.2</em>, <em>tstr_name='tstr'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.trainSynthTestReal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.trainSynthTestReal" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.trainSynthTestReal">
+<code class="descname">trainSynthTestReal</code><span class="sig-paren">(</span><em>scores=None</em>, <em>target=None</em>, <em>features=None</em>, <em>test_size=0.2</em>, <em>eval_size=0.2</em>, <em>tstr_name='tstr'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.trainSynthTestReal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.trainSynthTestReal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method for training model(s) on synthetic data and test on real data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -663,8 +663,8 @@ scores are saved in dictionaries.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="daco.daco.wasserstein">
-<code class="descname">wasserstein</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco.html#daco.wasserstein"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco.daco.wasserstein" title="Permalink to this definition">¶</a></dt>
+<dt id="daco_main.daco.wasserstein">
+<code class="descname">wasserstein</code><span class="sig-paren">(</span><em>var1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.wasserstein"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.wasserstein" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculating the Wasserstein/”earth mover’s distance” with <code class="docutils literal notranslate"><span class="pre">SciPy</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
