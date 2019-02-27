@@ -38,3 +38,5 @@ The last line will produce the output on the form
 ```python
 {var1: {'D': <number>, 'p': <number>}}
 ```
+
+ [![Known Vulnerabilities](https://snyk.io/test/github/navikt/ai-lab-daco/badge.svg)](https://snyk.io/test/github/navikt/ai-lab-daco) 
