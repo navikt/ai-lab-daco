@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -12,6 +13,8 @@
     - plotting/smart plotting, i.e. show only anomalies
     - pull plots based on the output from pd.dataframe.describe
     - allow setting range, density, binning, etc. for each variable manually?
+
+    - add legends on boxplot for distance metrics
 """
 
 import pandas as pd
@@ -31,8 +34,11 @@ class plot():
     """
     kl_array, bha_array, hel_array = self._findAndNormalizeDistances()
 
+    fig = plt.figure(figsize=(9,6))
     # TODO bytte til seaborn --> må antakeligvis legge arrays over inn i en dataframe
-    plt.boxplot([kl_array, bha_array, hel_array], showmeans=True)
+    bp = plt.boxplot([kl_array, bha_array, hel_array], showmeans=True)
+    plt.title('Boxplot av distansemetrikker på tvers av variable')
+    plt.xticks([1, 2, 3], ['Kullback-\nLeibler', 'Bhattacharyya', 'Hellinger'])
     plt.show()
 
   def plotCorrelation(self, xlabel="", ylabel="", title="", filename="correlations"):
@@ -136,11 +142,11 @@ class plot():
     name2     = self.name2
     distributions = self.distributions
     colors    = self.colors
-    width_ = abs( max( df1[variable].max(), df2[variable].max() ) - min( df1[variable].min(), df2[variable].min() ) ) / len(distributions['df1'][variable][1])
+    width_ = abs( max( df1[variable].max(), df2[variable].max() ) - min( df1[variable].min(), df2[variable].min() ) ) / len(distributions[name1][variable][1])
     
     # TODO Flytte feilberegning inn i findDistributions()?
-    # df1_err   =  1/np.sqrt(n_samples1[variable]) * np.sqrt( distributions['df1'][variable][0] )
-    # df2_err   =  1/np.sqrt(n_samples2[variable]) * np.sqrt( distributions['df2'][variable][0] )
+    # df1_err   =  1/np.sqrt(n_samples1[variable]) * np.sqrt( distributions[name1][variable][0] )
+    # df2_err   =  1/np.sqrt(n_samples2[variable]) * np.sqrt( distributions[name2][variable][0] )
     df1_err   = distributions[name1 + '_err'][variable]
     df2_err   = distributions[name2 + '_err'][variable]
     ratio     = distributions[name2][variable][0] / distributions[name1][variable][0]
@@ -157,7 +163,7 @@ class plot():
     # Adding errors if not plotting canvas
     if ax2:
       ax2.axhline(y=1, color='k', linestyle='-', linewidth=0.7)
-      ax2.errorbar(distributions['df2'][variable][1][:-1] + width_/2, ratio, fmt='o', yerr=ratio_err)
+      ax2.errorbar(distributions[name2][variable][1][:-1] + width_/2, ratio, fmt='o', yerr=ratio_err)
       ax2.set_ylim(0,2)
       # Hiding xticks on histogram
       plt.setp(ax1.get_xticklabels(), visible=False)
@@ -180,7 +186,7 @@ class plot():
     :param ax2: axis-object for error-histogram placed below main histogram
     :type ax2: obj
     
-    """  
+    """
     name1     = self.name1
     name2     = self.name2
     distributions = self.distributions
@@ -188,23 +194,29 @@ class plot():
 
     df1_err   = distributions[name1 + '_err'][variable]
     df2_err   = distributions[name2 + '_err'][variable]
-
+  
+    dist1_label = distributions[name1][variable][1]
+    dist1_height = distributions[name1][variable][0]
+    dist2_label = distributions[name2][variable][1]
+    dist2_height = distributions[name2][variable][0]
+    
     plt.xticks(rotation=45, ha='right')
-    ax1.bar(distributions['df1'][variable][1], distributions['df1'][variable][0]
-            , align='center', width=1, fill=False, edgecolor=colors[0], linewidth=1.3, label=name1,yerr=df1_err)
-    ax1.bar(distributions['df2'][variable][1], distributions['df2'][variable][0]
+    ax1.bar(dist1_label, dist1_height
+            , align='center', width=1, fill=False, edgecolor=colors[0], linewidth=1.3, label=name1, yerr=df1_err)
+    ax1.bar(dist2_label, dist2_height
             , align='center', width=1, fill=False, edgecolor=colors[1], linewidth=1.3, label=name2)
     ax1.legend()
     ax1.set_title(variable)
     
     # Adding errors of main histogram if not plotting canvas
     if ax2:
-      ratio   = distributions['df2'][variable][0] / distributions['df1'][variable][0]
-      ratio_err = np.sqrt( (df1_err/distributions['df1'][variable][0])**2 + (df2_err/distributions['df2'][variable][0])**2 )*ratio
+      ratio   = dist2_height / dist1_height
+      # TODO add error calculation to docstring.
+      ratio_err = np.sqrt( (df1_err/dist1_height)**2 + (df2_err/dist2_height)**2 )*ratio
       ax2.axhline(y=1, color='k', linestyle='-', linewidth=0.7)
-      # ax2.plot(distributions['df2'][variable][1], ratio, 'o')
-      ax2.errorbar(distributions['df2'][variable][1], ratio, fmt='o', yerr=ratio_err)
-      ax2.set_ylim(0,2)
+      # ax2.plot(dist2_label, ratio, 'o')
+      ax2.errorbar(dist2_label, ratio, fmt='o', yerr=ratio_err)
+      ax2.set_ylim(0, 2)
       # Hiding xticks on histogram
       plt.setp(ax1.get_xticklabels(), visible=False)
     
@@ -229,7 +241,7 @@ class plot():
     
     # Defining layout of figure
     gs  = matplotlib.gridspec.GridSpec(2, 1, height_ratios=[2,1])
-    fig = plt.figure(0)
+    fig = plt.figure(0, figsize=(9,6))
     ax1 = fig.add_subplot(gs[0])
     ax2 = fig.add_subplot(gs[1], sharex=ax1)
 
@@ -265,14 +277,14 @@ class plot():
     variables = np.concatenate((variables_num, variables_cat))
 
     # Defining layout of canvas
-    num_plots_in_canvas = 9
+    num_cols = 3
+    num_rows = 3
+    num_plots_in_canvas = num_cols*num_rows
     num_numerical  = len(variables_num)
     num_categorial = len(variables_cat)
     num_figures = round((num_numerical+num_categorial)/num_plots_in_canvas)
 
     for canvas_fig in range(0,num_figures):
-      num_cols = 3
-      num_rows = 3
       gs       = matplotlib.gridspec.GridSpec(num_rows, num_cols)
 
       # Creating figure instance and looping through batch of variables in
@@ -289,7 +301,10 @@ class plot():
           self.plotDistributionsOfVariableCategoricalVariables(variable, ax1=ax)
       
       plt.tight_layout()
-      plt.savefig(self.file_dir + 'canvas_' + filename_suffix + '_{}_.pdf'.format(canvas_fig))
+      if canvas_fig == 0:
+        plt.savefig(self.file_dir + 'canvas_{}.pdf'.format(filename_suffix))
+      elif canvas_fig > 0:
+        plt.savefig(self.file_dir + 'canvas_{}_{}.pdf'.format(filename_suffix, canvas_fig))
       plt.show()
       plt.close()
   
@@ -329,3 +344,28 @@ class plot():
       sns.pairplot(full_df, hue='dummy', diag_kind='hist')
       plt.tight_layout()
       plt.show()
+
+def sum_diff(diff_compare, identificators):
+  """Returning the sum of the elements in the diff correlations matrices.
+
+  Parameters
+  ----------
+    diff_compare : dict
+      dict with the absolute difference between the correlation matrices.
+    identificators : list
+      list of strings which indicates what is different from one
+      diff to the next.
+
+  Returns
+  -------
+    diff_sum : dict
+      dictionary with the sum of all elements in the correlation matrices
+      as floats.
+  """
+
+  diff_sum = {}
+  for id_ in identificators:
+    # Summing two times (two axes in a matrix)
+    diff_sum[id_] = np.sum(np.sum(np.abs(diff_compare[id_])))
+
+  return diff_sum

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -30,7 +31,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import scipy, os
 from scipy import stats
-from daco_plot import plot
+from .daco_plot import plot
 
 class daco(plot):
   """ Class for comparing two Pandas dataframes.
@@ -134,18 +135,29 @@ class daco(plot):
     print(desc_compare)
     return(desc_compare)
 
-  def findDistributions(self, bins_='sturges', density=True):
-    """Find distributions of all variables/columns in dataframes loaded
-    into daco and save them in dictionaries.
+  def findDistributions(self, bins_='sturges'):
+    r"""Find normalized distributions of all variables/columns in dataframes
+    loaded into daco and save them in dictionaries.
 
-    :param bins: number of bins in histogram/distribution or how to find the number of bins.
-    :type bins: int
+    The error is calculated as
+    
+    .. math::
+      \epsilon = \frac{1}{\sqrt{N}} \sqrt{\frac{n_i}{N}},
 
-    :param density: if True a normalised distribution is returned.
-    :type density: bool
+    where :math:`N` is the number of data samples and :math:`n_i` is the number of samples in
+    the bin.
 
-    :returns: distributions
-    :rtype: dict
+    Parameters
+    ----------
+      bins : int
+        number of bins in histogram/distribution or how to find the number of bins.
+      density :bool
+        if True a normalised distribution is returned.
+
+    Returns
+    -------  
+      distributions : dict
+        All normalized distributions gathered in a dict.
 
     Examples
     --------
@@ -166,49 +178,52 @@ class daco(plot):
     hist2 = {}
     df1_err = {}
     df2_err = {}
-
+    #
+    # TODO Sjekke ut error-bars på numeriske plott....
+    #
     # looping over all columns containing numerical variables
     column_numerical = df1.select_dtypes(include=[np.number]).columns
     for column in column_numerical:
-      min_val = min(df1[column].min(), df2[column].min())
-      max_val = max(df1[column].max(), df2[column].max())
+      x1 = df1[column]
+      x2 = df2[column]
+      min_val = min(x1.min(), x2.min())
+      max_val = max(x1.max(), x2.max())
       range_ = (min_val, max_val)
-
-      hist1[str(column)] = np.histogram(df1[column]
+      hist1[str(column)] = np.histogram(x1
                                         , bins=bins_
-                                        , range=range_
-                                        , density=density)
-      hist2[str(column)] = np.histogram(df2[column]
+                                        , range=range_)
+      hist2[str(column)] = np.histogram(x2
                                         , bins=hist1[str(column)][1]
-                                        , range=range_
-                                        , density=density)
-      # Calculating the error of each bin: err = 1 / sqrt( N ) * sqrt(  n_i / N ),
-      # i.e. the weight is w = 1 / N, where N is the total number of samples in the histogram
-      df1_err[str(column)] = 1 / np.sqrt(np.histogram(df1[column]
-                                        , bins=bins_
-                                        , range=range_)[0].sum()) * np.sqrt(hist1[str(column)][0])
-      df2_err[str(column)] = 1 / np.sqrt(np.histogram(df2[column]
-                                        , bins=hist1[str(column)][1]
-                                        , range=range_)[0].sum()) * np.sqrt(hist2[str(column)][0])
+                                        , range=range_)
+        
+      for x, hist, df_err in [(x1, hist1, df1_err), (x2, hist2, df2_err)]:
+        # Calculating the error of each bin: err = 1 / sqrt(N) * sqrt(n_i / N) = sqrt(n_i) / N,
+        # i.e. the weight is w = 1 / N, where N is the total number of samples in the histogram
+        df_err[str(column)] = 1 / np.histogram(x
+                                          , bins=hist1[str(column)][1] # use same binning as above
+                                          , range=range_)[0].sum() * np.sqrt(hist[str(column)][0])
 
+        # Normalizing histogram
+        a = hist[str(column)][0] / len(x)
+        hist[str(column)] = (a, hist[str(column)][1])
+        
     # looping over all columns containing categorical variables
     column_categories = df1.select_dtypes(include=['category']).columns
     for column in column_categories:
-      value_count1 = df1[column].value_counts(sort=False)
-      value_count2 = df2[column].value_counts(sort=False)
-      norm_1 = value_count1.sum()
-      norm_2 = value_count2.sum()
-      hist1[str(column)] = [value_count1.values / norm_1, value_count1.index.categories]
-      hist2[str(column)] = [value_count2.values / norm_2, value_count2.index.categories]
-      # Calculating the error
-      df1_err[str(column)] = 1 / np.sqrt(value_count1.values) * np.sqrt(hist1[str(column)][0])
-      df2_err[str(column)] = 1 / np.sqrt(value_count2.values) * np.sqrt(hist2[str(column)][0])
+      x1 = df1[column]
+      x2 = df2[column]
+      for x, hist, df_err in [(x1, hist1, df1_err), (x2, hist2, df2_err)]:
+        # Counting values and normalizing for each category.
+        value_count = x.value_counts(sort=False)
+        norm = value_count.sum()
+        hist[str(column)] = [value_count.values / norm, value_count.index.categories]
+        # Calculating the error
+        df_err[str(column)] = 1 / np.sqrt(value_count.values) * np.sqrt(hist[str(column)][0])
 
     distributions = {}
-    distributions[name1] = hist1
-    distributions[name2] = hist2
-    distributions[name1 + '_err'] = df1_err
-    distributions[name2 + '_err'] = df2_err
+    for name, hist, df_err in [(name1, hist1, df1_err), (name2, hist2, df2_err)]:
+      distributions[name] = hist
+      distributions[name + '_err'] = df_err
 
     self.distributions = distributions
 
@@ -402,7 +417,7 @@ class daco(plot):
 
     print("| Variable             | Kullback | Bhattacharyya | Hellinger |")
     for column, kl, bha, hel in zip(df1.select_dtypes(include='number').columns, kl_array, bha_array, hel_array):
-      print(f"| {column:20} | {kl:8.2f} | {bha:13.2f} | {hel:9.2f} |")
+      print("| {:20} | {:8.2f} | {:13.2f} | {:9.2f} |".format(column, kl, bha, hel))
 
     return 0
 

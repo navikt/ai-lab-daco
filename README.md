@@ -1,5 +1,7 @@
 DACO - Dataframe Comparing tool
 ===============================
+ 
+[![Known Vulnerabilities](https://snyk.io/test/github/navikt/ai-lab-daco/badge.svg)](https://snyk.io/test/github/navikt/ai-lab-daco)
 
 You are now trapped inside the repository containing the beginnings of a package/class for comparing two Pandas dataframes in Python. The goal is to be able to compare dataframes in several contexts, for example checking whether a synthetic dataset is good enough for your purposes.
 
@@ -38,5 +40,3 @@ The last line will produce the output on the form
 ```python
 {var1: {'D': <number>, 'p': <number>}}
 ```
-
- [![Known Vulnerabilities](https://snyk.io/test/github/navikt/ai-lab-daco/badge.svg)](https://snyk.io/test/github/navikt/ai-lab-daco) 

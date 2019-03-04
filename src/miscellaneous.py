@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import seaborn as sns
 
-def compare_corr_diff(corr_benchmark, corr_others, identificators):
+def compare_corr_diff(corr_benchmark, corr_others=[], identificators=[]):
   """Function for comparing diff of correlations between synth. and real data
   sets. Two or more correlation matrices are loaded, one of them is treated
   as a benchmark and the others are compared to this one.
@@ -36,12 +36,14 @@ def compare_corr_diff(corr_benchmark, corr_others, identificators):
     dict with results?
   """
 
-  # Checking that the files exists.
+  # Checking whether the files exists.
   if not os.path.exists(corr_benchmark):
+    print(f"Could not find {corr_benchmark}")
     return FileNotFoundError
 
   for path in corr_others:
     if not os.path.exists(corr_benchmark):
+      print(f"Could not find {path}")
       return FileNotFoundError
 
   correlations = {}
@@ -49,20 +51,20 @@ def compare_corr_diff(corr_benchmark, corr_others, identificators):
     correlations['benchmark'] = pickle.load(f)
 
   diff_compare = {}
-  for id_, path in enumerate(corr_others, identificators):
+  for path, id_ in zip(corr_others, identificators):
     with open(path, 'rb') as f:
       correlations[id_] = pickle.load(f)
-      diff_compare[id_] = np.abs(correlations['benchmark'] - correlations[id_])
+    diff_compare[id_] = np.abs(correlations['benchmark'] - correlations[id_])
 
   return diff_compare
 
-def plot_compare_corr_diff(diff_compare, identificators):
+def plot_compare_corr_diff(diff_compare, identificators, filename_suffix=''):
   """Plotting the results from `compare_corr_diff`.
   
   Parameters
   ----------
-    diff_compare : list
-      list with the absolute difference between the correlation matrices.
+    diff_compare : dict
+      dict with the absolute difference between the correlation matrices.
     identificators : list
       list of strings which indicates what is different from one
       diff to the next.
@@ -89,18 +91,17 @@ def plot_compare_corr_diff(diff_compare, identificators):
       mask = np.zeros_like(diff_compare[diff], dtype=np.bool)
       mask[np.triu_indices_from(mask)] = True
       cmap = sns.diverging_palette(240, 10, as_cmap=True)
-      ax0 = sns.heatmap(diff, mask=mask, cmap=cmap, vmin=-1
-                    , vmax=1, square=True, linewidths=.5, cbar=1
-                    , cbar_kws={"fraction": .05, "shrink": .5, "orientation": "vertical"}
-                    , annot=True, ax=ax)
-      # plt.savefig(file_dir + filename + ".png")
-      plt.show()
-      plt.close()
+      ax2 = sns.heatmap(diff_compare[diff], mask=mask, cmap=cmap, vmax=1, vmin=-1,
+                square=True,
+                linewidths=.5, cbar=1, cbar_kws={"fraction": 0.05,
+                                                  "shrink": 0.5,
+                                                  "orientation": "vertical"})
     
     plt.tight_layout()
+    # TODO a path to folder for saving files must be given.
     # if canvas_fig == 0:
-    #   plt.savefig(self.file_dir + 'canvas_{}.pdf'.format(filename_suffix))
+    #   plt.savefig(self.file_dir + 'canvas_{}.png'.format(filename_suffix))
     # elif canvas_fig > 0:
-    #   plt.savefig(self.file_dir + 'canvas_{}_{}.pdf'.format(filename_suffix, canvas_fig))
+    #   plt.savefig(self.file_dir + 'canvas_{}_{}.png'.format(filename_suffix, canvas_fig))
     plt.show()
     plt.close()
