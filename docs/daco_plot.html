@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.0.3
+                1.0.0
               </div>
             
           
@@ -158,12 +158,13 @@
 <li>plotting/smart plotting, i.e. show only anomalies</li>
 <li>pull plots based on the output from pd.dataframe.describe</li>
 <li>allow setting range, density, binning, etc. for each variable manually?</li>
+<li>add legends on boxplot for distance metrics</li>
 </ul>
 </div>
 <dl class="class">
 <dt id="daco_plot.plot">
 <em class="property">class </em><code class="descclassname">daco_plot.</code><code class="descname">plot</code><a class="reference internal" href="_modules/daco_plot.html#plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_plot.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class for plotting the metrics found in <code class="xref py py-class docutils literal notranslate"><span class="pre">daco</span></code>.</p>
+<dd><p>Class for plotting the metrics found in <a class="reference internal" href="daco_main.html#module-daco" title="daco: Tool for comparing two datasets. (Unix, macOS)"><code class="xref py py-class docutils literal notranslate"><span class="pre">daco</span></code></a>.</p>
 <dl class="attribute">
 <dt id="daco_plot.plot.__weakref__">
 <code class="descname">__weakref__</code><a class="headerlink" href="#daco_plot.plot.__weakref__" title="Permalink to this definition">¶</a></dt>
@@ -322,6 +323,32 @@ due to layout problems.</p>
 
 </dd></dl>
 
+<dl class="function">
+<dt id="daco_plot.sum_diff">
+<code class="descclassname">daco_plot.</code><code class="descname">sum_diff</code><span class="sig-paren">(</span><em>diff_compare</em>, <em>identificators</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_plot.html#sum_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_plot.sum_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returning the sum of the elements in the diff correlations matrices.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>diff_compare</strong> (<em>dict</em>) – dict with the absolute difference between the correlation matrices.</li>
+<li><strong>identificators</strong> (<em>list</em>) – list of strings which indicates what is different from one
+diff to the next.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>diff_sum</strong> – dictionary with the sum of all elements in the correlation matrices
+as floats.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 
@@ -367,6 +394,8 @@ due to layout problems.</p>
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
 
   

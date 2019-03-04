@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="daco",
-    version="0.0.3",
+    version="1.0.0",
     author="Jon Vegard Sparre",
     author_email="jon.vegard.sparre@nav.no",
     description="A package for comparing two datasets",

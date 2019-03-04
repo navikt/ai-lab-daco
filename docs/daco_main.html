@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.0.3
+                1.0.0
               </div>
             
           
@@ -379,9 +379,14 @@ test, and evaluation sets.</p>
 
 <dl class="method">
 <dt id="daco_main.daco.findDistributions">
-<code class="descname">findDistributions</code><span class="sig-paren">(</span><em>bins_='sturges'</em>, <em>density=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.findDistributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.findDistributions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find distributions of all variables/columns in dataframes loaded
-into daco and save them in dictionaries.</p>
+<code class="descname">findDistributions</code><span class="sig-paren">(</span><em>bins_='sturges'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.findDistributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.findDistributions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find normalized distributions of all variables/columns in dataframes
+loaded into daco and save them in dictionaries.</p>
+<p>The error is calculated as</p>
+<div class="math notranslate nohighlight">
+\[\epsilon = \frac{1}{\sqrt{N}} \sqrt{\frac{n_i}{N}},\]</div>
+<p>where <span class="math notranslate nohighlight">\(N\)</span> is the number of data samples and <span class="math notranslate nohighlight">\(n_i\)</span> is the number of samples in
+the bin.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -392,7 +397,7 @@ into daco and save them in dictionaries.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">distributions</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>distributions</strong> – All normalized distributions gathered in a dict.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
@@ -725,7 +730,8 @@ scores are saved in dictionaries.</p>
         <script type="text/javascript" src="_static/jquery.js"></script>
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
 
   

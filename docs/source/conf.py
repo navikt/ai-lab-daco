@@ -25,7 +25,7 @@ copyright = '2019, Jon Vegard Sparre, Robindra Prabhu'
 author = 'Jon Vegard Sparre, Robindra Prabhu'
 
 # The short X.Y version
-version = '0.0.3'
+version = '1.0.0'
 # The full version, including alpha/beta/rc tags
 release = ''
 
