@@ -18,7 +18,7 @@ The full docs are found [here](https://navikt.github.io/ai-lab-daco/).
 
 The idea is to use it like this:
 ```python
-from daco.daco import daco
+from daco.daco_main import daco
 
 # load your data frames
 df1 = ...
