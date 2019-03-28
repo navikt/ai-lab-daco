@@ -1,0 +1,13 @@
+Metadata-Version: 1.1
+Name: daco
+Version: 0.0.3
+Summary: A package for comparing two datasets
+Home-page: https://navikt.github.io/ai-lab-daco/
+Author: Jon Vegard Sparre
+Author-email: jon.vegard.sparre@nav.no
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent

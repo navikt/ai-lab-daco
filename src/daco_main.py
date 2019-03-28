@@ -10,6 +10,7 @@
                   Robindra Prabhu
 
 .. todo::
+    - add support for finding Kulback et.al. for categorical data
     - sequential vs tabular data (long term)
     - local and global metrics
     - differential privacy (long term)

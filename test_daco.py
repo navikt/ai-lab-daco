@@ -4,7 +4,7 @@
 
 import pandas as pd
 
-from daco.daco import daco
+from src.daco_main import daco
 
 header = ['age','workclass','fnlwgt','education','education-num','marital-status','occupation','relationship','race','sex','capital-gain','capital-loss','hours-per-week','native-country', 'pred_var']
 df = pd.read_csv('~/github/ai-lab-daco/datasets/adult.data.txt', sep=",",names=header, header=None)
@@ -26,15 +26,16 @@ df2 = df[15000:]
 
 # daco_obj.numericalComparing()
 daco_obj = daco(df1,df2)
-daco_obj.plotPairplot()
-exit()
-# dist = daco_obj.findDistributions()
-hrr = daco_obj.hellingerRowForRow()
+dist = daco_obj.findDistributions()
+# daco_obj.plotDistanceMetrics()
+daco_obj.plotDistributionsOfVariable('workclass')
+# daco_obj.plotPairplot()
+# hrr = daco_obj.hellingerRowForRow()
 
 # daco_obj.logisticRegressionBenchmark(features=['age','workclass','fnlwgt','education','education-num','marital-status','occupation','relationship','race','sex','capital-gain','capital-loss','hours-per-week','native-country']
 #                                       , target=['pred_var'])
 # daco_obj.plotCanvas()
-# daco_obj.plotDistributionsOfVariable('age')
+exit()
 # daco_obj.plotPairplot()
 # daco_obj.rowMatching()
 # print(daco_obj.match_values)
@@ -49,3 +50,10 @@ hrr = daco_obj.hellingerRowForRow()
 
 # print(daco_obj.ks2_test('age'))
 # print(daco_obj.ks2_test_val)
+
+
+# plt.figure(figsize=(10, 6))
+# ax = plt.subplot(1, 1, 1)
+# df1.hist('fnlwgt', ax=ax, alpha=0.5, normed=True)
+# df2.hist('fnlwgt', ax=ax, alpha=0.5, color="#e74c3c", normed=True)
+# plt.show()

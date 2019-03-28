@@ -202,11 +202,11 @@ class plot():
     dist2_height = distributions[name2][variable][0]
     
     plt.xticks(rotation=45, ha='right')
-    ax1.bar(dist1_label, dist1_height
+    plot1 = ax1.bar(dist1_label, dist1_height
             , align='center', width=1, fill=False, edgecolor=colors[0], linewidth=1.3, label=name1, yerr=df1_err)
-    ax1.bar(dist2_label, dist2_height
+    plot2 = ax1.bar(dist2_label, dist2_height
             , align='center', width=1, fill=False, edgecolor=colors[1], linewidth=1.3, label=name2)
-    ax1.legend()
+    ax1.legend((plot1, plot2),(name1, name2))
     ax1.set_title(variable)
     
     # Adding errors of main histogram if not plotting canvas
