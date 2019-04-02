@@ -1,2 +1,3 @@
 include versioneer.py
 include src/_version.py
+include daco/_version.py

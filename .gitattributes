@@ -1,2 +1,3 @@
 *.ipynb filter=nbstrip_fullsrc/_version.py export-subst
 src/_version.py export-subst
+daco/_version.py export-subst

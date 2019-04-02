@@ -10,7 +10,7 @@ setuptools.setup(
     description="A package for comparing two datasets",
     url="https://navikt.github.io/ai-lab-daco/",
     packages=['daco'],
-    package_dir={'daco': 'src'},
+    package_dir={'daco': 'daco'},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
