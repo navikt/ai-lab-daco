@@ -18,14 +18,14 @@ The full docs are found [here](https://navikt.github.io/ai-lab-daco/).
 
 The idea is to use it like this:
 ```python
-from daco.daco_main import daco
+import daco
 
 # load your data frames
 df1 = ...
 df2 = ...
 
 # create the daco-object
-daco_obj = daco(df1, df2, name1='real_df', name2='fake_df')
+daco_obj = daco.daco(df1, df2, name1='real_df', name2='fake_df')
 
 # calculate distributions for all variables/columns in the dataframes
 dist = daco_obj.findDistributions()
