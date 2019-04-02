@@ -1,8 +1,9 @@
 import setuptools
+import versioneer
 
 setuptools.setup(
     name="daco",
-    version="1.0.0",
+    version=versioneer.get_version(),
     author="Jon Vegard Sparre",
     author_email="jon.vegard.sparre@nav.no",
     description="A package for comparing two datasets",

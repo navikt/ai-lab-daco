@@ -25,7 +25,8 @@ copyright = '2019, Jon Vegard Sparre, Robindra Prabhu'
 author = 'Jon Vegard Sparre, Robindra Prabhu'
 
 # The short X.Y version
-version = '1.0.0'
+import daco
+version = str(daco.__version__)
 # The full version, including alpha/beta/rc tags
 release = ''
 
