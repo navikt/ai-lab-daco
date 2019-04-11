@@ -70,7 +70,7 @@ class plot():
     ax0.set_title(title)
     ax0.set_xlabel(xlabel)
     ax0.set_ylabel(ylabel)
-    plt.savefig(file_dir + filename + ".png")
+    plt.savefig(file_dir + filename + ".pdf")
     plt.show()
     plt.close()
 
@@ -109,7 +109,7 @@ class plot():
     ax0.set_title(title)
     ax0.set_xlabel(xlabel)
     ax0.set_ylabel(ylabel)
-    plt.savefig(file_dir + filename + ".png")
+    plt.savefig(file_dir + filename + ".pdf")
     plt.show()
     plt.close()
 
