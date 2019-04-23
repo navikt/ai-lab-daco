@@ -42,7 +42,8 @@ class plot():
     plt.show()
 
   def plotCorrelation(self, xlabel="", ylabel="", title="", filename="correlations"):
-    """Plotting correlations between columns in a dataframe and saving as PNG-file.
+    """Plotting correlations between numerical columns in a dataframe and saving
+    as PDF-file.
     
     :param xlabel: label på x-aksen
     :type xlabel: str
@@ -74,9 +75,9 @@ class plot():
     plt.show()
     plt.close()
 
-  def plotCorrelationDiff(self, xlabel="", ylabel="", title="", filename="correlations"):
-    """Plotting diff of correlations between columns in two dataframes and saving
-    result as PNG-file.
+  def plotCorrelationDiff(self, xlabel="", ylabel="", title="", filename="correlationsDiff"):
+    """Plotting diff of correlations between columns with numerical data in two
+    dataframes and saving result as PDF-file.
     
     :param xlabel: label på x-aksen
     :type xlabel: str
