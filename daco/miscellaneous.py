@@ -37,14 +37,12 @@ def compare_corr_diff(corr_benchmark, corr_others=[], identificators=[]):
   """
 
   # Checking whether the files exists.
-  if not os.path.exists(corr_benchmark):
-    print(f"Could not find {corr_benchmark}")
-    return FileNotFoundError
+  if not os.path.exists(str(corr_benchmark)):
+    raise FileNotFoundError(f"Could not find {corr_benchmark}")
 
   for path in corr_others:
-    if not os.path.exists(corr_benchmark):
-      print(f"Could not find {path}")
-      return FileNotFoundError
+    if not os.path.exists(str(path)):
+      raise FileNotFoundError(f"Could not find {path}")
 
   correlations = {}
   with open(corr_benchmark, 'rb') as f:
