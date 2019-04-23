@@ -805,10 +805,10 @@ class daco(plot):
 
     if models is None:
       # choosing default set of models and parameters
-      models = [(RandomForestClassifier, {'n_estimators': 100})
+      models = [(RandomForestClassifier, {'n_estimators': 100, 'n_jobs': -1})
                 , (GradientBoostingClassifier, {})
-                , (KNeighborsClassifier, {})
-                , (LogisticRegression, {'solver' :'liblinear'})]
+                , (KNeighborsClassifier, {'n_jobs': -1})
+                , (LogisticRegression, {'solver' :'liblinear', 'n_jobs': -1})]
     else:
       # checking that the input is correct
       for mod in models:
