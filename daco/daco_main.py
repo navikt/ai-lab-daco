@@ -230,6 +230,47 @@ class daco(plot):
 
     return distributions
 
+  def findDistributionOfNumericalVariable(self, var, range_, bins_):
+    """Calculate distribution of a single variable.
+    """
+    df1 = self.df1
+    df2 = self.df2
+    name1 = self.name1
+    name2 = self.name2
+      
+    x1 = df1[var]
+    x2 = df2[var]
+    
+    hist1 = {}
+    hist2 = {}
+    df1_err = {}
+    df2_err = {}
+      
+    hist1[str(column)] = np.histogram(x1
+                                      , bins=bins_
+                                      , range=range_)
+    hist2[str(column)] = np.histogram(x2
+                                      , bins=hist1[str(column)][1]
+                                      , range=range_)
+        
+    for x, hist, df_err in [(x1, hist1, df1_err), (x2, hist2, df2_err)]:
+      # Calculating the error of each bin: err = 1 / sqrt(N) * sqrt(n_i / N) = sqrt(n_i) / N,
+      # i.e. the weight is w = 1 / N, where N is the total number of samples in the histogram
+      df_err[str(column)] = 1 / np.histogram(x
+                                             , bins=hist1[str(column)][1] # use same binning as above
+                                             , range=range_)[0].sum() * np.sqrt(hist[str(column)][0])
+      # Normalizing histogram
+      a = hist[str(column)][0] / len(x)
+      hist[str(column)] = (a, hist[str(column)][1])
+
+    dist = {}
+    for name, hist, df_err in [(name1, hist1, df1_err), (name2, hist2, df2_err)]:
+      dist[name] = hist
+      dist[name + '_err'] = df_err
+
+    return dist
+
+
   def chisquare(self, var1):
     """Method for calculating the chisquare test using scipy.stats.chisquare.
 
@@ -459,13 +500,12 @@ class daco(plot):
     and investigate the differences in the model and predictions. The
     results and models are saved as class variables.
 
-    Main features:
+    The following is done by this function:
 
     - Training LR-models on synth. and real data (and save them in this class)
-    - Predicting *N* samples
+    - Predict *N* samples
     - Comparing the accuracy of the two models (several measures possible)
-    - Confusion matrix + classification_report from sklearn
-    - Feature importance
+    - Plotting confusion matrix
 
     :param target: target values
     :type target: list
@@ -519,6 +559,28 @@ class daco(plot):
     plt.savefig(file_dir + 'confusion_matrix_logistic_regression.png')
     plt.show()
     plt.close()
+
+    # Plotting variable importance
+    importance_1 = clf1.feature_importances_
+    importance_2 = clf2.feature_importances_
+    importance_1_normed  = 100.0 * (importance_1 / importance_1.sum())
+    importance_2_normed  = 100.0 * (importance_2 / importance_2.sum())
+    importance_1_sorted  = np.argsort(importance_1)
+    importance_2_sorted  = np.argsort(importance_2)
+    feature_list = np.array(features)
+    pos_1 = np.arange(importance_1_sorted.shape[0]) + .5
+    pos_2 = np.arange(importance_2_sorted.shape[0]) + .5
+    gs = matplotlib.gridspec.GridSpec(2,1)
+    ax_1 = plt.subplot([0, 0])
+    ax_1 = plt.subplot([1, 0])
+    # fig.subplots_adjust(left=.2)
+    ax1.barh(pos_1, importance_1_normed[importance_1_sorted], align='center')
+    ax1.barh(pos_2, importance_2_normed[importance_2_sorted], align='center')
+    ax1.yticks(pos, features[importance_1_sorted],size=18)
+    ax2.yticks(pos, features[importance_2_sorted],size=18)
+    plt.xlabel('Relative Importance')
+    plt.savefig(file_dir + 'variable_importance.pdf')
+    return 0
 
   def dataPrep(self, target, features, test_size, eval_size, name):
     """Data preparation for the ML-models used in DACO. Takes in the two dataframes
