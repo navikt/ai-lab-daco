@@ -1,4 +1,5 @@
 from daco.daco_main import daco
+from daco.miscellaneous import *
 
 __doc__ = """
 daco - a tool for comparing datasets
