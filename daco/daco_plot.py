@@ -75,7 +75,7 @@ class plot():
     plt.show()
     plt.close()
 
-  def plotCorrelationDiff(self, xlabel="", ylabel="", title="", filename="correlationsDiff"):
+  def plotCorrelationDiff(self, xlabel="", ylabel="", title="", filename="correlationsDiff", annotation=True):
     """Plotting diff of correlations between columns with numerical data in two
     dataframes and saving result as PDF-file.
     
@@ -106,7 +106,7 @@ class plot():
     ax0 = sns.heatmap( diff, mask=mask, cmap=cmap, vmin=-1
                     , vmax=1, square=True, linewidths=.5, cbar=1
                     , cbar_kws={ "fraction": .05, "shrink": .5, "orientation": "vertical" }
-                    , annot=True )
+                    , annot=annotation )
     ax0.set_title(title)
     ax0.set_xlabel(xlabel)
     ax0.set_ylabel(ylabel)
