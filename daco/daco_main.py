@@ -576,8 +576,8 @@ class daco(plot):
     # fig.subplots_adjust(left=.2)
     ax1.barh(pos_1, importance_1_normed[importance_1_sorted], align='center')
     ax1.barh(pos_2, importance_2_normed[importance_2_sorted], align='center')
-    ax1.yticks(pos, features[importance_1_sorted],size=18)
-    ax2.yticks(pos, features[importance_2_sorted],size=18)
+    ax1.yticks(pos_1, features[importance_1_sorted],size=18)
+    ax2.yticks(pos_2, features[importance_2_sorted],size=18)
     plt.xlabel('Relative Importance')
     plt.savefig(file_dir + 'variable_importance.pdf')
     return 0
@@ -870,7 +870,7 @@ class daco(plot):
       models = [(RandomForestClassifier, {'n_estimators': 100, 'n_jobs': -1})
                 , (GradientBoostingClassifier, {})
                 , (KNeighborsClassifier, {'n_jobs': -1})
-                , (LogisticRegression, {'solver' :'liblinear', 'n_jobs': -1})]
+                , (LogisticRegression, {'solver' :'saga', 'n_jobs': -1})]
     else:
       # checking that the input is correct
       for mod in models:
