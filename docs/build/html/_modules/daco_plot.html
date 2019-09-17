@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                1.0.2
+                2.0.1
               </div>
             
           
@@ -192,7 +192,8 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="plot.plotCorrelation"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotCorrelation">[docs]</a>  <span class="k">def</span> <span class="nf">plotCorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;correlations&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Plotting correlations between columns in a dataframe and saving as PNG-file.</span>
+    <span class="sd">&quot;&quot;&quot;Plotting correlations between numerical columns in a dataframe and saving</span>
+<span class="sd">    as PDF-file.</span>
 <span class="sd">    </span>
 <span class="sd">    :param xlabel: label på x-aksen</span>
 <span class="sd">    :type xlabel: str</span>
@@ -220,13 +221,13 @@
     <span class="n">ax0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
     <span class="n">ax0</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
     <span class="n">ax0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">file_dir</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">file_dir</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.pdf&quot;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="plot.plotCorrelationDiff"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotCorrelationDiff">[docs]</a>  <span class="k">def</span> <span class="nf">plotCorrelationDiff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;correlations&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Plotting diff of correlations between columns in two dataframes and saving</span>
-<span class="sd">    result as PNG-file.</span>
+<div class="viewcode-block" id="plot.plotCorrelationDiff"><a class="viewcode-back" href="../daco_plot.html#daco_plot.plot.plotCorrelationDiff">[docs]</a>  <span class="k">def</span> <span class="nf">plotCorrelationDiff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;correlationsDiff&quot;</span><span class="p">,</span> <span class="n">annotation</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Plotting diff of correlations between columns with numerical data in two</span>
+<span class="sd">    dataframes and saving result as PDF-file.</span>
 <span class="sd">    </span>
 <span class="sd">    :param xlabel: label på x-aksen</span>
 <span class="sd">    :type xlabel: str</span>
@@ -255,11 +256,11 @@
     <span class="n">ax0</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span> <span class="n">diff</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span>
                     <span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">square</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linewidths</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span> <span class="n">cbar</span><span class="o">=</span><span class="mi">1</span>
                     <span class="p">,</span> <span class="n">cbar_kws</span><span class="o">=</span><span class="p">{</span> <span class="s2">&quot;fraction&quot;</span><span class="p">:</span> <span class="o">.</span><span class="mi">05</span><span class="p">,</span> <span class="s2">&quot;shrink&quot;</span><span class="p">:</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;orientation&quot;</span><span class="p">:</span> <span class="s2">&quot;vertical&quot;</span> <span class="p">}</span>
-                    <span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+                    <span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="n">annotation</span> <span class="p">)</span>
     <span class="n">ax0</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
     <span class="n">ax0</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
     <span class="n">ax0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">file_dir</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.png&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">file_dir</span> <span class="o">+</span> <span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.pdf&quot;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 

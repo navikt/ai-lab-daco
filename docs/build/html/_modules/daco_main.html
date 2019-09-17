@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                1.0.2
+                2.0.1
               </div>
             
           
@@ -380,6 +380,47 @@
 
     <span class="k">return</span> <span class="n">distributions</span></div>
 
+<div class="viewcode-block" id="daco.findDistributionOfNumericalVariable"><a class="viewcode-back" href="../daco_main.html#daco_main.daco.findDistributionOfNumericalVariable">[docs]</a>  <span class="k">def</span> <span class="nf">findDistributionOfNumericalVariable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">range_</span><span class="p">,</span> <span class="n">bins_</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate distribution of a single variable.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df1</span>
+    <span class="n">df2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df2</span>
+    <span class="n">name1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name1</span>
+    <span class="n">name2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name2</span>
+      
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">df1</span><span class="p">[</span><span class="n">var</span><span class="p">]</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">df2</span><span class="p">[</span><span class="n">var</span><span class="p">]</span>
+    
+    <span class="n">hist1</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">hist2</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">df1_err</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">df2_err</span> <span class="o">=</span> <span class="p">{}</span>
+      
+    <span class="n">hist1</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">x1</span>
+                                      <span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins_</span>
+                                      <span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span><span class="p">)</span>
+    <span class="n">hist2</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">x2</span>
+                                      <span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">hist1</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span>
+                                      <span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span><span class="p">)</span>
+        
+    <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">hist</span><span class="p">,</span> <span class="n">df_err</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">x1</span><span class="p">,</span> <span class="n">hist1</span><span class="p">,</span> <span class="n">df1_err</span><span class="p">),</span> <span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">hist2</span><span class="p">,</span> <span class="n">df2_err</span><span class="p">)]:</span>
+      <span class="c1"># Calculating the error of each bin: err = 1 / sqrt(N) * sqrt(n_i / N) = sqrt(n_i) / N,</span>
+      <span class="c1"># i.e. the weight is w = 1 / N, where N is the total number of samples in the histogram</span>
+      <span class="n">df_err</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">x</span>
+                                             <span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">hist1</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)][</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># use same binning as above</span>
+                                             <span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">range_</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">hist</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)][</span><span class="mi">0</span><span class="p">])</span>
+      <span class="c1"># Normalizing histogram</span>
+      <span class="n">a</span> <span class="o">=</span> <span class="n">hist</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+      <span class="n">hist</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)]</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">hist</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">column</span><span class="p">)][</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">dist</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">hist</span><span class="p">,</span> <span class="n">df_err</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">name1</span><span class="p">,</span> <span class="n">hist1</span><span class="p">,</span> <span class="n">df1_err</span><span class="p">),</span> <span class="p">(</span><span class="n">name2</span><span class="p">,</span> <span class="n">hist2</span><span class="p">,</span> <span class="n">df2_err</span><span class="p">)]:</span>
+      <span class="n">dist</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">hist</span>
+      <span class="n">dist</span><span class="p">[</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;_err&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_err</span>
+
+    <span class="k">return</span> <span class="n">dist</span></div>
+
+
 <div class="viewcode-block" id="daco.chisquare"><a class="viewcode-back" href="../daco_main.html#daco_main.daco.chisquare">[docs]</a>  <span class="k">def</span> <span class="nf">chisquare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Method for calculating the chisquare test using scipy.stats.chisquare.</span>
 
@@ -609,13 +650,12 @@
 <span class="sd">    and investigate the differences in the model and predictions. The</span>
 <span class="sd">    results and models are saved as class variables.</span>
 
-<span class="sd">    Main features:</span>
+<span class="sd">    The following is done by this function:</span>
 
 <span class="sd">    - Training LR-models on synth. and real data (and save them in this class)</span>
-<span class="sd">    - Predicting *N* samples</span>
+<span class="sd">    - Predict *N* samples</span>
 <span class="sd">    - Comparing the accuracy of the two models (several measures possible)</span>
-<span class="sd">    - Confusion matrix + classification_report from sklearn</span>
-<span class="sd">    - Feature importance</span>
+<span class="sd">    - Plotting confusion matrix</span>
 
 <span class="sd">    :param target: target values</span>
 <span class="sd">    :type target: list</span>
@@ -668,7 +708,29 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">file_dir</span> <span class="o">+</span> <span class="s1">&#39;confusion_matrix_logistic_regression.png&#39;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="c1"># Plotting variable importance</span>
+    <span class="n">importance_1</span> <span class="o">=</span> <span class="n">clf1</span><span class="o">.</span><span class="n">feature_importances_</span>
+    <span class="n">importance_2</span> <span class="o">=</span> <span class="n">clf2</span><span class="o">.</span><span class="n">feature_importances_</span>
+    <span class="n">importance_1_normed</span>  <span class="o">=</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">importance_1</span> <span class="o">/</span> <span class="n">importance_1</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="n">importance_2_normed</span>  <span class="o">=</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">importance_2</span> <span class="o">/</span> <span class="n">importance_2</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+    <span class="n">importance_1_sorted</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">importance_1</span><span class="p">)</span>
+    <span class="n">importance_2_sorted</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">importance_2</span><span class="p">)</span>
+    <span class="n">feature_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+    <span class="n">pos_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">importance_1_sorted</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="o">.</span><span class="mi">5</span>
+    <span class="n">pos_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">importance_2_sorted</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="o">.</span><span class="mi">5</span>
+    <span class="n">gs</span> <span class="o">=</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax_1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">ax_1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="c1"># fig.subplots_adjust(left=.2)</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">pos_1</span><span class="p">,</span> <span class="n">importance_1_normed</span><span class="p">[</span><span class="n">importance_1_sorted</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">pos_2</span><span class="p">,</span> <span class="n">importance_2_normed</span><span class="p">[</span><span class="n">importance_2_sorted</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+    <span class="n">ax1</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">pos_1</span><span class="p">,</span> <span class="n">features</span><span class="p">[</span><span class="n">importance_1_sorted</span><span class="p">],</span><span class="n">size</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+    <span class="n">ax2</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">pos_2</span><span class="p">,</span> <span class="n">features</span><span class="p">[</span><span class="n">importance_2_sorted</span><span class="p">],</span><span class="n">size</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Relative Importance&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">file_dir</span> <span class="o">+</span> <span class="s1">&#39;variable_importance.pdf&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">0</span></div>
 
 <div class="viewcode-block" id="daco.dataPrep"><a class="viewcode-back" href="../daco_main.html#daco_main.daco.dataPrep">[docs]</a>  <span class="k">def</span> <span class="nf">dataPrep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">test_size</span><span class="p">,</span> <span class="n">eval_size</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Data preparation for the ML-models used in DACO. Takes in the two dataframes</span>
@@ -955,10 +1017,10 @@
 
     <span class="k">if</span> <span class="n">models</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
       <span class="c1"># choosing default set of models and parameters</span>
-      <span class="n">models</span> <span class="o">=</span> <span class="p">[(</span><span class="n">RandomForestClassifier</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">})</span>
+      <span class="n">models</span> <span class="o">=</span> <span class="p">[(</span><span class="n">RandomForestClassifier</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;n_jobs&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">})</span>
                 <span class="p">,</span> <span class="p">(</span><span class="n">GradientBoostingClassifier</span><span class="p">,</span> <span class="p">{})</span>
-                <span class="p">,</span> <span class="p">(</span><span class="n">KNeighborsClassifier</span><span class="p">,</span> <span class="p">{})</span>
-                <span class="p">,</span> <span class="p">(</span><span class="n">LogisticRegression</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;solver&#39;</span> <span class="p">:</span><span class="s1">&#39;liblinear&#39;</span><span class="p">})]</span>
+                <span class="p">,</span> <span class="p">(</span><span class="n">KNeighborsClassifier</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;n_jobs&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">})</span>
+                <span class="p">,</span> <span class="p">(</span><span class="n">LogisticRegression</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;solver&#39;</span> <span class="p">:</span><span class="s1">&#39;saga&#39;</span><span class="p">,</span> <span class="s1">&#39;n_jobs&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">})]</span>
     <span class="k">else</span><span class="p">:</span>
       <span class="c1"># checking that the input is correct</span>
       <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>

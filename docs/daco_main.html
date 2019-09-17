@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.0.2
+                2.0.1
               </div>
             
           
@@ -379,6 +379,12 @@ test, and evaluation sets.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="daco_main.daco.findDistributionOfNumericalVariable">
+<code class="descname">findDistributionOfNumericalVariable</code><span class="sig-paren">(</span><em>var</em>, <em>range_</em>, <em>bins_</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.findDistributionOfNumericalVariable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.findDistributionOfNumericalVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate distribution of a single variable.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="daco_main.daco.findDistributions">
 <code class="descname">findDistributions</code><span class="sig-paren">(</span><em>bins_='sturges'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/daco_main.html#daco.findDistributions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#daco_main.daco.findDistributions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find normalized distributions of all variables/columns in dataframes
@@ -502,13 +508,12 @@ var1 in the two dataframes with scipy.stats.entropy.</p>
 <dd><p>Method for training a logistic regression-model on the datasets
 and investigate the differences in the model and predictions. The
 results and models are saved as class variables.</p>
-<p>Main features:</p>
+<p>The following is done by this function:</p>
 <ul class="simple">
 <li>Training LR-models on synth. and real data (and save them in this class)</li>
-<li>Predicting <em>N</em> samples</li>
+<li>Predict <em>N</em> samples</li>
 <li>Comparing the accuracy of the two models (several measures possible)</li>
-<li>Confusion matrix + classification_report from sklearn</li>
-<li>Feature importance</li>
+<li>Plotting confusion matrix</li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
