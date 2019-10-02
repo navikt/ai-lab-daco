@@ -56,7 +56,7 @@ class daco(plot):
     :type name1: str
     :type name2: str
     """
-    # Doing some checks of the dataframes
+
     self._checkDataframes(df1, df2)
 
     self.df1      = df1
@@ -66,7 +66,7 @@ class daco(plot):
     self.name2 = name2
 
 
-    # Creating dicts for saving values for different metrics
+    # Creating dicts for saving different metrics
     self.p_D_chisquare       = {}
     self.bhattacharyya_dis   = {}
     self.hellinger_div       = {}
@@ -205,6 +205,7 @@ class daco(plot):
                                           , range=range_)[0].sum() * np.sqrt(hist[str(column)][0])
 
         # Normalizing histogram
+        # TODO lag en funksjon av dette
         a = hist[str(column)][0] / len(x)
         hist[str(column)] = (a, hist[str(column)][1])
         
@@ -246,22 +247,22 @@ class daco(plot):
     df1_err = {}
     df2_err = {}
       
-    hist1[str(column)] = np.histogram(x1
+    hist1[str(var)] = np.histogram(x1
                                       , bins=bins_
                                       , range=range_)
-    hist2[str(column)] = np.histogram(x2
-                                      , bins=hist1[str(column)][1]
+    hist2[str(var)] = np.histogram(x2
+                                      , bins=hist1[str(var)][1]
                                       , range=range_)
         
     for x, hist, df_err in [(x1, hist1, df1_err), (x2, hist2, df2_err)]:
       # Calculating the error of each bin: err = 1 / sqrt(N) * sqrt(n_i / N) = sqrt(n_i) / N,
       # i.e. the weight is w = 1 / N, where N is the total number of samples in the histogram
-      df_err[str(column)] = 1 / np.histogram(x
-                                             , bins=hist1[str(column)][1] # use same binning as above
-                                             , range=range_)[0].sum() * np.sqrt(hist[str(column)][0])
+      df_err[str(var)] = 1 / np.histogram(x
+                                             , bins=hist1[str(var)][1] # use same binning as above
+                                             , range=range_)[0].sum() * np.sqrt(hist[str(var)][0])
       # Normalizing histogram
-      a = hist[str(column)][0] / len(x)
-      hist[str(column)] = (a, hist[str(column)][1])
+      a = hist[str(var)][0] / len(x)
+      hist[str(var)] = (a, hist[str(var)][1])
 
     dist = {}
     for name, hist, df_err in [(name1, hist1, df1_err), (name2, hist2, df2_err)]:
@@ -534,13 +535,13 @@ class daco(plot):
     clf2 = LogisticRegression().fit(X_train2, y_train2)
     s2 = clf2.score(X_test2, y_test2)
 
-    # saving models in class
+    # saving models in object
     self.LR_model1  = clf1
     self.LR_model2  = clf2
     self.score_clf1 = s1
     self.score_clf2 = s2
 
-    # Evaulating and finding confusion matrices
+    # Evaulating and calculating confusion matrices
     predictions1  = clf1.predict(X_val1)
     predictions2  = clf2.predict(X_val2)
     conf_mat1     = confusion_matrix(y_true=y_val1, y_pred=predictions1)
@@ -668,7 +669,7 @@ class daco(plot):
         array with dimensions (len(df2), 3) where each row contains
         ``[<index in df2>, <index in df1>, match_value]``.
     """
-    # fetching only columns with numerical values
+    # fetching columns with numerical values
     df1 = self.df1.select_dtypes(include=[np.number])
     df2 = self.df2.select_dtypes(include=[np.number])
     
@@ -705,7 +706,7 @@ class daco(plot):
         Parallellize?
     """
 
-    # fetching only columns with numerical values
+    # fetching columns with numerical values
     df1 = self.df1.select_dtypes(include=[np.number])
     df2 = self.df2.select_dtypes(include=[np.number])
 
