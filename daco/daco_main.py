@@ -271,6 +271,37 @@ class daco(plot):
 
     return dist
 
+  def attributeDisclosure(self, var, other_vars=[]):
+    """Method doing an attribute disclosure-calculation.
+
+    Idea: User gives a list with variables which an intruder may want to learn, this
+    method will use the remaining variables to create subsets of the synthetic dataset
+    w.r.t. each person in original dataset and look at how equal the sensitive variables
+    are.
+    """
+
+    df1 = self.df1
+    df2 = self.df2
+
+    if len(other_vars) == 0:
+      other_vars = set(var).symmetric_difference(set(df1.columns))
+    
+    count_matches = pd.DataFrame(columns=['index', 'matches', 'n_values', 'true_matches'])
+
+    for index, person in df1.iterrows(): 
+      person_values = person[other_vars].values 
+      subset_idx = (df2[other_vars] == person_values).all(axis=1)
+      subset = df2[subset_idx]
+      n_values = subset[var].nunique()
+      true_matches = (subset[var] == person[var]).sum() / subset.shape[0]
+      count_matches = count_matches.append([{'index': index, 'matches': subset.shape[0], 'n_values': n_values, 'true_matches': true_matches}])
+
+    self.matches = count_matches
+    self.disclosure_risks = {}
+    self.disclosure_risks['true_match_max'] = count_matches.true_matches.max()
+    self.disclosure_risks['true_match_mean'] = count_matches.true_matches.mean()
+    self.disclosure_risks['true_match_median'] = count_matches.true_matches.median()
+
 
   def chisquare(self, var1):
     """Method for calculating the chisquare test using scipy.stats.chisquare.
