@@ -291,16 +291,17 @@ class daco(plot):
     for index, person in df1.iterrows(): 
       person_values = person[other_vars].values 
       subset_idx = (df2[other_vars] == person_values).all(axis=1)
-      subset = df2[subset_idx]
-      n_values = subset[var].nunique()
-      true_matches = (subset[var] == person[var]).sum() / subset.shape[0]
+      subset = df2[subset_idx] # subset = ekvivalensklasse
+      n_values = subset[var].nunique() # l-diversity
+      true_matches = (subset[var] == person[var]).sum() / subset.shape[0] # Andel i subset som også matcher på sensitiv variabel.
       count_matches = count_matches.append([{'index': index, 'matches': subset.shape[0], 'n_values': n_values, 'true_matches': true_matches}])
 
     self.matches = count_matches
     self.disclosure_risks = {}
-    self.disclosure_risks['true_match_max'] = count_matches.true_matches.max()
+    self.disclosure_risks['true_match_max'] = count_matches.true_matches.max() # 
     self.disclosure_risks['true_match_mean'] = count_matches.true_matches.mean()
     self.disclosure_risks['true_match_median'] = count_matches.true_matches.median()
+    self.disclosure_risks['true_match_data'] = count_matches.true_matches
 
 
   def chisquare(self, var1):
