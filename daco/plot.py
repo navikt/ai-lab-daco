@@ -13,8 +13,8 @@
     - plotting/smart plotting, i.e. show only anomalies
     - pull plots based on the output from pd.dataframe.describe
     - allow setting range, density, binning, etc. for each variable manually?
-
     - add legends on boxplot for distance metrics
+    - log-axes in plots
 """
 
 import pandas as pd
@@ -352,27 +352,87 @@ class plot:
       plt.tight_layout()
       plt.show()
 
-def sum_diff(diff_compare, identificators):
-  """Returning the sum of the elements in the diff correlations matrices.
+  def sum_diff(diff_compare, identificators):
+    """Returning the sum of the elements in the diff correlations matrices.
 
-  Parameters
-  ----------
-    diff_compare : dict
-      dict with the absolute difference between the correlation matrices.
-    identificators : list
-      list of strings which indicates what is different from one
-      diff to the next.
+    Parameters
+    ----------
+      diff_compare : dict
+        dict with the absolute difference between the correlation matrices.
+      identificators : list
+        list of strings which indicates what is different from one
+        diff to the next.
 
-  Returns
-  -------
-    diff_sum : dict
-      dictionary with the sum of all elements in the correlation matrices
-      as floats.
-  """
+    Returns
+    -------
+      diff_sum : dict
+        dictionary with the sum of all elements in the correlation matrices
+        as floats.
+    """
 
-  diff_sum = {}
-  for id_ in identificators:
-    # Summing two times (two axes in a matrix)
-    diff_sum[id_] = np.sum(np.sum(np.abs(diff_compare[id_])))
+    diff_sum = {}
+    for id_ in identificators:
+      # Summing two times (two axes in a matrix)
+      diff_sum[id_] = np.sum(np.sum(np.abs(diff_compare[id_])))
 
-  return diff_sum
+    return diff_sum
+
+  def plotVariableImportance(self, clf1, clf2, features, file_dir):
+
+    importance_1 = clf1.feature_importances_
+    importance_2 = clf2.feature_importances_
+    importance_1_normed  = 100.0 * (importance_1 / importance_1.sum())
+    importance_2_normed  = 100.0 * (importance_2 / importance_2.sum())
+    importance_1_sorted  = np.argsort(importance_1)
+    importance_2_sorted  = np.argsort(importance_2)
+    # feature_list = np.array(features)
+    pos_1 = np.arange(importance_1_sorted.shape[0]) + .5
+    pos_2 = np.arange(importance_2_sorted.shape[0]) + .5
+    # gs = matplotlib.gridspec.GridSpec(2,1)
+    ax_1 = plt.subplot([0, 0])
+    ax_2 = plt.subplot([1, 0])
+    # fig.subplots_adjust(left=.2)
+    ax_1.barh(pos_1, importance_1_normed[importance_1_sorted], align='center')
+    ax_2.barh(pos_2, importance_2_normed[importance_2_sorted], align='center')
+    ax_1.yticks(pos_1, features[importance_1_sorted],size=18)
+    ax_2.yticks(pos_2, features[importance_2_sorted],size=18)
+    plt.xlabel('Relative Importance')
+    plt.savefig(file_dir + 'variable_importance.pdf')
+    return 0
+
+  def plotConfusionMatrix(self, conf_mat1, conf_mat2, name1, name2, file_dir):
+
+    conf_mat_diff = conf_mat1 - conf_mat2
+
+    gs = matplotlib.gridspec.GridSpec(2,2)
+    ax_1 = plt.subplot(gs[1, 0])
+    ax_2 = plt.subplot(gs[1, 1])
+    ax_3 = plt.subplot(gs[0, :])
+    self._plotConfusionMatrixFromLogisticRegression(conf_mat1, title=name1, ax=ax_1)
+    self._plotConfusionMatrixFromLogisticRegression(conf_mat2, title=name2, ax=ax_2)
+    self._plotConfusionMatrixFromLogisticRegression(conf_mat_diff, title=name2 + ' diff', ax=ax_3)
+    plt.tight_layout()
+    plt.savefig(file_dir + 'confusion_matrix_logistic_regression.png')
+    plt.close()
+
+  def _plotConfusionMatrixFromLogisticRegression(self
+                                                , conf_mat
+                                                , title=''
+                                                , ax=None):
+    """Plotting method used in :class:`logisticRegressionBenchmark`
+
+    Parameters
+    ----------
+      conf_mat : array
+        confusion matrix output from ``confusion_matrix`` in ``SciPy``
+      title : str
+        title of subplot
+      ax : object
+        axis object for plotting
+
+    """
+
+    sns.heatmap(conf_mat, annot=True, fmt='g', ax=ax)
+    ax.set_xlabel('True label')
+    ax.set_ylabel('Predicted label')
+    ax.set_title('{}'.format(title))
