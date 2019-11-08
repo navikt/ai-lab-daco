@@ -60,3 +60,8 @@ class privacy:
     disclosure_risks['true_match_data'] = count_matches.true_matches
     
     self.disclosure_risks = disclosure_risks
+
+def correctRelativeAttributionProbability(self, var, other_vars=[], df1=None, df2=None):
+  """Method for calculating attribute disclosure as defined by Gillian M Raab
+  https://www.geos.ed.ac.uk/homes/graab/simons_march1832019.pdf
+  """
