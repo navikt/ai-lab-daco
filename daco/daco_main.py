@@ -25,14 +25,19 @@
     - AttributeDisclosure
 """
 
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
+import os
+
 import matplotlib
-import scipy, os
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import scipy
+import seaborn as sns
 from scipy import stats
-from daco.daco_plot import plot
+
+from .daco_plot import plot
+from .daco_privacy import privacy
+
 
 class daco(plot):
   """ Class for comparing two Pandas dataframes.
@@ -65,7 +70,6 @@ class daco(plot):
     self.name1 = name1
     self.name2 = name2
 
-
     # Creating dicts for saving different metrics
     self.p_D_chisquare       = {}
     self.bhattacharyya_dis   = {}
@@ -73,6 +77,9 @@ class daco(plot):
     self.kullbackleibler_div = {}
     self.ks2_test_val        = {}
     self.wasserstein_val     = {}
+
+    self.cat_var = df1.select_dtypes(include='category').columns
+    self.num_var = df1.select_dtypes(include=[np.number]).columns
 
     # Setting plotting colors and some parameters
     self.colors = ['tab:green', 'tab:blue']
@@ -128,7 +135,7 @@ class daco(plot):
 
     desc_compare = {}
 
-    for variable in df1.select_dtypes(include='number').columns:
+    for variable in self.num_var:
       value1 = desc1.mean()[variable]
       value2 = desc2.mean()[variable]
       desc_compare['mean_rel_{}'.format(variable)] = value1/value2
@@ -183,7 +190,7 @@ class daco(plot):
     # TODO Sjekke ut error-bars på numeriske plott....
     #
     # looping over all columns containing numerical variables
-    column_numerical = df1.select_dtypes(include=[np.number]).columns
+    column_numerical = self.num_var
     for column in column_numerical:
       x1 = df1[column]
       x2 = df2[column]
@@ -210,7 +217,7 @@ class daco(plot):
         hist[str(column)] = (a, hist[str(column)][1])
         
     # looping over all columns containing categorical variables
-    column_categories = df1.select_dtypes(include=['category']).columns
+    column_categories = self.cat_var
     for column in column_categories:
       x1 = df1[column]
       x2 = df2[column]
@@ -246,7 +253,7 @@ class daco(plot):
     hist2 = {}
     df1_err = {}
     df2_err = {}
-      
+
     hist1[str(var)] = np.histogram(x1
                                       , bins=bins_
                                       , range=range_)
@@ -270,39 +277,6 @@ class daco(plot):
       dist[name + '_err'] = df_err
 
     return dist
-
-  def attributeDisclosure(self, var, other_vars=[]):
-    """Method doing an attribute disclosure-calculation.
-
-    Idea: User gives a list with variables which an intruder may want to learn, this
-    method will use the remaining variables to create subsets of the synthetic dataset
-    w.r.t. each person in original dataset and look at how equal the sensitive variables
-    are.
-    """
-
-    df1 = self.df1
-    df2 = self.df2
-
-    if len(other_vars) == 0:
-      other_vars = set(var).symmetric_difference(set(df1.columns))
-    
-    count_matches = pd.DataFrame(columns=['index', 'matches', 'n_values', 'true_matches'])
-
-    for index, person in df1.iterrows(): 
-      person_values = person[other_vars].values 
-      subset_idx = (df2[other_vars] == person_values).all(axis=1)
-      subset = df2[subset_idx] # subset = ekvivalensklasse
-      n_values = subset[var].nunique() # l-diversity
-      true_matches = (subset[var] == person[var]).sum() / subset.shape[0] # Andel i subset som også matcher på sensitiv variabel.
-      count_matches = count_matches.append([{'index': index, 'matches': subset.shape[0], 'n_values': n_values, 'true_matches': true_matches}])
-
-    self.matches = count_matches
-    self.disclosure_risks = {}
-    self.disclosure_risks['true_match_max'] = count_matches.true_matches.max() # 
-    self.disclosure_risks['true_match_mean'] = count_matches.true_matches.mean()
-    self.disclosure_risks['true_match_median'] = count_matches.true_matches.median()
-    self.disclosure_risks['true_match_data'] = count_matches.true_matches
-
 
   def chisquare(self, var1):
     """Method for calculating the chisquare test using scipy.stats.chisquare.
@@ -702,19 +676,19 @@ class daco(plot):
         ``[<index in df2>, <index in df1>, match_value]``.
     """
     # fetching columns with numerical values
-    df1 = self.df1.select_dtypes(include=[np.number])
-    df2 = self.df2.select_dtypes(include=[np.number])
+    df1_num = self.df1[self.num_var]
+    df2_num = self.df2[self.num_var]
     
     # initializing dict that will be filled with entries on
     # the form [<index in df2>, <index in df1>, match_value]
-    match_values = np.empty((len(df2), 3))
+    match_values = np.empty((len(df2_num), 3))
     
-    len_row = len(df1.columns)
+    len_row = len(df1_num.columns)
     
     i = 0
-    for row2 in df2.itertuples():
+    for row2 in df2_num.itertuples():
       row_match = [None, 0]
-      for row1 in df1.itertuples():
+      for row1 in df1_num.itertuples():
         # applying np.isclose and counting number of elements inside our tolerances
         match = np.isclose(row1[1:], row2[1:], atol=atol_, rtol=rtol_)
         match_rel = match.sum() / len_row
@@ -739,19 +713,19 @@ class daco(plot):
     """
 
     # fetching columns with numerical values
-    df1 = self.df1.select_dtypes(include=[np.number])
-    df2 = self.df2.select_dtypes(include=[np.number])
+    df1_num = self.df1[self.num_var]
+    df2_num = self.df2[self.num_var]
 
     # initializing dict that will be filled with entries on
     # the form [<index in df2>, <index in df1>, match_value]
-    match_values = np.empty((len(df2), 3))
+    match_values = np.empty((len(df2_num), 3))
     
-    len_row = len(df1.columns)
+    len_row = len(df1_num.columns)
     
     i = 0
-    for row2 in df2.itertuples():
+    for row2 in df2_num.itertuples():
       row_match = [None, 0]
-      for row1 in df1.itertuples():
+      for row1 in df1_num.itertuples():
         # applying np.isclose and counting number of elements inside our tolerances
         match = self._hellingerDivergence(row1[1:], row2[1:])
         match_rel = match.sum() / len_row
