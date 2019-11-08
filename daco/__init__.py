@@ -1,5 +1,7 @@
-from daco.daco_main import daco
-from daco.miscellaneous import *
+from daco.main import main
+from daco.privacy import privacy
+from daco.plot import plot
+# from daco.miscellaneous import *
 
 __doc__ = """
 daco - a tool for comparing datasets
@@ -18,3 +20,5 @@ Main Features
 from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
+
+__all__ = ['main', 'plot', 'privacy']
