@@ -526,7 +526,6 @@ class main(plot, privacy):
 
     name1    = self.name1
     name2    = self.name2
-    file_dir = self.file_dir
 
     X_train1, X_val1, y_train1, y_val1, X_test1, y_test1 = self.dataPrep(target, features, test_size, eval_size, name1)
     X_train2, X_val2, y_train2, y_val2, X_test2, y_test2 = self.dataPrep(target, features, test_size, eval_size, name2)
@@ -549,41 +548,10 @@ class main(plot, privacy):
     predictions2  = clf2.predict(X_val2)
     conf_mat1     = confusion_matrix(y_true=y_val1, y_pred=predictions1)
     conf_mat2     = confusion_matrix(y_true=y_val2, y_pred=predictions2)
-    conf_mat_diff = conf_mat1 - conf_mat2
 
-    # Plotting confusion matrices
-    gs = matplotlib.gridspec.GridSpec(2,2)
-    ax1 = plt.subplot(gs[1, 0])
-    ax2 = plt.subplot(gs[1, 1])
-    ax3 = plt.subplot(gs[0, :])
-    self._plotConfusionMatrixFromLogisticRegression(conf_mat1, title=name1, ax=ax1)
-    self._plotConfusionMatrixFromLogisticRegression(conf_mat2, title=name2, ax=ax2)
-    self._plotConfusionMatrixFromLogisticRegression(conf_mat_diff, title=name2 + ' diff', ax=ax3)
-    plt.tight_layout()
-    plt.savefig(file_dir + 'confusion_matrix_logistic_regression.png')
-    plt.show()
-    plt.close()
+    self.plotVariableImportance(clf1, clf2, features, self.file_dir)
+    self.plotConfusionMatrix(conf_mat1, conf_mat2, name1, name2, self.file_dir)
 
-    # Plotting variable importance
-    importance_1 = clf1.feature_importances_
-    importance_2 = clf2.feature_importances_
-    importance_1_normed  = 100.0 * (importance_1 / importance_1.sum())
-    importance_2_normed  = 100.0 * (importance_2 / importance_2.sum())
-    importance_1_sorted  = np.argsort(importance_1)
-    importance_2_sorted  = np.argsort(importance_2)
-    feature_list = np.array(features)
-    pos_1 = np.arange(importance_1_sorted.shape[0]) + .5
-    pos_2 = np.arange(importance_2_sorted.shape[0]) + .5
-    gs = matplotlib.gridspec.GridSpec(2,1)
-    ax_1 = plt.subplot([0, 0])
-    ax_1 = plt.subplot([1, 0])
-    # fig.subplots_adjust(left=.2)
-    ax1.barh(pos_1, importance_1_normed[importance_1_sorted], align='center')
-    ax1.barh(pos_2, importance_2_normed[importance_2_sorted], align='center')
-    ax1.yticks(pos_1, features[importance_1_sorted],size=18)
-    ax2.yticks(pos_2, features[importance_2_sorted],size=18)
-    plt.xlabel('Relative Importance')
-    plt.savefig(file_dir + 'variable_importance.pdf')
     return 0
 
   def dataPrep(self, target, features, test_size, eval_size, name):
@@ -630,28 +598,6 @@ class main(plot, privacy):
                                                       , test_size=eval_size)
 
     return X_train, X_val, y_train, y_val, X_test, y_test
-
-  def _plotConfusionMatrixFromLogisticRegression(self
-      , conf_mat
-      , title=''
-      , ax=None):
-    """Plotting method used in :class:`logisticRegressionBenchmark`
-
-    Parameters
-    ----------
-      conf_mat : array
-        confusion matrix output from ``confusion_matrix`` in ``SciPy``
-      title : str
-        title of subplot
-      ax : object
-        axis object for plotting
-
-    """
-
-    sns.heatmap(conf_mat, annot=True, fmt='g', ax=ax)
-    ax.set_xlabel('True label')
-    ax.set_ylabel('Predicted label')
-    ax.set_title('{}'.format(title))
 
   def rowMatching(self, atol_=1e-1, rtol_=1e-1):
     """Method which loops over each row in synthetic dataset and finds the row
