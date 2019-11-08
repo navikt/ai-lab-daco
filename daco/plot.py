@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: daco_plot
+.. module:: plot
    :platform: Unix, macOS
    :synopsis: Plotting module for DACO.
 
@@ -25,9 +25,13 @@ import matplotlib
 import scipy, os
 from scipy import stats
 
-class plot():
+class plot:
   """ Class for plotting the metrics found in :class:`daco`.
   """
+
+  def __init__(self):
+    pass
+
   def plotDistanceMetrics(self):
     """Plot boxplot of the distance metrics Kullback-Leibler, Bhattacharyya, and
     Hellinger for all numerical variables.
@@ -41,7 +45,7 @@ class plot():
     plt.xticks([1, 2, 3], ['Kullback-\nLeibler', 'Bhattacharyya', 'Hellinger'])
     plt.show()
 
-  def plotCorrelation(self, xlabel="", ylabel="", title="", filename="correlations"):
+  def plotCorrelation(self, xlabel="", ylabel="", title="", filename="correlations", annotation=True):
     """Plotting correlations between numerical columns in a dataframe and saving
     as PDF-file.
     
@@ -67,7 +71,7 @@ class plot():
     ax0 = sns.heatmap( corr, mask=mask, cmap=cmap, vmin=-1
                     , vmax=1, square=True, linewidths=.5, cbar=1
                     , cbar_kws={ "fraction": .05, "shrink": .5, "orientation": "vertical" }
-                    , annot=True )
+                    , annot=annotation )
     ax0.set_title(title)
     ax0.set_xlabel(xlabel)
     ax0.set_ylabel(ylabel)
@@ -249,9 +253,9 @@ class plot():
     ax2 = fig.add_subplot(gs[1], sharex=ax1)
 
     # Checking dtype of variable and plotting data
-    if variable in df1.select_dtypes(include=[np.number]).columns:
+    if variable in self.num_var:
       self.plotDistributionsOfVariableNumericalVariables(variable, ax1=ax1, ax2=ax2)
-    elif variable in df1.select_dtypes(include='category').columns:
+    elif variable in self.cat_var:
       self.plotDistributionsOfVariableCategoricalVariables(variable, ax1=ax1, ax2=ax2)
     
     plt.xlabel(str(variable))
@@ -275,8 +279,8 @@ class plot():
     df1 = self.df1
     
     # Fetching all numeric and categorical variables and gathering them in one array
-    variables_num = df1.select_dtypes(include=[np.number]).columns
-    variables_cat = df1.select_dtypes(include='category').columns
+    variables_cat = self.cat_var
+    variables_num = self.num_var
     variables = np.concatenate((variables_num, variables_cat))
 
     # Defining layout of canvas
@@ -329,11 +333,11 @@ class plot():
     df2.dummy = df2.dummy.astype('category')
 
     # find all numeric columns and group them in groups of four
-    columns = df1.select_dtypes(include=[np.number]).columns
+    numerical_columns = self.num_var
     i = 0 
     col_groups = {}
     _temp = []
-    for col in columns:
+    for col in numerical_columns:
       _temp.append(col)
       i += 1
       if i % 4 == 0:

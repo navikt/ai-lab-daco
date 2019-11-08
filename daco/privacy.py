@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-.. module:: daco_privacy
+.. module:: privacy
    :platform: Unix, macOS
    :synopsis: Privacy module for DACO.
 
@@ -10,31 +10,30 @@
                   Robindra Prabhu
 
 .. todo::
-    - plotting/smart plotting, i.e. show only anomalies
-    - pull plots based on the output from pd.dataframe.describe
-    - allow setting range, density, binning, etc. for each variable manually?
-
-    - add legends on boxplot for distance metrics
+    - this class should be independent of other daco-functionality, how?
 """
 
 import pandas as pd
 
 class privacy:
-
+  """Class with metrics for measuring privacy risks.
+  """
+  
   def __init__(self):
     pass
 
-  def attributeDisclosure(self, var, other_vars=[]):
+  def attributeDisclosure(self, var, other_vars=[], df1=None, df2=None):
     """Method doing an attribute disclosure-calculation.
     
-    Idea: User gives a list with variables which an intruder may want to learn, this
+    Idea: User gives a list with sensitive variables which an intruder may want to learn, this
     method will use the remaining variables to create subsets of the synthetic dataset
     w.r.t. each person in original dataset and look at how equal the sensitive variables
     are.
     """
   
-    df1 = self.df1
-    df2 = self.df2
+    if (df1 is None) and (df2 is None):
+      df1 = self.df1
+      df2 = self.df2
     
     if len(other_vars) == 0:
       other_vars = set(var).symmetric_difference(set(df1.columns))
@@ -47,7 +46,10 @@ class privacy:
       subset = df2[subset_idx] # subset = ekvivalensklasse
       n_values = subset[var].nunique() # l-diversity
       true_matches = (subset[var] == person[var]).sum() / subset.shape[0] # Andel i subset som også matcher på sensitiv variabel.
-      count_matches = count_matches.append([{'index': index, 'matches': subset.shape[0], 'n_values': n_values, 'true_matches': true_matches}])
+      count_matches = count_matches.append([{'index': index
+                                            , 'matches': subset.shape[0]
+                                            , 'n_values': n_values
+                                            , 'true_matches': true_matches}])
     
     self.matches = count_matches
     

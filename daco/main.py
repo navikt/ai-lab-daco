@@ -16,13 +16,7 @@
     - differential privacy (long term)
     - privacy checks
     - mean, variance, ... ( this is available in pandas)
-    - plotting/smart plotting, i.e. show only anomalies
-    - pull plots based on the output from pd.dataframe.describe
-    - allow setting range, density, binning, etc. for each variable manually?
     - set a random seed globally in class
-    - log-axes in plots
-    - IdentityDisclosure
-    - AttributeDisclosure
 """
 
 import os
@@ -35,11 +29,11 @@ import scipy
 import seaborn as sns
 from scipy import stats
 
-from .daco_plot import plot
-from .daco_privacy import privacy
+from .plot import plot
+from .privacy import privacy
 
 
-class daco(plot):
+class main(plot, privacy):
   """ Class for comparing two Pandas dataframes.
 
   The purpose of this class is to easily compare datasets in different
@@ -81,12 +75,15 @@ class daco(plot):
     self.cat_var = df1.select_dtypes(include='category').columns
     self.num_var = df1.select_dtypes(include=[np.number]).columns
 
+    # TODO: move this to daco_plot
     # Setting plotting colors and some parameters
     self.colors = ['tab:green', 'tab:blue']
     matplotlib.rcParams['font.size'] = 12
     matplotlib.rcParams['xtick.labelsize'] = 12
     matplotlib.rcParams['ytick.labelsize'] = 12
     matplotlib.rcParams['legend.fontsize'] = 12
+
+    # super().__init__()
 
     # Creating dir for saving plots etc.
     if not os.path.exists(file_dir):
