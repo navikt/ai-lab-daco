@@ -75,6 +75,8 @@ class plot:
     ax0.set_title(title)
     ax0.set_xlabel(xlabel)
     ax0.set_ylabel(ylabel)
+    plt.xticks(rotation=90)
+    plt.yticks(rotation=0)
     plt.savefig(file_dir + filename + ".pdf")
     plt.show()
     plt.close()
@@ -105,7 +107,7 @@ class plot:
     mask = np.zeros_like( diff, dtype=np.bool )
     mask[ np.triu_indices_from( mask ) ] = True
     cmap = sns.diverging_palette( 240, 10, as_cmap=True )
-    
+
     plt.figure( figsize=( 10, 10 ) )
     ax0 = sns.heatmap( diff, mask=mask, cmap=cmap, vmin=-1
                     , vmax=1, square=True, linewidths=.5, cbar=1
@@ -114,6 +116,8 @@ class plot:
     ax0.set_title(title)
     ax0.set_xlabel(xlabel)
     ax0.set_ylabel(ylabel)
+    plt.xticks(rotation=90)
+    plt.yticks(rotation=0)
     plt.savefig(file_dir + filename + ".pdf")
     plt.show()
     plt.close()
