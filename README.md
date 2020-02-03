@@ -1,4 +1,4 @@
-DACO - Dataframe Comparing tool
+**DACO - Dataframe Comparing tool**
 ===============================
  
 [![Known Vulnerabilities](https://snyk.io/test/github/navikt/ai-lab-daco/badge.svg)](https://snyk.io/test/github/navikt/ai-lab-daco) [![GitHub version](https://badge.fury.io/gh/navikt%2Fai-lab-daco.svg)](https://badge.fury.io/gh/navikt%2Fai-lab-daco)
