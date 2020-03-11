@@ -14,6 +14,7 @@
 """
 
 import pandas as pd
+import numpy as np
 
 class privacy:
   """Class with metrics for measuring privacy risks.
@@ -81,11 +82,20 @@ def correctRelativeAttributionProbability(self, sensitive_var, key_variables=[],
     other_vars = set(sensitive_var).symmetric_difference(set(df1.columns))
   
   count_matches = pd.DataFrame(columns=['index', 'matches', 'n_values', 'true_matches'])
+
+  # Different measures are used on categorical and numerical features
+  other_cat = set(other_vars).issubset(self.cat_var)
+  other_num = set(other_vars).issubset(self.num_var)
   
   # Assuming each row is a unique person
   for index, person in df1.iterrows():
-    person_values = person[other_vars].values 
-    subset_idx = (df2[other_vars] == person_values).all(axis=1)
+    person_values_num = person[other_num].values
+    person_values_cat = person[other_cat].values
+    # numerical values must be equal within an epsilon, categorical values must be measured by amount of equal characters?
+    # subset_idx = (df2[other_vars] == person_values).all(axis=1)
+    subset_idx_num =  np.isclose(df2[other_num], person_values_num, atol=0.1) # atol sets the tolerance for how close the values must be in order to evaluate to True
+    subset_idx_cat = (df2[other_cat] == person_values_cat).all(axis=1)
+    subset_idx = subset_idx_cat + subset_idx_num
     subset = df2[subset_idx] # subset = ekvivalensklasse
     n_values = subset[sensitive_var].nunique() # l-diversity
     true_matches = (subset[sensitive_var] == person[sensitive_var]).sum() / subset.shape[0] # Andel i subset som også matcher på sensitiv variabel.
