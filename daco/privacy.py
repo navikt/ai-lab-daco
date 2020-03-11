@@ -95,7 +95,7 @@ def correctRelativeAttributionProbability(self, sensitive_var, key_variables=[],
     # subset_idx = (df2[other_vars] == person_values).all(axis=1)
     subset_idx_num =  np.isclose(df2[other_num], person_values_num, atol=0.1) # atol sets the tolerance for how close the values must be in order to evaluate to True
     subset_idx_cat = (df2[other_cat] == person_values_cat).all(axis=1)
-    subset_idx = subset_idx_cat + subset_idx_num
+    subset_idx = subset_idx_cat & subset_idx_num
     subset = df2[subset_idx] # subset = ekvivalensklasse
     n_values = subset[sensitive_var].nunique() # l-diversity
     true_matches = (subset[sensitive_var] == person[sensitive_var]).sum() / subset.shape[0] # Andel i subset som også matcher på sensitiv variabel.
